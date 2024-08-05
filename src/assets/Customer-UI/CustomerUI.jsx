@@ -25,9 +25,9 @@ function CustomerUI() {
       <HomePage />
       <FlashSales products={data}/>
       <BrowseByCategories />
-      <BestSellingProducts />
+      <BestSellingProducts products={data}/>
       <Categories />
-      <ExploreOurProducts />
+      <ExploreOurProducts products={data}/>
       <NewArrival />
       <Footer />
     </div>

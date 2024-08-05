@@ -37,3 +37,12 @@ li {
     color: #F9F9F9;
     
 }
+
+li {
+    cursor: pointer;
+  
+}
+
+li:hover{
+    color: rgb(119, 119, 234);
+}
