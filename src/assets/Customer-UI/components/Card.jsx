@@ -1,11 +1,11 @@
 import React from "react";
 import "./Card.css"
 import Stars from "./Stars";
-function Card({ price, orgPrice, title, rating, img, review, ...props }) {
+function Card({ onClickViewAllProducts, price, orgPrice, title, rating, img, review, ...props }) {
   return (
     <div 
     style={{backgroundImage: img, cursor: "pointer"}}
-    
+
     >
       <a class="flex sales-card block max-w-sm p-6 ">
         <div className="discount">

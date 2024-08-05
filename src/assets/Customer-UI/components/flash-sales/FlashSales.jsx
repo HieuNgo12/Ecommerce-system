@@ -5,7 +5,11 @@ import Banter from "../TitleBanter";
 import Card from "../Card";
 function FlashSales({ products, ...props }) {
   const [itemList, setItemList] = useState(products);
+  const [viewAllProducts, setViewAllProducts] = useState(false);
 
+  const onClickViewAllProducts = () => {
+    setViewAllProducts(!viewAllProducts);
+  };
   useEffect(() => {
     console.log(products);
     // const productsList = products.map((product) => {
@@ -50,7 +54,24 @@ function FlashSales({ products, ...props }) {
         </div>
         <div>
           <div className="grid grid-cols-4 gap-4">
-            {  products.map((item, index) => {
+            {!viewAllProducts
+              ? products.map((item, index) => {
+                  if (item.id > 0 && item.id < 5) {
+                    return (
+                      <div>
+                        <Card
+                          orgPrice={item.price + 99}
+                          review={Math.ceil(item.rating.count)}
+                          rating={item.rating.rate}
+                          img={item.image}
+                          price={item.price}
+                          title={item.title}
+                        />
+                      </div>
+                    );
+                  }
+                })
+              : products.map((item, index) => {
                   return (
                     <div>
                       <Card
@@ -63,10 +84,9 @@ function FlashSales({ products, ...props }) {
                       />
                     </div>
                   );
-                })
-          }
+                })}
           </div>
-          <ViewAllButton title={"View All Products"} />
+          <ViewAllButton onClickViewAllProducts={onClickViewAllProducts}  title={"View All Products"} />
         </div>
       </div>
     </>

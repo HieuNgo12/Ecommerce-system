@@ -1,8 +1,9 @@
 import React from 'react'
 import "./ViewAllButton.css"
-function ViewAllButton({title, ...props}) {
+function ViewAllButton({onClickViewAllProducts,title, ...props}) {
+
   return (
-    <div className='view-all-button' style={{cursor: 'pointer'}}>
+    <div onClick={()=> {onClickViewAllProducts()}} className='view-all-button' style={{cursor: 'pointer'}}>
       {title}
     </div>
   )
