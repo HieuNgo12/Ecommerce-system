@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 function App() {
   const [count, setCount] = useState(0)
-  const [user, setUser] = useState("admin");
+  const [user, setUser] = useState("customer");
   const adminRouter = createBrowserRouter([
     {
       path: "/",

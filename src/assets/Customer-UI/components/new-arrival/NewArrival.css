@@ -1,0 +1,21 @@
+img {
+    margin: 10px;
+}
+
+.fast-delivery{
+    margin-left: 11%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.new-arrival{
+    margin-bottom: 50px;
+}
+
+.text-left {
+    font-family: "Inter";
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 48px;
+    color: #000000;
+}
