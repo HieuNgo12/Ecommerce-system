@@ -1,83 +1,76 @@
-import React from 'react'
-import Card from './components/Card'
+import React, { useEffect, useState } from "react";
+import ViewAllButton from "../ViewAllButton";
+import "./FlashSales.css";
+import Banter from "../TitleBanter";
+import Card from "../Card";
+function FlashSales({ products, ...props }) {
+  const [itemList, setItemList] = useState(products);
 
-function FlashSales() {
-    const itemsList = [
-        {
-            title: "HAVIT HV-G92 Gamepad",
-            img: "./icons/gaming.png",
-            price: 120,
-            orgPrice: 160,
-            rating: 5
-        },
-        {
-            title: "AK-900 Wired Keyboard",
-            img: "./icons/keyboard.png",
-            price: 120,
-            orgPrice: 160,
-            rating: 4
+  useEffect(() => {
+    console.log(products);
+    // const productsList = products.map((product) => {
+    //   return {
+    //     title: product.title,
+    //     img: product.image,
+    //     price: product.price,
+    //     orgPrice: product.price + 99,
+    //     rating: product.rating.rate,
+    //     review: product.rating.count,
+    //   };
+    // });
+    // setItemList(productsList);
 
-        },
-        {
-            title: "IPS LCD Gaming Monitor",
-            img: "./icons/monitor.png",
-            price: 370,
-            orgPrice: 400,
-            rating: 5
-
-        },
-        {
-            title: "S-Series Comfort Chair",
-            img: "./icons/chair.png",
-            price: 375,
-            orgPrice: 400,
-            rating: 4.5
-
-        },
-    ]
+    // return () => {};
+  }, []);
   return (
-    <div>
-        
-        <div className='border-8 text-left border-s-red-900 rounded-md '>
-            Today's
-        </div>
-          <div className='flex'>
-        <div>
-           <h1>Flash Sales</h1> 
-        </div>
-        <div className="flex">
+    <>
+      <div>
+        <Banter title={"Today's"} />
+
+        <div className="flex grid grid-cols-4 gap-4">
+          <div>{""}</div>
+          <div className="flex time-title">
             <p>Days</p>
             <p>Hours</p>
             <p>Minutes</p>
             <p>Seconds</p>
+          </div>
         </div>
-       
+        <div className="flex grid grid-cols-4 gap-4">
+          <div>
+            <h1 className="flash-sales">Flash Sales</h1>
+          </div>
 
-    </div>
-    <div>
-    <div className="flex">
+          <div className="flex time">
             <p>03:</p>
             <p>23:</p>
             <p>19:</p>
             <p>56</p>
+          </div>
         </div>
-        <div className='grid grid-cols-4 gap-4'>
-        {
-            itemsList.map((item, index) => {
-                return <div >
-                    <Card orgPrice={item.orgPrice} rating={item.rating} img={item.img} price={item.price} title={item.title} /> 
-                 </div>
-                
-            })
-        }
+        <div>
+          <div className="grid grid-cols-4 gap-4">
+            {  products.map((item, index) => {
+                  return (
+                    <div>
+                      <Card
+                        orgPrice={item.price + 99}
+                        review={Math.ceil(item.rating.count)}
+                        rating={item.rating.rate}
+                        img={item.image}
+                        price={item.price}
+                        title={item.title}
+                      />
+                    </div>
+                  );
+                })
+          }
+          </div>
+          <ViewAllButton title={"View All Products"} />
         </div>
-        
-
-    </div>
-
-    </div>
-  
-  )
+      </div>
+    </>
+  );
 }
 
-export default FlashSales
+export default FlashSales;

@@ -1,6 +1,7 @@
 import React from 'react'
 import Card from './components/Card'
-
+import Banter from '../TitleBanter'
+import "./BrowseByCategories.css"
 function BrowseByCategories() {
     const itemsList = [
         {
@@ -55,13 +56,15 @@ function BrowseByCategories() {
     ]
   return (
     <div>
-        <div className='border-8 text-left border-s-red-900 rounded-md '>
-            Categories
+        <Banter title={"Categories"}/>
+        <div>
+
         </div>
-        <div className='grid grid-cols-6 gap-8'>
+        <div className='grid grid-cols-6 gap-8 ' style={{cursor: "pointer"}} 
+        >
         {
             itemsList.map((item, index) => {
-                return <div >
+                return <div className='hover-red' >
                     <Card orgPrice={item.orgPrice} img={item.img} rating={item.rating} price={item.price} title={item.title} />
                  </div>
                 

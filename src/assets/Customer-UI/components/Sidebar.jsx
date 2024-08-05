@@ -1,32 +1,15 @@
-import {
-  Card,
-  Typography,
-  List,
-  ListItem,
-  ListItemPrefix,
-  ListItemSuffix,
-  Chip,
-} from "@material-tailwind/react";
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
-  PowerIcon,
-} from "@heroicons/react/24/solid";
 import "./Sidebar.css";
-import CarouselDefault from "./Carousel.jsx";
-import Carousel from "./Carousel.jsx";
 export default function Sidebar() {
   const sideBarTab = [
     {
       link: "",
       title: "Woman's fashion",
+      hasDropdown: true,
     },
     {
       link: "",
       title: "Men's fashion",
+      hasDropdown: true,
     },
     {
       link: "",
@@ -57,26 +40,28 @@ export default function Sidebar() {
       title: "Health & Beauty",
     },
   ];
-  return <div>
-
-<div class="grid grid-rows-3 grid-flow-col gap-4 text-left">
-  <div class="row-span-3 ...">
-    <ul>
-    {
-        sideBarTab.map((tab)=>{
-          return  <li><a style={{onHover: "cursor"}}>{tab.title}</a></li>
-        })
-    }
-    </ul>
- 
-  </div>
-  {/* <div class="col-span-2 ..."><CarouselDefault /></div> */}
-  <div class="row-span-2 col-span-2 ...">
-</div>
-</div>
-
-
-
- </div>
-  
+  return (
+    <div className="flex">
+      <div class="flex grid grid-rows-3 w-80 grid-flow-col gap-4 text-left sidebar-exclusive mt-10 mb-10 ">
+        <div class="row-span-3 flex">
+          <ul>
+            {sideBarTab.map((tab) => {
+              return (
+                <li>
+                  <div className="flex">
+                    <a style={{ cursor: "pointer" }}>{tab.title}</a>
+                    {/* {tab.hasDropdown? <img className=" ml-72 " src="./icons/dropdown.png"/> : null} */}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div class="row-span-2 col-span-2 ..."></div>
+      </div>
+      <div class="row-span-3">
+        <img src="./icons/home-page/banter-img.png" />
+      </div>
+    </div>
+  );
 }

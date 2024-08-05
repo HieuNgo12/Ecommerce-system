@@ -1,5 +1,5 @@
 body {
-  padding-top: 50px;
+  padding-top: 0px;
 }
 h3 {
   margin-bottom: 50px;
@@ -41,4 +41,8 @@ p {
   margin-top: 50px;
   text-align: center;
   font-size: 14px;
+}
+
+.sidebar-exclusive {
+  border-right: 0.5px solid #000000  ;
 }

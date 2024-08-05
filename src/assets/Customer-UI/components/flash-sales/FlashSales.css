@@ -1,0 +1,20 @@
+.flash-sales {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 48px;
+}
+
+.time-title {
+    color: #000000;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
+    font-family: "Poppins";
+}
+
+.time {
+    font-size: 32px;
+    color: #000000;
+    font-family: "Inter";
+    font-weight: 700;
+}

@@ -1,0 +1,6 @@
+.hover-red {
+    &:hover {
+        background-color: #DB4444
+        ;
+      }
+}
