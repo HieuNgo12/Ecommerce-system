@@ -17,16 +17,21 @@ function App() {
     },
   ]);
 
-  const customerRouter = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-        <Route path="/" element={<CustomerUI />}>
-          <Route path="products" element={<ProductList />} />
-          <Route path="product/:id" element={<ProductDetails />} />
-        </Route>
-      </>
-    )
-  );
+  const customerRouter = createBrowserRouter([
+    {
+      path: "/",
+      element: <CustomerUI />,
+    },
+    {
+      path: "/productlist",
+      element: <ProductList />, // Define route for ProductList
+    },
+    {
+      path: "/product/:id",
+      element: <ProductDetails />, // Define route for ProductDetails
+    }
+  ]);
+
 
   const sellerRouter = createBrowserRouter([
     {

@@ -7,6 +7,8 @@ import BestSellingProducts from "./components/best-selling-products/BestSellingP
 import Categories from "./components/categories/Categories";
 import ExploreOurProducts from "./components/explore-our-products/ExploreOurProducts";
 import NewArrival from "./components/new-arrival/NewArrival";
+import { Outlet } from 'react-router-dom';
+
 
 function CustomerUI() {
   const [data, setData] = useState([]);
@@ -30,6 +32,7 @@ function CustomerUI() {
       <ExploreOurProducts products={data}/>
       <NewArrival />
       <Footer />
+      <Outlet />
     </div>
   );
 }
