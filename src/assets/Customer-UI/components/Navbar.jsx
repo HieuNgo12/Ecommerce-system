@@ -16,7 +16,7 @@ function classNames(...classes) {
 export default function Navbar() {
   return (
     <nav class="bg-white dark:bg-gray-900  w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-      <div class="bg-black text-white flex pt-4">
+      <div class="bg-black text-white flex pt-8">
         <div className="ml-48">
           Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
         </div>
@@ -26,7 +26,7 @@ export default function Navbar() {
         <div className="ml-24">
           <Menu as="div" className="relative inline-block text-left ">
             <div>
-              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md text-white bg-black px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-black">
                 Languages
                 <ChevronDownIcon
                   aria-hidden="true"
