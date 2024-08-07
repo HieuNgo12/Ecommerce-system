@@ -1,17 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
-import SellerUI from './assets/Seller-UI/SellerUI'
-import CustomerUI from './assets/Customer-UI/CustomerUI'
 import AdminUI from './assets/Admin-UI/AdminUI'
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart'
+import HomePage from './assets/Customer-UI/pages/HomePage';
+import { useState } from 'react';
 function App() {
-  const [count, setCount] = useState(0)
-  const [user, setUser] = useState("customer");
+  const [user, setuser] = useState("customer")
   const adminRouter = createBrowserRouter([
     {
       path: "/",
@@ -22,20 +20,20 @@ function App() {
   const customerRouter = createBrowserRouter([
     {
       path: "/",
-      element: <CustomerUI />,
+      element: <HomePage />,
+      children: [
+
+      ]
     },
+    {
+      path: "/shopping-cart",
+      element: <ShoppingCart />,
+    }
   ]);
 
-  const sellerRouter = createBrowserRouter([
-    {
-      path: "/",
-      element: <SellerUI />,
-    },
-  ]);
   return (
     <>
      {user === "admin" && <RouterProvider router={adminRouter} />}
-     {user === "seller" && <RouterProvider router={sellerRouter} />}
      {user === "customer" && <RouterProvider router={customerRouter} />}
     </>
   )
