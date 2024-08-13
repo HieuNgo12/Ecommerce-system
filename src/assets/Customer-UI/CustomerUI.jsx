@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import HomePage from "./pages/HomePage";
 import Footer from "./components/Footer";
 import FlashSales from "./components/flash-sales/FlashSales";

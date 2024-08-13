@@ -5,10 +5,11 @@ import CustomerUI from './assets/Customer-UI/CustomerUI';
 import AdminUI from './assets/Admin-UI/AdminUI';
 import ProductList from './assets/Products/ProductList';
 import ProductDetails from './assets/Products/ProductDetails';
+import ProductWishlist from './assets/Products/ProductWishlist';
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from 'react-router-dom';
+import ErrorPage from './assets/Customer-UI/pages/ErrorPage';
 
 function App() {
-  const [count, setCount] = useState(0)
   const [user, setUser] = useState("customer");
   const adminRouter = createBrowserRouter([
     {
@@ -21,6 +22,7 @@ function App() {
     {
       path: "/",
       element: <CustomerUI />,
+      errorElement: <ErrorPage />,
     },
     {
       path: "/productlist",
@@ -29,7 +31,11 @@ function App() {
     {
       path: "/product/:id",
       element: <ProductDetails />, // Define route for ProductDetails
-    }
+    },
+    {
+      path: "/productwishlist",
+      element: <ProductWishlist />, // Define route for ProductWishlist
+    },
   ]);
 
 

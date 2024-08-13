@@ -1,9 +1,8 @@
-import React from 'react'
 import "./Footer.css"
 function Footer() {
   return (
     <div className='bg-black text-white pt-20 text-left pl-10 mt-10 pb-20'>
-      <div class="grid grid-cols-5 gap-5">
+      <div className ="grid grid-cols-5 gap-5">
             <div>
 
                 <ul>
@@ -61,7 +60,7 @@ function Footer() {
                     
                 </ul></div>
     </div>
-    <div className='copy-right text-center pt-20 '>
+    <div className='copy-right text-center text-sm mt-10 pt-6 opacity-40'>
         Copyright Rimel 2022. All right reserved
     </div>
     </div>
