@@ -8,6 +8,8 @@ import ProductDetails from './assets/Products/ProductDetails';
 import ProductWishlist from './assets/Products/ProductWishlist';
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from 'react-router-dom';
 import ErrorPage from './assets/Customer-UI/pages/ErrorPage';
+import HomePage from './assets/Customer-UI/pages/HomePage';
+import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart';
 
 function App() {
   const [user, setUser] = useState("customer");
