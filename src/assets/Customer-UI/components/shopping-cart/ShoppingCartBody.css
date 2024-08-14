@@ -1,7 +1,7 @@
 .cart-card {
   border-style: dotted;
   border: 1.5px solid black;
-  margin-left: 75%;
+  margin-left: 120%;
   max-width: 470px;
   min-height: 324px;
   border-radius: 4px;
@@ -21,6 +21,7 @@
 
 .text-right {
   text-align: end;
+  margin-left: 50%;
 }
 
 ul.breadcrumb {
@@ -128,4 +129,30 @@ input:focus {
 .image {
     width: "54px";
     height: "54px"
+}
+
+.quantity{
+    border: 1.5px solid #000000;
+    border-radius: 4px;
+    max-width: 72px;
+    padding-left: 12px;
+    min-height: 44px;
+}
+
+td {
+    color: #000000;
+
+}
+
+th {
+  
+}
+
+.card-box {
+  min-width: 210px !important;
+}
+
+.text-very-left {
+  font-size: 20px !important;
+  font-weight: 500;
 }

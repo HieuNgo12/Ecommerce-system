@@ -1,6 +1,7 @@
 import "./Navbar.css";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Link } from "react-router-dom";
 
 const navigation = [
   { name: "Dashboard", href: "#", current: true },
@@ -15,7 +16,7 @@ function classNames(...classes) {
 
 export default function Navbar() {
   return (
-    <nav class="bg-white dark:bg-gray-900  w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
+    <nav class="bg-white dark:bg-gray-900  w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600 ">
       <div class="bg-black text-white flex pt-8">
         <div className="ml-48">
           Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
@@ -24,9 +25,9 @@ export default function Navbar() {
           <a class="font-bold"> ShopNow</a>
         </div>
         <div className="ml-24">
-          <Menu as="div" className="relative inline-block text-left ">
-            <div>
-              <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md text-white bg-black px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-black">
+          <Menu as="div" className="relative mt-0 inline-block text-left ">
+            <div className="mt-0">
+              <MenuButton className="inline-flex w-full justify-center   text-white bg-black px-3 py-2 text-sm font-semibold     hover:bg-black">
                 Languages
                 <ChevronDownIcon
                   aria-hidden="true"
@@ -72,7 +73,7 @@ export default function Navbar() {
           <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li>
               <a
-                href="#"
+                href="/"
                 class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
                 aria-current="page"
               >
@@ -81,7 +82,7 @@ export default function Navbar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/contact-page"
                 class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 Contact
@@ -89,7 +90,7 @@ export default function Navbar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/about"
                 class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 About
@@ -97,7 +98,7 @@ export default function Navbar() {
             </li>
             <li>
               <a
-                href="#"
+                href="/sign-up"
                 class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
               >
                 Sign Up
@@ -112,7 +113,10 @@ export default function Navbar() {
           />
         </div>
         <div class="flex " style={{ cursor: "pointer" }}>
-          <img src="./icons/cart.png" />
+          <Link to={"/shopping-cart"}>
+            {" "}
+            <img src="./icons/cart.png" />
+          </Link>
           <img src="./icons/wishlist.png" />
           <img src="./icons/user.png" />
         </div>

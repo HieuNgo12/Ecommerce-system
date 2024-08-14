@@ -8,6 +8,7 @@ import {
 import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart'
 import HomePage from './assets/Customer-UI/pages/HomePage';
 import { useState } from 'react';
+
 function App() {
   const [user, setuser] = useState("customer")
   const adminRouter = createBrowserRouter([

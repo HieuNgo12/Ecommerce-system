@@ -8,13 +8,16 @@ import ExploreOurProducts from "../components/explore-our-products/ExploreOurPro
 import NewArrival from "../components/new-arrival/NewArrival";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import SimpleSlider from "../components/Slider";
+import CustomArrows from "../components/ArrowSlider";
 
 function HomePage() {
   const [data, setData] = useState([]);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("https://fakestoreapi.com/products");
+      const res = await fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products");
       const data = await res.json();
+      console.log(data);
       setData(data);
     };
     getData();

@@ -3,53 +3,31 @@ import Banter from "../TitleBanter";
 import ViewAllButton from "../ViewAllButton";
 import "./BestSellingProducts.css";
 import Card from "../Card";
+import SimpleSlider from "../Slider";
+import CustomArrows from "../ArrowSlider";
 function BestSellingProducts({ products, ...props }) {
-    const [viewAllProducts, setViewAllProducts] = useState (false);
+  const [viewAllProducts, setViewAllProducts] = useState(false);
 
-    const onClickViewAllProducts = () => {
-      setViewAllProducts(!viewAllProducts)
-    };
+  const onClickViewAllProducts = () => {
+    setViewAllProducts(!viewAllProducts);
+  };
   return (
     <div>
       <Banter title={"This month"} />
-      <div className="flex text-left best-selling-products">
+      <div className="flex text-left best-selling-products mb-14">
         <div>Best Selling Products</div>
         <div>
-          <button onClick={()=>{onClickViewAllProducts()}} className="view-all">View All</button>
+          <button
+            onClick={() => {
+              onClickViewAllProducts();
+            }}
+            className="view-all"
+          >
+            View All
+          </button>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4 mt-10">
-      { !viewAllProducts ? products.map((item, index) => {
-          if (item.id > 0 && item.id < 5 ) {
-            return (
-              <div>
-                <Card
-                  orgPrice={item.price + 99}
-                  review={Math.ceil(item.rating.count)}
-                  rating={item.rating.rate}
-                  img={item.image}
-                  price={item.price}
-                  title={item.title}
-                />
-              </div>
-            );
-          }
-        }) : products.map((item, index) => {
-              return (
-                <div>
-                  <Card
-                    orgPrice={item.price + 99}
-                    review={Math.ceil(item.rating.count)}
-                    rating={item.rating.rate}
-                    img={item.image}
-                    price={item.price}
-                    title={item.title}
-                  />
-                </div>
-              );
-            
-          })}
-      </div>
+      <CustomArrows products={products} viewAllProducts={viewAllProducts} />
     </div>
   );
 }

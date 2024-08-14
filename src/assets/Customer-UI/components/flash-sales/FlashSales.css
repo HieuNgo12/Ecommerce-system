@@ -18,3 +18,10 @@
     font-family: "Inter";
     font-weight: 700;
 }
+
+.time-text{
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+    font-family: "Poppins"
+}
