@@ -3,6 +3,7 @@ import ViewAllButton from "../ViewAllButton";
 import "./FlashSales.css";
 import Banter from "../TitleBanter";
 import Card from "../Card";
+import CustomArrows from "../ArrowSlider";
 function FlashSales({ products, ...props }) {
   const [itemList, setItemList] = useState(products);
   const [viewAllProducts, setViewAllProducts] = useState(false);
@@ -34,10 +35,10 @@ function FlashSales({ products, ...props }) {
         <div className="flex grid grid-cols-4 gap-4">
           <div>{""}</div>
           <div className="flex time-title">
-            <p>Days</p>
-            <p>Hours</p>
-            <p>Minutes</p>
-            <p>Seconds</p>
+            <p className="time-text">Days</p>
+            <p className="time-text">Hours</p>
+            <p className="time-text">Minutes</p>
+            <p className="time-text">Seconds</p>
           </div>
         </div>
         <div className="flex grid grid-cols-4 gap-4">
@@ -53,40 +54,12 @@ function FlashSales({ products, ...props }) {
           </div>
         </div>
         <div>
-          <div className="grid grid-cols-4 gap-4">
-            {!viewAllProducts
-              ? products.map((item, index) => {
-                  if (item.id > 0 && item.id < 5) {
-                    return (
-                      <div>
-                        <Card
-                          orgPrice={item.price + 99}
-                          review={Math.ceil(item.rating.count)}
-                          rating={item.rating.rate}
-                          img={item.image}
-                          price={item.price}
-                          title={item.title}
-                        />
-                      </div>
-                    );
-                  }
-                })
-              : products.map((item, index) => {
-                  return (
-                    <div>
-                      <Card
-                        orgPrice={item.price + 99}
-                        review={Math.ceil(item.rating.count)}
-                        rating={item.rating.rate}
-                        img={item.image}
-                        price={item.price}
-                        title={item.title}
-                      />
-                    </div>
-                  );
-                })}
-          </div>
-          <ViewAllButton onClickViewAllProducts={onClickViewAllProducts}  title={"View All Products"} />
+          <CustomArrows products={products} viewAllProducts={viewAllProducts} />
+
+          <ViewAllButton
+            onClickViewAllProducts={onClickViewAllProducts}
+            title={"View All Products"}
+          />
         </div>
       </div>
     </>

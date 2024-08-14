@@ -8,10 +8,7 @@
     border-radius: 4px;
     width: 55px;
     height: 26px;
-    padding-left: 4px;
-    padding-right: 4px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    /* padding: 50px; */
 }
 
 .price {
@@ -32,4 +29,17 @@
     font-size: 14px;
     font-weight: 600;
     line-height: 21px;
+}
+
+.add-to-cart {
+    background-color: black;
+    color: white;
+    &hover{
+        background-color: white;
+    }
+}
+
+.add-to-cart:hover {
+    background-color: yellow;
+    color: black;
 }

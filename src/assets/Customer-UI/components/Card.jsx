@@ -1,15 +1,62 @@
-import React from "react";
-import "./Card.css"
+import React, { useEffect, useState } from "react";
+import "./Card.css";
 import Stars from "./Stars";
-function Card({ onClickViewAllProducts, price, orgPrice, title, rating, img, review, ...props }) {
-  return (
-    <div 
-    style={{backgroundImage: img, cursor: "pointer"}}
+import CustomArrows from "./ArrowSlider";
+import SimpleSlider from "./Slider";
+import Alert from "./utils/Alert";
+function Card({
+  onClickViewAllProducts,
+  price,
+  orgPrice,
+  title,
+  rating,
+  img,
+  review,
+  ...props
+}) {
+  const [hover, setHover] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [cartList, setCartList] = useState([]);
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setShowSuccessAlert(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [showSuccessAlert]);
+
+  const onClickCard = () => {
+    const savedList = JSON?.parse(localStorage?.getItem("cartList")) || [];
+    savedList.push({
+      onClickViewAllProducts,
+      price,
+      orgPrice,
+      title,
+      rating,
+      img,
+      review,
+    });
+    console.log(savedList);
+    localStorage.setItem("cartList", JSON.stringify(savedList));
+    setShowSuccessAlert(true);
+  };
+  return (
+    <div
+      className="hover-product-card"
+      style={{ backgroundImage: img, cursor: "pointer" }}
+      onMouseEnter={(e) => {
+        setHover(true);
+      }}
+      onMouseLeave={(e) => {
+        setHover(false);
+      }}
     >
+      {showSuccessAlert ? <Alert /> : null}
       <a class="flex sales-card block max-w-sm p-6 ">
         <div className="discount">
-          -40%
+          {Math.round(((price - orgPrice) / orgPrice) * 100) + "%"}
         </div>
         <div>
           <img src={img} style={{ marginLeft: "15%", height: "120px" }} />
@@ -19,6 +66,21 @@ function Card({ onClickViewAllProducts, price, orgPrice, title, rating, img, rev
           <img src="./icons/fill-eye.png" />
         </div>
       </a>
+      <div>
+        {hover && (
+          <div
+            className="add-to-cart"
+
+            onClick={() => {
+              onClickCard();
+            }}
+          >
+        
+            Add to Cart
+          </div>
+        )}
+      </div>
+
       <div className="text-left">
         <p class="text-left text-2xl m-0 font-bold tracking-tight text-gray-900 dark:text-white">
           {title}
@@ -28,13 +90,12 @@ function Card({ onClickViewAllProducts, price, orgPrice, title, rating, img, rev
           <p className="org-price line-through">${orgPrice}</p>
         </div>
         <div className="flex">
-
-        <p class="font-normal text-gray-700 dark:text-gray-400">
-          <Stars stars={Math.round(rating)} />
-        </p>
-        <p className="rating">
-          {"("}  {review}  {")"}
-        </p>
+          {rating ? <p class="font-normal text-gray-700 dark:text-gray-400">
+            <Stars stars={Math.round(rating)} />
+          </p> : "No Rating yet"}
+          <p className="rating">
+            {"("} {review ? review : 0} {")"}
+          </p>
         </div>
       </div>
     </div>
