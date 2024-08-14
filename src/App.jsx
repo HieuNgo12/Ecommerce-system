@@ -10,6 +10,7 @@ import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } 
 import ErrorPage from './assets/Customer-UI/pages/ErrorPage';
 import HomePage from './assets/Customer-UI/pages/HomePage';
 import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart';
+import LoginPage from './assets/Customer-UI/pages/LoginPage';
 
 function App() {
   const [user, setUser] = useState("customer");
@@ -31,6 +32,10 @@ function App() {
     {
       path: "/shopping-cart",
       element: <ShoppingCart />,
+    },
+    {
+      path: "/login-page",
+      element: <LoginPage />,
     }
   ]);
 

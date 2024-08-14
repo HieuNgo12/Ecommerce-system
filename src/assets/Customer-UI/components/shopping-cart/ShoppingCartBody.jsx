@@ -15,10 +15,8 @@ function ShoppingCartBody() {
   });
 
   for (const [key, value] of Object.entries(quantityCartList)) {
-    console.log(`${key}: ${value}`);
     cartItemList.push([key, value]);
   }
-  console.log(quantityCartList, cartItemList);
   return (
     <div className="shopping-cart">
       {" "}

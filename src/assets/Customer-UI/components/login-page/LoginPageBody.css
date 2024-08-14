@@ -1,0 +1,90 @@
+.head-link {
+  font-weight: 500;
+  font-family: "Poppins";
+  font-size: 16px;
+  line-height: 24px;
+  color: #000000;
+  text-align: left;
+}
+
+.container li {
+  font-size: 16px;
+  color: rgb(116, 114, 114);
+  font-weight: 400;
+  line-height: 24px;
+  text-align: left;
+  margin-left: 20px;
+}
+.container li:hover {
+  color: rgb(66, 66, 202);
+}
+
+.password {
+  text-align: left;
+}
+
+.short-input {
+  min-width: 330px !important;
+  background-color: #f5f5f5;
+  height: 50px;
+  border-radius: 4px;
+  margin-left: 12px;
+  margin-bottom: 12px;
+  padding-left: 12px;
+}
+
+.long-input {
+  min-width: 710px !important;
+  background-color: #f5f5f5;
+  height: 50px;
+  border-radius: 4px;
+  margin-left: 12px;
+  margin-bottom: 12px;
+  margin-top: 12px;
+  padding-left: 12px;
+}
+
+.text-very-left {
+  min-width: 360px;
+  text-align: left;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 12px;
+}
+
+.cancel-button {
+    min-width: 57px;
+    height: 24px;
+
+}
+
+.save-changes {
+    background-color: #DB4444;
+    min-width: 214px !important;
+    height: 56px;
+    padding: 16px 48px 16px 48px;
+    border-radius: 4px;
+    color: white;
+}
+
+.buttons{
+    margin-left: 60%;
+    margin-top: 12px;
+}
+
+.edit-your-profile{
+    text-align: left;
+    color: #DB4444;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    margin-bottom: 12px;
+}
+.mcl-rimmel {
+    color: #DB4444;
+
+}
+.welcome{
+    margin-left: 60%;
+}
