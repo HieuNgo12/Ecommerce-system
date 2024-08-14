@@ -1,16 +1,16 @@
-
-import './App.css'
-import AdminUI from './assets/Admin-UI/AdminUI'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart'
-import HomePage from './assets/Customer-UI/pages/HomePage';
 import { useState } from 'react';
+import './App.css';
+import SellerUI from './assets/Seller-UI/SellerUI';
+import CustomerUI from './assets/Customer-UI/CustomerUI';
+import AdminUI from './assets/Admin-UI/AdminUI';
+import ProductList from './assets/Products/ProductList';
+import ProductDetails from './assets/Products/ProductDetails';
+import ProductWishlist from './assets/Products/ProductWishlist';
+import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from 'react-router-dom';
+import ErrorPage from './assets/Customer-UI/pages/ErrorPage';
 
 function App() {
-  const [user, setuser] = useState("customer")
+  const [user, setUser] = useState("customer");
   const adminRouter = createBrowserRouter([
     {
       path: "/",
@@ -32,12 +32,21 @@ function App() {
     }
   ]);
 
+
+  const sellerRouter = createBrowserRouter([
+    {
+      path: "/",
+      element: <SellerUI />,
+    },
+  ]);
+
   return (
     <>
-     {user === "admin" && <RouterProvider router={adminRouter} />}
-     {user === "customer" && <RouterProvider router={customerRouter} />}
+      {user === "admin" && <RouterProvider router={adminRouter} />}
+      {user === "seller" && <RouterProvider router={sellerRouter} />}
+      {user === "customer" && <RouterProvider router={customerRouter} />}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
