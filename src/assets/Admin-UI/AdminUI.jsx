@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "./indexAdmin.css";
-import LogIn from "./components/logIn/logIn_admin";
-import SignUp from "./components/signUp/signUp_admin";
 import Sidebar from "./components/sideBar/sideBar";
 import Header from "./components/header/header";
 import Dashboard from "./components/dashBoard/dashBoard";
@@ -10,100 +9,43 @@ import Orders from "./components/orders/orders";
 import Customers from "./components/customers/customers";
 import Reviews from "./components/reviews/reviews";
 import Promotion from "./components/promotion/promotion";
-import ReactPaginate from "react-paginate";
 import { AdminProvider, useAdminContext } from "./AdminContext";
+import AddProduct from "../Admin-UI/components/addProduct/addProduct";
+import Analytics from "./components/analytics/analytics";
+import Rating from "./components/rating/rating";
 
 const AdminUI = () => {
-  const {
-    isLoggedIn,
-    handleLoginSuccess,
-    activeComponent,
-    handleComponentChange,
-    isSignUp,
-    switchToSignUp,
-    switchToLogIn,
-    dataUserName,
-    paginatedProducts,
-    dataCart,
-    license,
-    getLicense,
-    logOut,
-    handlePageClick,
-    productsPerPage,
-    dataProducts
-  } = useAdminContext();
-
-  
-
+  const { dataUserName, dataProducts, dataCart } = useAdminContext();
 
   return (
     <div>
-      {!isLoggedIn ? (
-        isSignUp ? (
-          <SignUp onSwitchToLogIn={switchToLogIn} />
-        ) : (
-          <LogIn
-            dataLogin={dataUserName}
-            onLoginSuccess={handleLoginSuccess}
-            onSwitchToSignUp={switchToSignUp}
-            getLicenseLogIn={getLicense}
-          />
-        )
-      ) : (
-        <div className="flex h-screen">
-          <Sidebar onComponentChange={handleComponentChange} />
-          <div className="flex flex-col flex-1">
-            <Header license={license} logOut={logOut} activeView={activeComponent}/>
-            <div className="content flex-1 overflow-auto ">
-              {activeComponent === "Dashboard" && <Dashboard />}
-              {activeComponent === "Products" && (
-                <>
-                  <Products dataProducts={paginatedProducts} />
-                  <div className="pagination-container">
-                    <ReactPaginate
-                      breakLabel="..."
-                      nextLabel="next >"
-                      onPageChange={handlePageClick}
-                      pageRangeDisplayed={5}
-                      pageCount={Math.ceil(
-                        dataProducts.length / productsPerPage
-                      )}
-                      previousLabel="< previous"
-                      renderOnZeroPageCount={null}
-                      containerClassName="pagination"
-                      pageClassName="pagination-item"
-                      pageLinkClassName="pagination-link"
-                      previousClassName="pagination-item"
-                      previousLinkClassName="pagination-link"
-                      nextClassName="pagination-item"
-                      nextLinkClassName="pagination-link"
-                      breakClassName="pagination-item"
-                      breakLinkClassName="pagination-link"
-                      activeClassName="active"
-                    />
-                  </div>
-                </>
-              )}
-              {activeComponent === "Orders" && <Orders dataCart={dataCart} />}
-              {activeComponent === "Customers" && (
-                <Customers dataUserName={dataUserName} />
-              )}
-              {activeComponent === "Promotion" && (
-                <Promotion dataPromotion={paginatedProducts} />
-              )}
-              {activeComponent === "Reviews" && <Reviews />}
-            </div>
+      <div className="flex h-[73.563rem]">
+        <Sidebar />
+        <div className="flex flex-col flex-1">
+          <Header />
+          <div className="content flex-1">
+            <Routes>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/addproduct" element={<AddProduct />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/reviews" element={<Reviews />} />
+              <Route path="/rating" element={<Rating />} />
+              <Route path="/promotion" element={<Promotion />} />
+              <Route path="/analytics" element={<Analytics />} />
+            </Routes>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-const AdminApp = () => (
+const App = () => (
   <AdminProvider>
     <AdminUI />
   </AdminProvider>
 );
 
-export default AdminApp;
+export default App;

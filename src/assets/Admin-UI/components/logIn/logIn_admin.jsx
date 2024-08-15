@@ -1,66 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import userAdmin from "../data/userAdmin.json";
+import { Link, useNavigate } from "react-router-dom";
+import { AdminProvider, useAdminContext } from "../../AdminContext";
+import img from "../img/signupandlogin.jpg"
 
-function LogIn({
-  getLicenseLogIn,
-  dataLogin,
-  onLoginSuccess,
-  onSwitchToSignUp,
-}) {
+function LogIn() {
+  const { dataUserName } = useAdminContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [license, setLicense] = useState();
+  const navigate = useNavigate();
 
-
+  console.log(dataUserName);
   const logIn = (e) => {
     e.preventDefault();
     if (username === "" || password === "") {
       alert("Vui lòng nhập đầy đủ thông tin");
     } else {
-      for (let j = 0; j < userAdmin.length; j++) {
-        userAdmin[j].email === username ? adminLayout() : customersLayout();
+      const user = dataUserName.find(
+        (user) =>
+          (user.email === username || (user.username === username)) &&
+          user.password === password
+      );
+      if (user) {
+        sessionStorage.setItem("customer", username);
+        alert("Đăng nhập thành công");
+        navigate("/test");
+        return;
+      }
+
+      const admin = userAdmin.find(
+        (admin) => admin.email === username && admin.password === password
+      );
+      if (admin) {
+        alert("Đăng nhập ADMIN thành công");
+        const getLicense = admin.license;
+        sessionStorage.setItem("admin", getLicense);
+        navigate("/");
+      } else {
+        alert("Đăng nhập thất bại");
       }
     }
   };
 
-  const customersLayout = () => {
-    const user = dataLogin.find((user) => {
-      return user.email === username && user.password === password;
-    });
-    if (user) {
-      alert("Đăng nhập thành công");
-      window.location.href = "https://www.youtube.com/";
-      sessionStorage.setItem("customer", username);
-    }
-  };
-
-  const adminLayout = () => {
-    const adminCheck = userAdmin.find((check) => {
-      return check.email === username && check.passWord === password;
-    });
-    if (adminCheck) {
-      alert("Đăng nhập ADMIN thành công");
-      onLoginSuccess();
-      checkAdminLogin();
-    }
-  };
-
-  const checkAdminLogin = () => {
-    const admin = userAdmin.find((user) => user.email === username);
-    if (admin) {
-      const getLicense = admin.license;
-      setLicense(getLicense);
-      sessionStorage.setItem("admin", getLicense);
-      sessionStorage.setItem("admin", license);
-      getLicenseLogIn(getLicense);
-    } else {
-      console.log("Không tìm thấy tài khoản:", username);
-    }
+  const onSwitchToSignUp = () => {
+    navigate("/signup");
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
+      <img src={img} className="w-2/3 h-2/3"/>
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
         <form onSubmit={logIn} className="space-y-6">
           <div className="text-center">
@@ -125,4 +114,10 @@ function LogIn({
   );
 }
 
-export default LogIn;
+const App = () => (
+  <AdminProvider>
+    <LogIn />
+  </AdminProvider>
+);
+
+export default App;

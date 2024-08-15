@@ -1,24 +1,58 @@
-import React from 'react';
+import React from "react";
+import img from "../img/chart.png";
+import { AdminProvider, useAdminContext } from "../../AdminContext";
 
 function Dashboard() {
+  const { dataUserName, dataCart, dataNewProduct } = useAdminContext();
+  let customerTotal = () => {
+    let sum = 0;
+    for (let i = 0; i < dataUserName.length; i++) {
+      sum = sum + 1;
+    }
+    return sum;
+  };
+
+  let orderTotal = () => {
+    let sum = 0;
+    for (let i = 0; i < dataCart.length; i++) {
+      sum = sum + 1;
+    }
+    return sum;
+  };
+
+  let salesTotal = () => {
+    let sum = 0;
+    for (let i = 0; i < dataCart.length; i++) {
+      let tam = dataCart[i].products;
+      for (let j = 0; j < tam.length; j++) {
+        for (let m = 0; m < dataNewProduct.length; m++) {
+          if (tam[j].productId === parseInt(dataNewProduct[m].id)) {
+            sum = sum + tam[j].quantity * dataNewProduct[i].price;
+          }
+        }
+      }
+    }
+    return sum;
+  };
+
   return (
     <div className="p-6 bg-gray-50 flex-grow overflow-auto">
       <div className="grid grid-cols-3 gap-4">
-        {/* Top row cards */}
-        <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
+        <div className="col-span-1 bg-white p-4 rounded-md shadow-md flex flex-col">
           <h3 className="text-lg font-semibold">Total Sales</h3>
-          <p className="text-2xl font-bold">$4,235</p>
+          <p className="text-2xl font-bold">{`$ ${salesTotal()}`}</p>
+          <img src={img} alt="" />
         </div>
-        <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
+        <div className="col-span-1 bg-white p-4 rounded-md shadow-md flex flex-col">
           <h3 className="text-lg font-semibold">Customers</h3>
-          <p className="text-2xl font-bold">2,571</p>
+          <p className="text-2xl font-bold">{customerTotal()}</p>
+          <img src={img} alt="" />
         </div>
-        <div className="col-span-1 bg-white p-4 rounded-md shadow-md">
+        <div className="col-span-1 bg-white p-4 rounded-md shadow-md flex flex-col">
           <h3 className="text-lg font-semibold">Orders</h3>
-          <p className="text-2xl font-bold">734</p>
+          <p className="text-2xl font-bold">{orderTotal()}</p>
+          <img src={img} alt="" />
         </div>
-
-        {/* Middle row card */}
         <div className="col-span-3 bg-white p-4 rounded-md shadow-md">
           <h3 className="text-lg font-semibold">Best Selling</h3>
           <p className="text-2xl font-bold">$2,400</p>
@@ -28,8 +62,6 @@ function Dashboard() {
             <li>Essential Neutrals - $740 Sales</li>
           </ul>
         </div>
-
-        {/* Bottom row card */}
         <div className="col-span-3 bg-white p-4 rounded-md shadow-md">
           <h3 className="text-lg font-semibold">Recent Orders</h3>
           <table className="w-full mt-4">

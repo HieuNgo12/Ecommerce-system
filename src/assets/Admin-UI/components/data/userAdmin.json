@@ -2,31 +2,31 @@
     {
         "id": 1,
         "email": "admin1@gmail.com",
-        "passWord": "12345",
+        "password": "12345",
         "license": "admin1"
     },
     {
         "id": 2,
         "email": "admin2@gmail.com",
-        "passWord": "12345",
+        "password": "12345",
         "license": "admin2"
     },
     {
         "id": 3,
         "email": "admin3@gmail.com",
-        "passWord": "12345",
+        "password": "12345",
         "license": "admin3"
     }, 
     {
         "id": 4,
         "email": "admin4@gmail.com",
-        "passWord": "12345",
+        "password": "12345",
         "license": "admin4"
     },
     {
         "id": 5,
         "email": "admin5@gmail.com",
-        "passWord": "12345",
+        "password": "12345",
         "license": "admin5"
     }
 ]

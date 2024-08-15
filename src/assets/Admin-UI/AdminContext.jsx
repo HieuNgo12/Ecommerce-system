@@ -1,30 +1,37 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+} from "react";
+import { Navigate } from "react-router-dom";
 
 const AdminContext = createContext();
 
-export const AdminProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeComponent, setActiveComponent] = useState("Dashboard");
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [dataUserName, setDataUserName] = useState([]);
-  const [dataProducts, setDataProducts] = useState([]);
+const AdminProvider = ({ children }) => {
+  const [dataReview, setDataReview ] = useState([])
   const [dataCart, setDataCart] = useState([]);
-  const [license, setLicense] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
-  const productsPerPage = 10;
-
+  const [dataUserName, setDataUserName] = useState([]);
+  const [dataNewProduct, setNewDataProduct] = useState([]);
   const callApi = async () => {
     try {
-      const response1 = await fetch("https://fakestoreapi.com/users");
+      const response1 = await fetch("https://66bce56424da2de7ff6c2c3e.mockapi.io/reviews")
       const result1 = await response1.json();
-      const response2 = await fetch("https://fakestoreapi.com/products");
-      const result2 = await response2.json();
       const response3 = await fetch("https://fakestoreapi.com/carts");
       const result3 = await response3.json();
-      setDataUserName(result1);
-      setDataProducts(result2);
+      const response4 = await fetch(
+        "https://66b0ab0f6a693a95b539b080.mockapi.io/users"
+      );
+      const result4 = await response4.json();
+      const response5 = await fetch(
+        "https://66b0ab0f6a693a95b539b080.mockapi.io/products"
+      );
+      const result5 = await response5.json();
+      setDataReview(result1);
       setDataCart(result3);
-      console.log(result2)
+      setDataUserName(result4);
+      setNewDataProduct(result5);
     } catch (error) {
       console.error("error", error);
     }
@@ -34,70 +41,34 @@ export const AdminProvider = ({ children }) => {
     callApi();
   }, []);
 
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
+
+  const updateDataNewUserName = (xxx) => {
+    setDataUserName(xxx);
   };
 
-  const handleComponentChange = (component) => {
-    setActiveComponent(component);
+  const newArrProduct = (xxx) => {
+    setNewDataProduct(xxx);
   };
 
-  const switchToSignUp = () => {
-    setIsSignUp(true);
-  };
-
-  const switchToLogIn = () => {
-    setIsSignUp(false);
-  };
-
-  const getLicense = (xxx) => {
-    setLicense(xxx);
-  };
-
-  const logOut = () => {
-    sessionStorage.removeItem("username");
-    sessionStorage.removeItem("admin");
-    alert("Đăng xuất thành công!");
-    setIsLoggedIn(false);
-  };
-
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
-
-  const paginatedProducts = dataProducts.slice(
-    currentPage * productsPerPage,
-    (currentPage + 1) * productsPerPage
-  );
-
-  useEffect(() => {
-  }, [dataProducts, paginatedProducts]);
+  const updatedArr = (xxx) => {
+    setNewDataProduct(xxx)
+  }
 
   return (
     <AdminContext.Provider
       value={{
-        isLoggedIn,
-        handleLoginSuccess,
-        activeComponent,
-        handleComponentChange,
-        isSignUp,
-        switchToSignUp,
-        switchToLogIn,
-        dataUserName,
-        dataProducts,
-        paginatedProducts,
         dataCart,
-        license,
-        getLicense,
-        logOut,
-        currentPage,
-        handlePageClick,
-        productsPerPage
+        dataUserName,
+        updateDataNewUserName,
+        dataNewProduct,
+        newArrProduct,
+        updatedArr,
+        dataReview
       }}
     >
       {children}
     </AdminContext.Provider>
   );
 };
-
-export const useAdminContext = () => useContext(AdminContext);
+const useAdminContext = () => useContext(AdminContext);
+export { AdminProvider, useAdminContext };

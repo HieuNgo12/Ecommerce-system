@@ -1,40 +1,8 @@
-
-.products-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.pagination-container {
-  margin-top: 20px; 
-  display: flex;
-  justify-content: center; 
-}
-
-.pagination {
-  display: flex;
-  list-style-type: none;
-  padding: 0;
-}
-
-.pagination-item {
-  margin: 0 5px;
-}
-
-.pagination-link {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  color: rgb(31 41 55);
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.pagination-link:hover {
-  background-color: #f0f0f0;
-}
-
-.pagination-item.active .pagination-link {
-  background-color: rgb(31 41 55);
-  color: white;
-  border: 1px solid rgb(31 41 55);
-}
+.ant-table-thead > tr > th {
+    position: -webkit-sticky; /* Cho trình duyệt webkit như Safari */
+    position: sticky;         /* Cho trình duyệt khác */
+    top: 0;                   /* Cố định tiêu đề ở trên cùng */
+    background: #fff;         /* Nền trắng để tiêu đề nổi bật */
+    z-index: 1;               /* Đảm bảo tiêu đề luôn nằm trên cùng */
+  }
+  
