@@ -5,6 +5,7 @@ import "./BestSellingProducts.css";
 import Card from "../Card";
 import SimpleSlider from "../Slider";
 import CustomArrows from "../ArrowSlider";
+import { Link } from "react-router-dom";
 function BestSellingProducts({ products, ...props }) {
   const [viewAllProducts, setViewAllProducts] = useState(false);
 
@@ -23,7 +24,7 @@ function BestSellingProducts({ products, ...props }) {
             }}
             className="view-all"
           >
-            View All
+            <Link to={"/productlist"}> View All</Link>
           </button>
         </div>
       </div>

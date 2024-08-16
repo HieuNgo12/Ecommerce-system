@@ -88,3 +88,16 @@
 .welcome{
     margin-left: 60%;
 }
+
+.error-field {
+  text-align: left;
+  min-width: 350px;
+  color: #DB4444;
+  padding-left: 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.profile {
+  color: #DB4444 !important;
+}

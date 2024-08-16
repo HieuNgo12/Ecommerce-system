@@ -126,7 +126,7 @@ const Navbar = () => {
                 )}
               </div>
             </NavLink>
-            <NavLink to="/login-page">
+            <NavLink to="/edit-page">
             <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
 
             </NavLink>

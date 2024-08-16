@@ -2,17 +2,17 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import ShoppingCartBody from "../components/shopping-cart/ShoppingCartBody";
 import Footer from "../components/Footer";
-import LoginPageBody from "../components/login-page/LoginPageBody";
+import ProfilePageBody from "../components/edit-page/ProfilePageBody";
 
-function LoginPage() {
+function ProfilePage() {
   return (
     <div>
       {" "}
       <Navbar />
-      <LoginPageBody />
+      <ProfilePageBody />
       <Footer />
     </div>
   );
 }
 
-export default LoginPage;
+export default ProfilePage;

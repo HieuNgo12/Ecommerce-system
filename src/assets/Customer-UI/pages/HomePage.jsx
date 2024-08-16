@@ -17,7 +17,6 @@ function HomePage() {
     const getData = async () => {
       const res = await fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products");
       const data = await res.json();
-      console.log(data);
       setData(data);
     };
     getData();

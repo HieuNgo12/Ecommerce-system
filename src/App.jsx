@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import './App.css';
 import SellerUI from './assets/Seller-UI/SellerUI';
-import CustomerUI from './assets/Customer-UI/CustomerUI';
 import AdminUI from './assets/Admin-UI/AdminUI';
-import ProductList from './assets/Products/ProductList';
-import ProductDetails from './assets/Products/ProductDetails';
-import ProductWishlist from './assets/Products/ProductWishlist';
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from 'react-router-dom';
-import ErrorPage from './assets/Customer-UI/pages/ErrorPage';
 import HomePage from './assets/Customer-UI/pages/HomePage';
 import ShoppingCart from './assets/Customer-UI/pages/ShoppingCart';
-import LoginPage from './assets/Customer-UI/pages/LoginPage';
+import ProfilePage from './assets/Customer-UI/pages/ProfilePage';
 
 function App() {
   const [user, setUser] = useState("customer");
@@ -34,8 +29,8 @@ function App() {
       element: <ShoppingCart />,
     },
     {
-      path: "/login-page",
-      element: <LoginPage />,
+      path: "/edit-page",
+      element: <ProfilePage />,
     }
   ]);
 

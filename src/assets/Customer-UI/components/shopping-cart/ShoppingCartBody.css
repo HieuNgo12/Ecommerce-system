@@ -20,8 +20,15 @@
 }
 
 .text-right {
-  text-align: end;
-  margin-left: 50%;
+  /* margin-left: 50%; */
+  
+}
+
+.total-card{
+  max-width: 280px !important;
+}
+.total-right{
+  margin-left: 100%;
 }
 
 ul.breadcrumb {
@@ -149,7 +156,7 @@ th {
 }
 
 .card-box {
-  min-width: 210px !important;
+  min-width: 190px !important;
 }
 
 .text-very-left {
