@@ -78,7 +78,9 @@ function ShoppingCartBody() {
                   </td>
                   <td class="px-6 py-4">
                     {" "}
-                    {cartItem[1][0]?.price ? cartItem[1][0].price * cartItem[1].length : null}
+                    {cartItem[1][0]?.price
+                      ? cartItem[1][0].price * cartItem[1].length
+                      : null}
                   </td>
                 </tr>
               );

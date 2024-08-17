@@ -6,8 +6,7 @@ import "./Navbar.css";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 const Navbar = () => {
   const { getWishlistCount } = useContext(WishlistContext);
@@ -111,10 +110,12 @@ const Navbar = () => {
                 type="submit"
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600"
               >
-                <SearchOutlinedIcon/>
+                <SearchOutlinedIcon />
               </button>
             </form>
-            <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+            <NavLink to="/shopping-cart">
+              <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+            </NavLink>
             <NavLink to="/productwishlist">
               <div className="relative">
                 <FavoriteBorderOutlinedIcon className="h-6 w-6 text-gray-600" />
