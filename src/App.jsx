@@ -14,10 +14,7 @@ import {
 import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
-import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
-import ProductList from "./assets/Products/ProductList";
-import ProductDetails from "./assets/Products/ProductDetails";
-import ProductWishlist from "./assets/Products/ProductWishlist";
+
 
 function App() {
   const [user, setUser] = useState("customer");
@@ -25,8 +22,6 @@ function App() {
     {
       path: "/",
       element: <AdminUI />,
-<<<<<<< Updated upstream
-=======
       children: [
         { path: "dashboard", element: <Dashboard /> },
         {
@@ -62,7 +57,6 @@ function App() {
     {
       path: "/test",
       element: <Test />,
->>>>>>> Stashed changes
     },
   ]);
 
@@ -70,11 +64,7 @@ function App() {
     {
       path: "/",
       element: <HomePage />,
-<<<<<<< Updated upstream
       errorElement: <ErrorPage/>,
-=======
-      errorElement: <ErrorPage />,
->>>>>>> Stashed changes
       children: [],
     },
     {
