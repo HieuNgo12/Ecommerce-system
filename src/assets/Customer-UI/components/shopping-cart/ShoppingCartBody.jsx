@@ -1,27 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ShoppingCartBody.css";
 import { Link } from "react-router-dom";
 import CartRow from "./CartRow";
 
 function ShoppingCartBody() {
-  const [subTotal,setSubTotal] = useState(0);
-  const cartList = JSON?.parse(localStorage?.getItem("cartList"));
-  let quantityCartList = {};
-  let cartItemList = [];
-  let subTotalOverall = 0;
-  cartList.forEach((product) => {
-    console.log(quantityCartList, quantityCartList[product.title], product);
-    subTotalOverall += Number(product.price);
-    if (quantityCartList[product.title]) {
-      quantityCartList[product.title].push(product);
-    } else {
-      quantityCartList[product.title] = [product];
-    }
-  });
+  const [subTotal, setSubTotal] = useState(0);
+  const [itemList, setItemList] = useState([]);
 
-  for (const [key, value] of Object.entries(quantityCartList)) {
-    cartItemList.push([key, value]);
-  }
+  let subTotalOverall = 0;
+  useEffect(()=> {
+    const processData = () => {
+      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
+      let cartItemList = [];
+      let quantityCartList = {};
+      cartList.forEach((product) => {
+        console.log(quantityCartList, quantityCartList[product.title], product);
+        subTotalOverall += Number(product.price);
+        if (quantityCartList[product.title]) {
+          quantityCartList[product.title].push(product);
+        } else {
+          quantityCartList[product.title] = [product];
+        }
+      });
+      for (const [key, value] of Object.entries(quantityCartList)) {
+        cartItemList.push([key, value]);
+      }
+      setItemList(cartItemList)
+    };
+    processData();
+  }, [])
+
   return (
     <div className="shopping-cart">
       {" "}
@@ -48,10 +56,8 @@ function ShoppingCartBody() {
             </tr>
           </thead>
           <tbody>
-            {cartItemList.map((cartItem) => {
-              return (
-                <CartRow cartItem={cartItem}/>
-              );
+            {itemList.length && itemList.map((cartItem) => {
+              return <CartRow cartItem={cartItem} setSubTotal={setSubTotal} />;
             })}
           </tbody>
         </table>
@@ -77,7 +83,7 @@ function ShoppingCartBody() {
           <div className="flex card-box">
             <div className="text-left text-very-left">Subtotal</div>
             <div className="text-right flex">
-              <div>{Math.round(subTotalOverall * 100) / 100}</div>
+              <div>{Math.round(subTotal * 100) / 100}</div>
               <div>$</div>
             </div>
           </div>
@@ -94,7 +100,7 @@ function ShoppingCartBody() {
           <div className="flex  total-card">
             <div className="text-left">Total</div>
             <div className="total-right flex">
-              <div>{Math.round(subTotalOverall * 100) / 100}</div>
+              <div>{Math.round(subTotal * 100) / 100}</div>
               <div>$</div>
             </div>
           </div>

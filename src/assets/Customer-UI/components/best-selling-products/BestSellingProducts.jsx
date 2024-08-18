@@ -18,14 +18,11 @@ function BestSellingProducts({ products, ...props }) {
       <div className="flex text-left best-selling-products mb-14">
         <div>Best Selling Products</div>
         <div>
-          <button
-            onClick={() => {
-              onClickViewAllProducts();
-            }}
+          <div
             className="view-all"
           >
             <Link to={"/productlist"}> View All</Link>
-          </button>
+          </div>
         </div>
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />

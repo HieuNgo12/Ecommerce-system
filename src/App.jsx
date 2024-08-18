@@ -22,6 +22,7 @@ import Rating from "./assets/Admin-UI/components/rating/rating";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
 import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -81,6 +82,11 @@ function App() {
     {
       path: "/edit-page",
       element: <ProfilePage />,
+    },
+    
+    {
+      path: "/billing",
+      element: <BillingPage />,
     }
   ]);
 
