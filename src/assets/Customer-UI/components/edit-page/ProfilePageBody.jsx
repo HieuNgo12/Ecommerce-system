@@ -4,9 +4,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(2, "Required at least 2 letters")
+    .max(50, "Required maximum 50 letters")
+    .required("First Name Is Required"),
   lastName: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
@@ -38,6 +38,7 @@ function ProfilePageBody() {
       userList.push(values);
       alert(JSON.stringify(values, null, 2));
       localStorage.setItem("userList", JSON.stringify(userList));
+      axios
     },
   });
   return (

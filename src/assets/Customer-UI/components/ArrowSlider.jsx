@@ -20,7 +20,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-function CustomArrows({ viewAllProducts, products, ...props }) {
+function CustomArrows({ Products, products, ...props }) {
   const settings = {
     dots: false,
     infinite: true,

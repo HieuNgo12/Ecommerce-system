@@ -22,6 +22,7 @@ import ProductWishlist from "./assets/Products/ProductWishlist";
 import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
 import ContactPage from "./assets/Customer-UI/pages/ContactPage";
 import AboutPage from "./assets/Customer-UI/pages/AboutPage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
 
 function App() {
   const [user, setUser] = useState("admin"); // Change to "admin" or "seller" to test different routers
@@ -79,7 +80,14 @@ function App() {
     {
       path: "/shopping-cart",
       element: <ShoppingCart />,
+<<<<<<<<< Temporary merge branch 1
     },
+    {
+      path: "/edit-page",
+      element: <ProfilePage />,
+    }
+=========
+    }, 
     {
       path: "/productlist",
       element: <ProductList />,
@@ -90,12 +98,14 @@ function App() {
     },
     {
       path: "/productwishlist",
-      element: <ProductWishlist />,
+      element: <ProductWishlist />, // Define route for ProductWishlist
     },
-    {
-      path: "/contactpage",
-      element: <ContactPage />,
-    },
+
+>>>>>>>>> Temporary merge branch 2
+  ]);
+
+
+  const sellerRouter = createBrowserRouter([
     {
       path: "/aboutpage",
       element: <AboutPage />,
