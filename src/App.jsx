@@ -71,7 +71,9 @@ function App() {
     {
       path: "/",
       element: <HomePage />,
+      errorElement: <ErrorPage />,
       children: [
+       
 
       ]
     },
@@ -87,7 +89,21 @@ function App() {
     {
       path: "/billing",
       element: <BillingPage />,
-    }
+    },
+  
+    {
+      path: "/productlist",
+      element: <ProductList />, // Define route for ProductList
+    },
+    {
+      path: "/product/:id",
+      element: <ProductDetails />, // Define route for ProductDetails
+    },
+    {
+      path: "/productwishlist",
+      element: <ProductWishlist />, // Define route for ProductWishlist
+    },
+
   ]);
 
 
