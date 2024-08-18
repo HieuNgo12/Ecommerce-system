@@ -32,6 +32,7 @@
     "react-toastify": "^10.0.5",
     "slick-carousel": "^1.8.1",
     "sort-by": "^0.0.2",
+    "vite-plugin-checker": "^0.7.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {

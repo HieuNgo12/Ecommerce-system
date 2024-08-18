@@ -17,10 +17,10 @@ function AboutPage() {
           <div>
             <h1 className="text-4xl font-bold mb-6">Our Story</h1>
             <p className="mb-4">
-              Launced in 2015, Exclusive is South Asia's premier online shopping
-              marketplace with an active presense in Bangladesh. Supported by
+              Launched in 2015, Exclusive is South Asia premier online shopping
+              marketplace with an active presence in Bangladesh. Supported by
               wide range of tailored marketing, data and service solutions,
-              Exclusive has 10,500 sellers and 300 brands and serves 3 millioons
+              Exclusive has 10,500 sellers and 300 brands and serves 3 millions
               customers across the region.
             </p>
             <p>
@@ -57,7 +57,7 @@ function AboutPage() {
               />
             </div>
             <h3 className="text-2xl font-bold mb-2">33k</h3>
-            <p>Mopnthly Produduct Sale</p>
+            <p>Monthly Product Sale</p>
           </div>
           <div className="p-4 rounded-lg text-center bg-gray-100">
             <div className="inline-block p-3 rounded-full bg-gray-200 mb-3">
@@ -77,7 +77,7 @@ function AboutPage() {
               />
             </div>
             <h3 className="text-2xl font-bold mb-2">25k</h3>
-            <p>Anual gross sale in our site</p>
+            <p>Annual gross sale in our site</p>
           </div>
         </div>
 
