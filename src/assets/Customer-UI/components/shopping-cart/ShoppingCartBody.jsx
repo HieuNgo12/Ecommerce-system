@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ShoppingCartBody.css";
 import { Link } from "react-router-dom";
 import CartRow from "./CartRow";
+
 
 function ShoppingCartBody() {
   const [subTotal,setSubTotal] = useState(0);
@@ -50,7 +51,7 @@ function ShoppingCartBody() {
           <tbody>
             {cartItemList.map((cartItem) => {
               return (
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <><tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <th
                     scope="row"
                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -60,8 +61,7 @@ function ShoppingCartBody() {
                         {cartItem[1][0]?.img ? (
                           <img
                             src={cartItem[1][0].img}
-                            style={{ width: "30px", height: "30px" }}
-                          />
+                            style={{ width: "30px", height: "30px" }} />
                         ) : null}
                       </div>
                       <div className="">{cartItem[0]}</div>
@@ -75,8 +75,7 @@ function ShoppingCartBody() {
                       className="quantity"
                       min="0"
                       type="number"
-                      defaultValue={cartItem[1].length}
-                    />
+                      defaultValue={cartItem[1].length} />
                   </td>
                   <td class="px-6 py-4">
                     {" "}
@@ -84,8 +83,7 @@ function ShoppingCartBody() {
                       ? cartItem[1][0].price * cartItem[1].length
                       : null}
                   </td>
-                </tr>
-                <CartRow cartItem={cartItem}/>
+                </tr><CartRow cartItem={cartItem} /></>
               );
             })}
           </tbody>

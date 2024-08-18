@@ -1,27 +1,5 @@
-import { useState } from "react";
 import "./App.css";
-import SellerUI from "./assets/Seller-UI/SellerUI";
 import AdminUI from "./assets/Admin-UI/AdminUI";
-import ProductList from "./assets/Products/ProductList";
-import ProductDetails from "./assets/Products/ProductDetails";
-import ProductWishlist from "./assets/Products/ProductWishlist";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  createRoutesFromElements,
-} from "react-router-dom";
-import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
-import HomePage from "./assets/Customer-UI/pages/HomePage";
-import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
-
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import SellerUI from "./assets/Seller-UI/SellerUI";
-import CustomerUI from "./assets/Customer-UI/CustomerUI";
-import AdminUI from "./assets/Admin-UI/AdminUI";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./assets/Admin-UI/components/dashBoard/dashBoard";
 import Products from "./assets/Admin-UI/components/products/products";
 import Orders from "./assets/Admin-UI/components/orders/orders";
@@ -33,19 +11,26 @@ import SignUp from "./assets/Admin-UI/components/signUp/signUp_admin";
 import Test from "./assets/Admin-UI/test";
 import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
-import Quotes from "./assets/Admin-UI/components/analytics/analytics";
 import Rating from "./assets/Admin-UI/components/rating/rating";
+import React, { useState } from "react";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
-import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import ProductList from "./assets/Products/ProductList";
+import ProductDetails from "./assets/Products/ProductDetails";
+import ProductWishlist from "./assets/Products/ProductWishlist";
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
+import ContactPage from "./assets/Customer-UI/pages/ContactPage";
+import AboutPage from "./assets/Customer-UI/pages/AboutPage";
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState("customer");
+  const [user, setUser] = useState("admin"); // Change to "admin" or "seller" to test different routers
+
   const adminRouter = createBrowserRouter([
     {
       path: "/",
       element: <AdminUI />,
+      errorElement: <ErrorPage />,
       children: [
         { path: "dashboard", element: <Dashboard /> },
         {
@@ -61,9 +46,6 @@ function App() {
           element: <Promotion />,
           children: [[{ path: "addPromotion" }]],
         },
-        { path: "promotion", element: <Promotion/>, children:[
-          [{ path: "addPromotion",}]
-        ]},
         { path: "reviews", element: <Reviews /> },
         { path: "analytics", element: <Analytics /> },
         { path: "quotes", element: <Quotes /> },
@@ -91,7 +73,7 @@ function App() {
     {
       path: "/",
       element: <HomePage />,
-      errorElement: <ErrorPage/>,
+      errorElement: <ErrorPage />,
       children: [],
     },
     {
@@ -100,32 +82,29 @@ function App() {
     },
     {
       path: "/productlist",
-      element: <ProductList />, // Define route for ProductList
+      element: <ProductList />,
     },
     {
       path: "/product/:id",
-      element: <ProductDetails />, // Define route for ProductDetails
+      element: <ProductDetails />,
     },
     {
       path: "/productwishlist",
-      element: <ProductWishlist />, // Define route for ProductWishlist
+      element: <ProductWishlist />,
     },
-      path: "/edit-page",
-      element: <ProfilePage />,
-    }
-  ]);
-
-  const sellerRouter = createBrowserRouter([
     {
-      path: "/",
-      element: <SellerUI />,
+      path: "/contactpage",
+      element: <ContactPage />,
+    },
+    {
+      path: "/aboutpage",
+      element: <AboutPage />,
     },
   ]);
 
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
-      {user === "seller" && <RouterProvider router={sellerRouter} />}
       {user === "customer" && <RouterProvider router={customerRouter} />}
     </>
   );
