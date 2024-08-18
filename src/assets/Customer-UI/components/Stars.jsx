@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 
 function Stars({stars,...props}) {
     useEffect(() => {
-      console.log(stars);
       switch(stars){
         case 5:
 

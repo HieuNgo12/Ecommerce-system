@@ -1,24 +1,27 @@
 import React from "react";
 import "./ShoppingCartBody.css";
+import { Link } from "react-router-dom";
+import CartRow from "./CartRow";
 
 function ShoppingCartBody() {
+  const [subTotal,setSubTotal] = useState(0);
   const cartList = JSON?.parse(localStorage?.getItem("cartList"));
   let quantityCartList = {};
   let cartItemList = [];
+  let subTotalOverall = 0;
   cartList.forEach((product) => {
-    for (let i = 0; i < quantityCartList.length; i++) {}
+    console.log(quantityCartList, quantityCartList[product.title], product);
+    subTotalOverall += Number(product.price);
     if (quantityCartList[product.title]) {
       quantityCartList[product.title].push(product);
     } else {
-      quantityCartList[product.title] = [];
+      quantityCartList[product.title] = [product];
     }
   });
 
   for (const [key, value] of Object.entries(quantityCartList)) {
-    console.log(`${key}: ${value}`);
     cartItemList.push([key, value]);
   }
-  console.log(quantityCartList, cartItemList);
   return (
     <div className="shopping-cart">
       {" "}
@@ -46,7 +49,6 @@ function ShoppingCartBody() {
           </thead>
           <tbody>
             {cartItemList.map((cartItem) => {
-              console.log(cartItem[1][0]);
               return (
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                   <th
@@ -83,30 +85,36 @@ function ShoppingCartBody() {
                       : null}
                   </td>
                 </tr>
+                <CartRow cartItem={cartItem}/>
               );
             })}
           </tbody>
         </table>
       </div>
       <div>
-        <button className="button-return-update mr-96">Return to shop</button>
+        <a className="button-return-update mr-96">
+          <Link to={"/"}>Return to shop</Link>
+        </a>
         <button className="button-return-update ml-96 m-12">
           Update To Cart
         </button>
       </div>
       <div className="coupon-code flex mb-80 ">
         <div className="mr-28">
-          <input placeholder={"Coupon Code"} />
+          <input className="pl-4" placeholder={"Coupon Code"} />
         </div>
         <div>
-          <button className="apply-coupon">Apply Coupon</button>
+          <button className="apply-coupon ">Apply Coupon</button>
         </div>
 
         <div className="cart-card">
           <div className="cart-total text-very-left">Cart total</div>
           <div className="flex card-box">
             <div className="text-left text-very-left">Subtotal</div>
-            <div className="text-right">$1750</div>
+            <div className="text-right flex">
+              <div>{Math.round(subTotalOverall * 100) / 100}</div>
+              <div>$</div>
+            </div>
           </div>
           <div>
             <img src="./public/icons/long-line.png" />
@@ -118,9 +126,12 @@ function ShoppingCartBody() {
           <div>
             <img src="./public/icons/long-line.png" />
           </div>
-          <div className="flex card-box">
+          <div className="flex  total-card">
             <div className="text-left">Total</div>
-            <div className="text-right">$1750</div>
+            <div className="total-right flex">
+              <div>{Math.round(subTotalOverall * 100) / 100}</div>
+              <div>$</div>
+            </div>
           </div>
           <div>
             <img src="./public/icons/long-line.png" />
