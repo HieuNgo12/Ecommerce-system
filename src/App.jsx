@@ -28,10 +28,8 @@ import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
 // import Quotes from "./assets/Admin-UI/components/analytics/analytics";
 // import Rating from "./assets/Admin-UI/components/rating/rating";
 function App() {
- 
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("customer");
-   
 
   // const adminRouter = createBrowserRouter([
   //   {
@@ -90,7 +88,7 @@ function App() {
     {
       path: "/edit-page",
       element: <ProfilePage />,
-    }, 
+    },
     {
       path: "/productlist",
       element: <ProductList />,
@@ -113,11 +111,9 @@ function App() {
     },
   ]);
 
-
-
   return (
     <>
-      {/* {user === "admin" && <RouterProvider router={adminRouter} />} */}
+      {/*{user === "admin" && <RouterProvider router={adminRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
     </>
   );

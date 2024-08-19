@@ -18,6 +18,10 @@ const ProductList = () => {
   const searchQuery = queryParams.get("search")?.toLowerCase() || "";
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products")
       .then((response) => response.json())
       .then((data) => {

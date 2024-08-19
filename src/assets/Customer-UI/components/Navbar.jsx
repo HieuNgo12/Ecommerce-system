@@ -114,7 +114,9 @@ const Navbar = () => {
               </button>
             </form>
             <NavLink to="/shopping-cart">
-              <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+              <div className="relative">
+                <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+              </div>
             </NavLink>
             <NavLink to="/productwishlist">
               <div className="relative">
