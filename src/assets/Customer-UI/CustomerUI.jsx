@@ -23,7 +23,7 @@ function CustomerUI() {
   }, []);
 
   return (
-    <div>
+    <div className="md:w-max">
       <HomePage />
       <FlashSales products={data}/>
       <BrowseByCategories />

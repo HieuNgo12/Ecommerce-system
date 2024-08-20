@@ -26,11 +26,11 @@ function ShoppingCartBody() {
       });
 
       for (const [key, value] of Object.entries(quantityCartList)) {
+
         cartItemList.push([key, value]);
       }
-
-      setItemList(cartItemList);
-      setSubTotal(subTotalOverall); // Update subtotal state
+      setSubTotal(subTotalOverall)
+      setItemList(cartItemList)
     };
 
     processData();
@@ -110,7 +110,7 @@ function ShoppingCartBody() {
             <img src="./public/icons/long-line.png" alt="line" />
           </div>
           <div>
-            <button className="proceed">Proceed to checkout</button>
+            <button className="proceed"><Link to={"/billing"}>Proceed to checkout</Link></button>
           </div>
         </div>
       </div>

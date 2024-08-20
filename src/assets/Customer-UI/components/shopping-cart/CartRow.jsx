@@ -1,40 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 function CartRow({ cartItem, setSubTotal, ...props }) {
-  const [quantity, setQuantity] = useState(0);
-  const [subTotalRow, setSubTotalRow] = useState(0);
+  const [quantity, setQuantity] = useState(cartItem[1].length);
+  const [subTotalRow, setSubTotalRow] = useState(cartItem?.length);
+  const oldValueRef = React.useRef(0);
 
-  useEffect(() => {
-    // Calculate the total quantity for this specific item
-    const totalQuantity = cartItem[1].reduce((acc, item) => acc + (item.quantity || 1), 0);
-    setQuantity(totalQuantity);
-    
-    // Calculate the subtotal for this row
-    const itemPrice = cartItem[1][0]?.price || 0;
-    const newSubTotalRow = itemPrice * totalQuantity;
-    setSubTotalRow(newSubTotalRow);
-  }, [cartItem]);
-
-  const quantityChange = (e) => {
-    const newQuantity = parseInt(e.target.value);
-    setQuantity(newQuantity);
-
-    // Update localStorage
-    const cartList = JSON.parse(localStorage.getItem("cartList") || "[]");
-    const updatedCartList = cartList.map(item => {
-      if (item.title === cartItem[0]) {
-        return { ...item, quantity: newQuantity };
-      }
-      return item;
-    });
-    localStorage.setItem("cartList", JSON.stringify(updatedCartList));
-
-    // Update subtotal
-    const itemPrice = cartItem[1][0]?.price || 0;
-    const newSubTotalRow = itemPrice * newQuantity;
-    setSubTotalRow(newSubTotalRow);
-    setSubTotal(prev => prev - (itemPrice * quantity) + newSubTotalRow);
-  };
+  const quantityChange = () => {};
 
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -63,8 +34,15 @@ function CartRow({ cartItem, setSubTotal, ...props }) {
           className="quantity w-16 px-2 py-1 border rounded"
           min="0"
           type="number"
-          onChange={quantityChange}
-          value={quantity}
+          onChange={(e) => {
+            const oldValue = oldValueRef.current;
+            oldValueRef.current = e.target.value;
+            setQuantity(e.target.value);
+            setSubTotal((subtotal) => {
+              return subtotal + (cartItem[1][0].price * e.target.value - cartItem[1][0].price * oldValue);
+            });
+          }}
+          defaultValue={quantity}
         />
       </td>
       <td className="px-6 py-4">

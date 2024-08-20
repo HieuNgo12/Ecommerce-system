@@ -109,6 +109,10 @@ function App() {
       path: "/aboutpage",
       element: <AboutPage />,
     },
+    {
+      path: "/billingpage",
+      element: <BillingPage />,
+    },
   ]);
 
   return (
