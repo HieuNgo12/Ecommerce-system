@@ -13,8 +13,8 @@ function ShoppingCartBody() {
       const cartList = JSON?.parse(localStorage?.getItem("cartList"));
       let cartItemList = [];
       let quantityCartList = {};
+
       cartList.forEach((product) => {
-        console.log(quantityCartList, quantityCartList[product.title], product);
         subTotalOverall += Number(product.price);
         if (quantityCartList[product.title]) {
           quantityCartList[product.title].push(product);
@@ -22,9 +22,12 @@ function ShoppingCartBody() {
           quantityCartList[product.title] = [product];
         }
       });
+
       for (const [key, value] of Object.entries(quantityCartList)) {
+
         cartItemList.push([key, value]);
       }
+      setSubTotal(subTotalOverall)
       setItemList(cartItemList)
     };
     processData();
@@ -108,7 +111,7 @@ function ShoppingCartBody() {
             <img src="./public/icons/long-line.png" />
           </div>
           <div>
-            <button className="proceed">Proceed to checkout</button>
+            <button className="proceed"><Link to={"/billing"}>Proceed to checkout</Link></button>
           </div>
         </div>
       </div>

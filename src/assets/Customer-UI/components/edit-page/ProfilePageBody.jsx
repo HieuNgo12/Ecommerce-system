@@ -38,7 +38,6 @@ function ProfilePageBody() {
       userList.push(values);
       alert(JSON.stringify(values, null, 2));
       localStorage.setItem("userList", JSON.stringify(userList));
-      axios
     },
   });
   return (

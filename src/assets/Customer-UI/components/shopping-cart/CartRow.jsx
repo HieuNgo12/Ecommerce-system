@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
 function CartRow({ cartItem, setSubTotal, ...props }) {
-  const [quantity, setQuantity] = useState(cartItem?.length);
+  const [quantity, setQuantity] = useState(cartItem[1].length);
   const [subTotalRow, setSubTotalRow] = useState(cartItem?.length);
+  const oldValueRef = React.useRef(0);
 
-  const quantityChange = () => {
-    
-  }
+  const quantityChange = () => {};
 
   return (
     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -35,7 +34,12 @@ function CartRow({ cartItem, setSubTotal, ...props }) {
           min="0"
           type="number"
           onChange={(e) => {
+            const oldValue = oldValueRef.current;
+            oldValueRef.current = e.target.value;
             setQuantity(e.target.value);
+            setSubTotal((subtotal) => {
+              return subtotal + (cartItem[1][0].price * e.target.value - cartItem[1][0].price * oldValue);
+            });
           }}
           defaultValue={quantity}
         />
