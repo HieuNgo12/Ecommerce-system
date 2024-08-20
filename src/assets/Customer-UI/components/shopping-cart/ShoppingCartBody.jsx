@@ -7,9 +7,10 @@ function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
 
-  let subTotalOverall = 0;
   useEffect(()=> {
     const processData = () => {
+      let subTotalOverall = 0;
+
       const cartList = JSON?.parse(localStorage?.getItem("cartList"));
       let cartItemList = [];
       let quantityCartList = {};

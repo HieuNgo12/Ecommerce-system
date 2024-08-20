@@ -92,7 +92,7 @@ function ShoppingCartBody() {
           <li>View Cart</li>
           <li>Checkout</li>
         </ul>
-        <div className="flex">
+        <div className="flex ml-auto">
           <div className="flex words-left">
             <div>
               <h1 className="billing-details">Billing Details</h1>
@@ -235,7 +235,7 @@ function ShoppingCartBody() {
               </div>
             </div>
           </div>
-          <div className="ml-64">
+          <div className="ml-96">
             {itemList.length &&
               itemList.map((item) => {
                 return (
