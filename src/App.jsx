@@ -1,5 +1,5 @@
 import "./App.css";
-
+import { ToastContainer } from 'react-toastify';
 import React, { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
@@ -119,6 +119,7 @@ function App() {
     <>
       {/*{user === "admin" && <RouterProvider router={adminRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
+      <ToastContainer />
     </>
   );
 }
