@@ -5,6 +5,7 @@ import "./BestSellingProducts.css";
 import Card from "../Card";
 import SimpleSlider from "../Slider";
 import CustomArrows from "../ArrowSlider";
+import { Link } from "react-router-dom";
 function BestSellingProducts({ products, ...props }) {
   const [viewAllProducts, setViewAllProducts] = useState(false);
 
@@ -17,14 +18,11 @@ function BestSellingProducts({ products, ...props }) {
       <div className="flex text-left best-selling-products mb-14">
         <div>Best Selling Products</div>
         <div>
-          <button
-            onClick={() => {
-              onClickViewAllProducts();
-            }}
+          <div
             className="view-all"
           >
-            View All
-          </button>
+            <Link to={"/productlist"}> View All</Link>
+          </div>
         </div>
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />

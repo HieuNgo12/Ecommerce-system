@@ -19,7 +19,7 @@ function ExploreOurProducts({ products, ...props }) {
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />
 
-      <div className="grid grid-cols-4 gap-8">
+      <div className="grid grid-cols-4 gap-8 ">
         {!viewAllProducts
           ? products.map((item, index) => {
               if (item.id > 0 && item.id < 5) {
@@ -57,9 +57,6 @@ function ExploreOurProducts({ products, ...props }) {
         onClickViewAllProducts={onClickViewAllProducts}
       />
 
-      <Link to="/productlist" className="text-blue-500 hover:underline">
-        See all products
-      </Link>
       <img className="mt-28 mb-20" src="./public/icons/line.png" />
     </div>
   );

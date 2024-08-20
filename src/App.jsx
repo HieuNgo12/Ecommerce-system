@@ -21,10 +21,12 @@ import Quotes from "./assets/Admin-UI/components/analytics/analytics";
 import Rating from "./assets/Admin-UI/components/rating/rating";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [user, setUser] = useState("admin");
+  const [user, setUser] = useState("customer");
   const adminRouter = createBrowserRouter([
     {
       path: "/",
@@ -78,7 +80,17 @@ function App() {
     {
       path: "/shopping-cart",
       element: <ShoppingCart />,
-    }, 
+    },
+    {
+      path: "/edit-page",
+      element: <ProfilePage />,
+    },
+    
+    {
+      path: "/billing",
+      element: <BillingPage />,
+    },
+  
     {
       path: "/productlist",
       element: <ProductList />, // Define route for ProductList

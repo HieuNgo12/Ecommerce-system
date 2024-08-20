@@ -20,7 +20,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-function CustomArrows({ viewAllProducts, products, ...props }) {
+function CustomArrows({ Products, products, ...props }) {
   const settings = {
     dots: false,
     infinite: true,
@@ -34,13 +34,12 @@ function CustomArrows({ viewAllProducts, products, ...props }) {
       <Slider {...settings}>
         { products?.length &&
           products.map((item, index) => {
-            console.log(item);
                 return (
                   <div>
                     <Card
-                      orgPrice={item?.price + 99}
-                      review={Math.ceil(item?.rating[0]?.count)}
-                      rating={item?.rating[1]?.rate}
+                      orgPrice={item?.price}
+                      review={Math.ceil(item?.rating?.count)}
+                      rating={item?.rating?.rate}
                       img={item?.image}
                       price={item?.price}
                       title={item?.title}

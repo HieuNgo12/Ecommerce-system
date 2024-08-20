@@ -38,7 +38,6 @@ function Card({
       img,
       review,
     });
-    console.log(savedList);
     localStorage.setItem("cartList", JSON.stringify(savedList));
     setShowSuccessAlert(true);
   };
@@ -56,7 +55,7 @@ function Card({
       {showSuccessAlert ? <Alert /> : null}
       <a class="flex sales-card block max-w-sm p-6 ">
         <div className="discount">
-          {Math.round(((price - orgPrice) / orgPrice) * 100) + "%"}
+          {Math.round(((price - (Number(price) + 99)) / (Number(price) + 99)) * 100) + "%"}
         </div>
         <div>
           <img src={img} style={{ marginLeft: "15%", height: "120px" }} />
@@ -87,9 +86,9 @@ function Card({
         </p>
         <div className="flex">
           <p className="price p-0">${price}</p>
-          <p className="org-price line-through">${orgPrice}</p>
+          <p className="org-price line-through">${Number(price) + 99}</p>
         </div>
-        <div className="flex">
+        <div className="flex text-xl md:shrink-0">
           {rating ? <p class="font-normal text-gray-700 dark:text-gray-400">
             <Stars stars={Math.round(rating)} />
           </p> : "No Rating yet"}

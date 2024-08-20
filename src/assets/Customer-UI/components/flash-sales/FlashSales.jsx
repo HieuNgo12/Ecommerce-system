@@ -12,7 +12,6 @@ function FlashSales({ products, ...props }) {
     setViewAllProducts(!viewAllProducts);
   };
   useEffect(() => {
-    console.log(products);
     // const productsList = products.map((product) => {
     //   return {
     //     title: product.title,

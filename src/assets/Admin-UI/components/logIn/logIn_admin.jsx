@@ -23,6 +23,7 @@ function LogIn() {
           user.password === password
       );
       if (user) {
+        
         sessionStorage.setItem("customer", username);
         alert("Đăng nhập thành công");
         navigate("/test");
