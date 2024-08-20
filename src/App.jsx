@@ -23,6 +23,10 @@ import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
 import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
 import BillingPage from "./assets/Customer-UI/pages/BillingPage";
+import ProductWishlist from "./assets/Products/ProductWishlist";
+import ProductDetails from "./assets/Products/ProductDetails";
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
+import ProductList from "./assets/Products/ProductList";
 
 function App() {
   const [count, setCount] = useState(0);
