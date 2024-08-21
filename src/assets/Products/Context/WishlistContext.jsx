@@ -26,11 +26,16 @@ export const WishlistProvider = ({ children }) => {
     });
   };
 
+  const clearWishlist = () => {
+    setFavoriteItems([]);
+    localStorage.removeItem("wishlist");
+  };
+
   const getWishlistCount = () => favoriteItems.length;
 
   return (
     <WishlistContext.Provider
-      value={{ favoriteItems, addToWishlist, removeFromWishlist, getWishlistCount }}
+      value={{ favoriteItems, addToWishlist, removeFromWishlist, getWishlistCount, clearWishlist }}
     >
       {children}
     </WishlistContext.Provider>

@@ -75,7 +75,7 @@ const Navbar = () => {
               Products
             </NavLink>
             <NavLink
-              to="/contact"
+              to="/contactpage"
               className={({ isActive }) =>
                 isActive
                   ? "text-decoration-line: underline font-semibold"
@@ -85,10 +85,10 @@ const Navbar = () => {
               Contact
             </NavLink>
             <NavLink
-              to="/about"
+              to="/aboutpage"
               className={({ isActive }) =>
                 isActive
-                  ? "text-blue-700 font-semibold"
+                  ? "text-decoration-line: underline font-semibold"
                   : "text-gray-900 hover:text-blue-700"
               }
             >
@@ -114,7 +114,9 @@ const Navbar = () => {
               </button>
             </form>
             <NavLink to="/shopping-cart">
-              <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+              <div className="relative">
+                <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+              </div>
             </NavLink>
             <NavLink to="/productwishlist">
               <div className="relative">
@@ -127,10 +129,8 @@ const Navbar = () => {
               </div>
             </NavLink>
             <NavLink to="/edit-page">
-            <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
-
+              <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
             </NavLink>
-
           </div>
         </div>
       </div>

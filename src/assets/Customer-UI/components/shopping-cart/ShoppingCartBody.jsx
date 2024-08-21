@@ -6,12 +6,13 @@ import CartRow from "./CartRow";
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
+  
+
+  let subTotalOverall = 0;
 
   useEffect(() => {
     const processData = () => {
-      let subTotalOverall = 0;
-
-      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
+      const cartList = JSON.parse(localStorage.getItem("cartList") || "[]"); // Default to an empty array if null
       let cartItemList = [];
       let quantityCartList = {};
 
@@ -36,41 +37,30 @@ function ShoppingCartBody() {
 
   return (
     <div className="shopping-cart">
-      {" "}
       <ul className="breadcrumb text-left">
         <li>Home</li>
         <li>Cart</li>
       </ul>
-      <div class="relative overflow-x-auto">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <div className="relative overflow-x-auto">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" class="px-6 py-3">
-                Product
-              </th>
-              <th scope="col" class="px-6 py-3">
-                Price
-              </th>
-              <th scope="col" class="px-6 py-3">
-                Quantity
-              </th>
-              <th scope="col" class="px-6 py-3">
-                Subtotal
-              </th>
+              <th scope="col" className="px-6 py-3">Product</th>
+              <th scope="col" className="px-6 py-3">Price</th>
+              <th scope="col" className="px-6 py-3">Quantity</th>
+              <th scope="col" className="px-6 py-3">Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            {itemList.length &&
-              itemList.map((cartItem) => {
-                return (
-                  <CartRow
-                    cartItem={cartItem}
-                    itemList={itemList}
-                    setItemList={setItemList}
-                    setSubTotal={setSubTotal}
-                  />
-                );
-              })}
+            {itemList.length ? (
+              itemList.map((cartItem) => (
+                <CartRow key={cartItem[0]} cartItem={cartItem} setSubTotal={setSubTotal} />
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center py-4">Your cart is empty</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -82,14 +72,13 @@ function ShoppingCartBody() {
           Update To Cart
         </button>
       </div>
-      <div className="coupon-code flex mb-80 ">
+      <div className="coupon-code flex mb-80">
         <div className="mr-28">
           <input className="pl-4" placeholder={"Coupon Code"} />
         </div>
         <div>
-          <button className="apply-coupon ">Apply Coupon</button>
+          <button className="apply-coupon">Apply Coupon</button>
         </div>
-
         <div className="cart-card">
           <div className="cart-total text-very-left">Cart total</div>
           <div className="flex card-box">
@@ -100,16 +89,16 @@ function ShoppingCartBody() {
             </div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" />
+            <img src="./public/icons/long-line.png" alt="line" />
           </div>
           <div className="flex card-box">
             <div className="text-left text-very-left">Shipping</div>
             <div className="text-right">Free</div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" />
+            <img src="./public/icons/long-line.png" alt="line" />
           </div>
-          <div className="flex  total-card">
+          <div className="flex total-card">
             <div className="text-left">Total</div>
             <div className="total-right flex">
               <div>{Math.round(subTotal * 100) / 100}</div>
@@ -117,7 +106,7 @@ function ShoppingCartBody() {
             </div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" />
+            <img src="./public/icons/long-line.png" alt="line" />
           </div>
           <div className="mt-8">
             <Link
