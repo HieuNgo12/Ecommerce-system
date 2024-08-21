@@ -11,7 +11,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [currentImage, setCurrentImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("M");
-  const [quantity, setQuantity] = useState(2);
+  const [quantity, setQuantity] = useState(1);
   const [relatedItems, setRelatedItems] = useState([]);
   const { addToWishlist } = useContext(WishlistContext);
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -22,6 +22,10 @@ const ProductDetails = () => {
     "/images/image 59.png",
     "/images/image 61.png",
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
   useEffect(() => {
     fetch(`https://66b0ab0f6a693a95b539b080.mockapi.io/products/${id}`)
@@ -58,6 +62,23 @@ const ProductDetails = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    const cartList = JSON.parse(localStorage.getItem("cartList") || "[]");
+    const newItem = {
+      title: product.title,
+      price: product.price,
+      img: product.image,
+      quantity: quantity,
+    };
+
+    for (let i = 0; i < quantity; i++) {
+      cartList.push(newItem);
+    }
+
+    localStorage.setItem("cartList", JSON.stringify(cartList));
+    alert("Product added to cart!");
+  };
+
   if (!product) {
     return <div>Loading...</div>;
   }
@@ -65,7 +86,7 @@ const ProductDetails = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 py-12">
         <div className="text-sm breadcrumbs mb-4">
           <ul className="flex flex-wrap items-center">
             <li>
@@ -89,30 +110,28 @@ const ProductDetails = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-1/2">
-            <div className="flex gap-4">
-              <div className="w-1/5 flex flex-col gap-4">
-                {images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="w-full aspect-square object-cover cursor-pointer border rounded"
-                    onClick={() => setCurrentImage(img)}
-                  />
-                ))}
-              </div>
-              <div className="w-4/5">
+          <div className="lg:w-1/2 flex gap-4">
+            <div className="w-1/5 flex flex-col gap-4">
+              {images.map((img, index) => (
                 <img
-                  src={currentImage || product.image}
-                  alt={product.title}
-                  className="w-full aspect-square object-contain rounded-lg border"
+                  key={index}
+                  src={img}
+                  alt={`Thumbnail ${index + 1}`}
+                  className="w-full aspect-square object-cover cursor-pointer border rounded"
+                  onClick={() => setCurrentImage(img)}
                 />
-              </div>
+              ))}
+            </div>
+            <div className="w-4/5">
+              <img
+                src={currentImage || product.image}
+                alt={product.title}
+                className="w-full aspect-square object-contain rounded-lg border"
+              />
             </div>
           </div>
 
-          <div className="lg:w-1/2 space-y-4">
+          <div className="lg:w-1/2 space-y-6">
             <h1 className="text-2xl font-bold">{product.title}</h1>
             <div className="flex items-center space-x-2">
               <div className="flex text-yellow-400">{"★★★★☆"}</div>
@@ -140,7 +159,7 @@ const ProductDetails = () => {
                 {["XS", "S", "M", "L", "XL"].map((size) => (
                   <button
                     key={size}
-                    className={`px-4 py-2 border rounded-md ${
+                    className={`px-4 py-2 border rounded-md text-sm ${
                       selectedSize === size
                         ? "bg-red-500 text-white"
                         : "text-gray-700 hover:bg-gray-100"
@@ -169,7 +188,10 @@ const ProductDetails = () => {
                   +
                 </button>
               </div>
-              <button className="flex-grow bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition">
+              <button
+                className="flex-grow bg-red-500 text-white py-3 rounded-md hover:bg-red-600 transition"
+                onClick={handleAddToCart}
+              >
                 Buy Now
               </button>
               <button
@@ -212,7 +234,7 @@ const ProductDetails = () => {
 
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-8">Related Items</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
             {relatedItems.map((item) => (
               <Link
                 key={item.id}
@@ -224,7 +246,7 @@ const ProductDetails = () => {
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-contain"
                     />
                     <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
                       -35%

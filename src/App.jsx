@@ -1,11 +1,18 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import SellerUI from "./assets/Seller-UI/SellerUI";
-import CustomerUI from "./assets/Customer-UI/CustomerUI";
-import AdminUI from "./assets/Admin-UI/AdminUI";
+import { ToastContainer } from 'react-toastify';
+import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import HomePage from "./assets/Customer-UI/pages/HomePage";
+import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
+import ProductList from "./assets/Products/ProductList";
+import ProductDetails from "./assets/Products/ProductDetails";
+import ProductWishlist from "./assets/Products/ProductWishlist";
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
+import ContactPage from "./assets/Customer-UI/pages/ContactPage";
+import AboutPage from "./assets/Customer-UI/pages/AboutPage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import AdminUI from "./assets/Admin-UI/AdminUI";
 import Dashboard from "./assets/Admin-UI/components/dashBoard/dashBoard";
 import Products from "./assets/Admin-UI/components/products/products";
 import Orders from "./assets/Admin-UI/components/orders/orders";
@@ -19,22 +26,15 @@ import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import Quotes from "./assets/Admin-UI/components/analytics/analytics";
 import Rating from "./assets/Admin-UI/components/rating/rating";
-import HomePage from "./assets/Customer-UI/pages/HomePage";
-import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
-import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
-import BillingPage from "./assets/Customer-UI/pages/BillingPage";
-import ProductWishlist from "./assets/Products/ProductWishlist";
-import ProductDetails from "./assets/Products/ProductDetails";
-import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
-import ProductList from "./assets/Products/ProductList";
-
 function App() {
-  const [count, setCount] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("customer");
+
   const adminRouter = createBrowserRouter([
     {
       path: "/",
       element: <AdminUI />,
+      errorElement: <ErrorPage />,
       children: [
         { path: "dashboard", element: <Dashboard /> },
         {
@@ -45,9 +45,11 @@ function App() {
         { path: "orders", element: <Orders /> },
         { path: "customers", element: <Customers /> },
         { path: "rating", element: <Rating /> },
-        { path: "promotion", element: <Promotion/>, children:[
-          [{ path: "addPromotion",}]
-        ]},
+        {
+          path: "promotion",
+          element: <Promotion />,
+          children: [[{ path: "addPromotion" }]],
+        },
         { path: "reviews", element: <Reviews /> },
         { path: "analytics", element: <Analytics /> },
         { path: "quotes", element: <Quotes /> },
@@ -76,10 +78,7 @@ function App() {
       path: "/",
       element: <HomePage />,
       errorElement: <ErrorPage />,
-      children: [
-       
-
-      ]
+      children: [],
     },
     {
       path: "/shopping-cart",
@@ -89,40 +88,37 @@ function App() {
       path: "/edit-page",
       element: <ProfilePage />,
     },
-    
-    {
-      path: "/billing",
-      element: <BillingPage />,
-    },
-  
     {
       path: "/productlist",
-      element: <ProductList />, // Define route for ProductList
+      element: <ProductList />,
     },
     {
       path: "/product/:id",
-      element: <ProductDetails />, // Define route for ProductDetails
+      element: <ProductDetails />,
     },
     {
       path: "/productwishlist",
       element: <ProductWishlist />, // Define route for ProductWishlist
     },
-
-  ]);
-
-
-  const sellerRouter = createBrowserRouter([
     {
-      path: "/",
-      element: <SellerUI />,
+      path: "/contactpage",
+      element: <ContactPage />,
+    },
+    {
+      path: "/aboutpage",
+      element: <AboutPage />,
+    },
+    {
+      path: "/billingpage",
+      element: <BillingPage />,
     },
   ]);
 
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
-      {user === "seller" && <RouterProvider router={sellerRouter} />}
       {user === "customer" && <RouterProvider router={customerRouter} />}
+      <ToastContainer />
     </>
   );
 }
