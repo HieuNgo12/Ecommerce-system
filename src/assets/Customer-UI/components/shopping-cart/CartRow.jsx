@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function CartRow({ cartItem, setSubTotal, ...props }) {
+function CartRow({ cartItem, setSubTotal, setItemList, itemList,...props }) {
   const [quantity, setQuantity] = useState(cartItem[1].length);
   const [subTotalRow, setSubTotalRow] = useState(cartItem?.length);
   const oldValueRef = React.useRef(0);
@@ -37,8 +37,20 @@ function CartRow({ cartItem, setSubTotal, ...props }) {
             const oldValue = oldValueRef.current;
             oldValueRef.current = e.target.value;
             setQuantity(e.target.value);
+            const items = itemList.map(item => {
+                console.log(cartItem,item);
+                if(cartItem[0] === item[0]){
+                    item[2] = e.target.value
+                }
+                console.log(item);
+                return item;
+            })
             setSubTotal((subtotal) => {
-              return subtotal + (cartItem[1][0].price * e.target.value - cartItem[1][0].price * oldValue);
+              return (
+                subtotal +
+                (cartItem[1][0].price * e.target.value -
+                  cartItem[1][0].price * oldValue)
+              );
             });
           }}
           defaultValue={quantity}

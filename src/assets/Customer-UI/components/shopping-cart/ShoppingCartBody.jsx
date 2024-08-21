@@ -7,7 +7,7 @@ function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const processData = () => {
       let subTotalOverall = 0;
 
@@ -25,14 +25,14 @@ function ShoppingCartBody() {
       });
 
       for (const [key, value] of Object.entries(quantityCartList)) {
-
-        cartItemList.push([key, value]);
+        cartItemList.push([key, value, value.length]);
       }
-      setSubTotal(subTotalOverall)
-      setItemList(cartItemList)
+      setSubTotal(subTotalOverall);
+      setItemList(cartItemList);
     };
+
     processData();
-  }, [])
+  }, []);
 
   return (
     <div className="shopping-cart">
@@ -60,9 +60,17 @@ function ShoppingCartBody() {
             </tr>
           </thead>
           <tbody>
-            {itemList.length && itemList.map((cartItem) => {
-              return <CartRow cartItem={cartItem} setSubTotal={setSubTotal} />;
-            })}
+            {itemList.length &&
+              itemList.map((cartItem) => {
+                return (
+                  <CartRow
+                    cartItem={cartItem}
+                    itemList={itemList}
+                    setItemList={setItemList}
+                    setSubTotal={setSubTotal}
+                  />
+                );
+              })}
           </tbody>
         </table>
       </div>
@@ -111,8 +119,16 @@ function ShoppingCartBody() {
           <div>
             <img src="./public/icons/long-line.png" />
           </div>
-          <div>
-            <button className="proceed"><Link to={"/billing"}>Proceed to checkout</Link></button>
+          <div className="mt-8">
+            <Link
+              to={"/billing"}
+              className="proceed "
+              onClick={() => {
+                localStorage.setItem("billingList", JSON.stringify(itemList));
+              }}
+            >
+              Proceed to checkout
+            </Link>
           </div>
         </div>
       </div>

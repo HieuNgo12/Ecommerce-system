@@ -2,6 +2,7 @@ import React from "react";
 import "./ProfilePageBody.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
@@ -18,7 +19,9 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
   currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string().required("Required"),
-  confirmNewPassword: Yup.string().required("Required")     .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')  ,
+  confirmNewPassword: Yup.string()
+    .required("Required")
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
 });
 
 function ProfilePageBody() {
@@ -36,8 +39,18 @@ function ProfilePageBody() {
     onSubmit: (values) => {
       const userList = JSON.parse(localStorage.getItem("userList")) || [];
       userList.push(values);
-      alert(JSON.stringify(values, null, 2));
       localStorage.setItem("userList", JSON.stringify(userList));
+      axios
+        .put("https://66b0ab0f6a693a95b539b080.mockapi.io/users", {
+          ...values,
+          id: 1,
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   });
   return (
@@ -45,7 +58,7 @@ function ProfilePageBody() {
       <div className="flex">
         <ul className="breadcrumb text-left">
           <li>Home</li>
-          <li>Cart</li>
+          <li className="bold">Cart</li>
         </ul>
         <div className="flex welcome">
           <p>Welcome!</p>
@@ -188,7 +201,9 @@ function ProfilePageBody() {
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
-                    {formik.errors.newPassword && <div>{formik.errors.newPassword}</div>}
+                    {formik.errors.newPassword && (
+                      <div>{formik.errors.newPassword}</div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -101,3 +101,8 @@
 .profile {
   color: #DB4444 !important;
 }
+
+.bold {
+  font-weight: bold !important;
+  font-size: 36px;
+}
