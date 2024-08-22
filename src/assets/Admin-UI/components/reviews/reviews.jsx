@@ -5,6 +5,7 @@ import { DownOutlined, EyeOutlined } from "@ant-design/icons";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import ReviewImg from "../img/review.png"
 import {
   BrowserRouter as Router,
   Route,
@@ -14,31 +15,52 @@ import {
 } from "react-router-dom";
 
 const Review = () => {
-  const { dataReview } = useAdminContext();
+  const { dataReview, dataUserName, dataProduct } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataChanged, setDataChanged] = useState(dataReview);
   const [selected, setSelected] = useState();
 
-  console.log(dataReview)
   useEffect(() => {
-    const newDataChanged = dataReview.map((item) => {
-      return {
-        ...item,
-        status: "Active",
-      };
+    const newDataChanged1 = dataReview.map((item) => {
+      const loop1 = dataUserName.find((item1) => {
+        return parseInt(item1.id) === item.user;
+      });
+      if (loop1) {
+        return {
+          ...item,
+          status: "Active",
+          username: loop1.username,
+          avatar: loop1.avatar,
+          // createdAt : item.createdAt.slice(0,10)
+        };
+      }
+      return item;
     });
-    setDataChanged(newDataChanged);
+
+    const newDataChanged2 = newDataChanged1.map((item)=> {
+      const loop1 = dataProduct.find((item2) => {
+        return parseInt(item2.id) === item.postID
+      })
+      if(loop1){
+        return {
+          ...item,
+          title: loop1.title,
+          imageProduct: loop1.image,
+          imageCustomer: ReviewImg
+        }
+      }
+      return item;
+    })
+
+    setDataChanged(newDataChanged2);
   }, [dataReview]);
 
-  // const filtersID = dataReview.map((item) => ({
-  //   text: item.id.toString(),
-  //   value: item.id.toString(),
-  // }));
-
-  // const filtersTitle = dataReview.map((item) => ({
-  //   text: item.title.toString(),
-  //   value: item.title.toString(),
-  // }));
+  // console.log(dataUserName)
+  // console.log(dataChanged)
+  const filtersID = dataReview.map((item) => ({
+    text: item.id.toString(),
+    value: item.id.toString(),
+  }));
 
   const filtersStatus = [
     { text: "active", value: "active" },
@@ -54,20 +76,13 @@ const Review = () => {
     setIsModalOpen(xxx);
   };
 
-  const updateData = (xxx) => {
-    setIsModalOpen(xxx);
-  };
-
   const menu = (record) => (
     <Menu>
       <Menu.Item key="0">
         <button onClick={() => openModal(record)}>Edit</button>
       </Menu.Item>
-      <Menu.Item key="1">
-        <button>Detail</button>
-      </Menu.Item>
       <Menu.Divider />
-      <Menu.Item key="2">
+      <Menu.Item key="1">
         <button>Delete</button>
       </Menu.Item>
     </Menu>
@@ -78,35 +93,92 @@ const Review = () => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      // filters: filtersID,
-      width: 50,
+      filters: filtersID,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
+      render: (text, record) => <div style={{ width: 50}}>{record.id}</div>,
     },
-    // {
-    //   title: "Like",
-    //   dataIndex: "like",
-    //   key: "like",
-    //   filters: filtersTitle,
-    //   onFilter: (value, record) => record.title.indexOf(value) === 0,
-    //   sorter: (a, b) => a.title.localeCompare(b.title),
-    // },
-    // {
-    //   title: "PostID",
-    //   dataIndex: "postID",
-    //   key: "postID",
-    //   render: (rating) => (
-    //     <div>
-    //       <div>Rate: {rating.rate}</div>
-    //     </div>
-    //   ),
-    // },
+    {
+      title: "User ID",
+      key: "user",
+      dataIndex: "user",
+      filters: filtersStatus,
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (text, record) => <div style={{ width: 70}}>{record.user}</div>,
+    },
+    {
+      title: "Username",
+      key: "username",
+      dataIndex: "username",
+      filters: filtersStatus,
+      onFilter: (value, record) => record.username.indexOf(value) === 0,
+      render: (text, record) => <div style={{ width: 170}}>{record.username}</div>,
+    },
+    {
+      title: "Like",
+      dataIndex: "like",
+      key: "like",
+      render: (text, record) => <div style={{ width: 50}}>{record.like}</div>,
+    },
+    {
+      title: "Comment",
+      dataIndex: "comment",
+      key: "comment",
+      render: (text, record) => <div style={{ width: 250}}>{record.comment}</div>,
+    },
+    {
+      title: "Created At",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (text, record) => <div style={{ width: 200}}>{record.createdAt}</div>,
+    },
+    {
+      title: "Image",
+      dataIndex: "imageCustomer",
+      key: "imageCustomer",
+      render: (text, record) => (
+        <div style={{width:100}}>
+          <img src={record.imageCustomer} alt="" style={{width: 100, height: 100}}/>
+        </div>
+      ),
+    },
+    {
+      title: "PostID",
+      dataIndex: "postID",
+      key: "postID",
+      render: (text, record) => <div style={{ width: 50}}>{record.postID}</div>,
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      render: (text, record) => <div style={{ width: 250}}>{record.title}</div>,
+    },
+    {
+      title: "Image Product",
+      dataIndex: "title",
+      key: "title",
+      render: (text, record) => (
+        <div style={{width:100}}>
+          <img src={record.imageProduct} alt="" style={{width: 100, height: 100}}/>
+        </div>
+      ),
+    },
+    {
+      title: "Reply",
+      key: "reply",
+      dataIndex: "reply",
+      filters: filtersStatus,
+      onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (text, record) => <div style={{ width: 50}}>{record.reply}</div>,
+    },
     {
       title: "Status",
       key: "status",
       dataIndex: "status",
       filters: filtersStatus,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
+      render: (text, record) => <div style={{ width: 50}}>{record.status}</div>,
     },
     {
       title: "Action",
@@ -140,8 +212,6 @@ const Review = () => {
         <ModalReview
           setModal={setModal}
           selected={selected}
-          dataUserName={dataChanged}
-          updateData={updateData}
         />
       )}
       <ToastContainer />

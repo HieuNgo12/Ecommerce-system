@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import { Modal, Table, Input, Select, Image } from "antd";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { useAdminContext } from "../../AdminContext";
+import { Outlet, useNavigate } from "react-router-dom";
 
-const EditProduct = ({
-  openModal,
-  dataProducts,
-  selectedProduct,
-  updatedDataProducts,
-}) => {
-  const [newId, setNewId] = useState(selectedProduct.id);
+const EditProduct = ({ openModal, selectedProduct }) => {
+  const { callApi } = useAdminContext();
   const [newTitle, setNewTitle] = useState(selectedProduct.title);
   const [newCategory, setNewCategory] = useState(selectedProduct.category);
   const [newImage, setNewImage] = useState(selectedProduct.image);
@@ -49,25 +46,25 @@ const EditProduct = ({
       );
       const json = await response.json();
       console.log(json);
+      callApi();
+      toast.success("Updated successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => openModal(false),
+      });
+      openModal(false);
     } catch (error) {
       console.error("Error updating product:", error);
-    }
-
-    const updatedProducts = {
-      ...selectedProduct,
-      title: newTitle,
-      price: newPrice,
-      description: newDescription,
-      image: newImage,
-      category: newCategory,
-      status: newStatus,
-    };
-
-    const dataUpdated = dataProducts.map((item) =>
-      item.id === selectedProduct.id ? updatedProducts : item
-    );
-    updatedDataProducts(dataUpdated);
-    toast("Update successful!");
+      toast.error("Failed to update product.", {
+        autoClose: 3000,
+      });
+    } 
   };
 
   const handleImageUpload = (e) => {
@@ -193,27 +190,6 @@ const EditProduct = ({
 
   const columns2 = [
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: 150,
-      render: (_, record, index) => {
-        return index === 1 ? (
-          <Select
-            value={newStatus}
-            onChange={(value) => setNewStatus(value)}
-            style={{ width: "150px" }}
-          >
-            <Select.Option value="active">active</Select.Option>
-            <Select.Option value="block">block</Select.Option>
-            <Select.Option value="sold out">sold out</Select.Option>
-          </Select>
-        ) : (
-          <div style={{ width: "150px" }}>{newStatus}</div>
-        );
-      },
-    },
-    {
       title: "Size",
       dataIndex: "size",
       key: "size",
@@ -264,6 +240,27 @@ const EditProduct = ({
         );
       },
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 150,
+      render: (_, record, index) => {
+        return index === 1 ? (
+          <Select
+            value={newStatus}
+            onChange={(value) => setNewStatus(value)}
+            style={{ width: "150px" }}
+          >
+            <Select.Option value="active">active</Select.Option>
+            <Select.Option value="block">block</Select.Option>
+            <Select.Option value="sold out">sold out</Select.Option>
+          </Select>
+        ) : (
+          <div style={{ width: "150px" }}>{newStatus}</div>
+        );
+      },
+    },
   ];
 
   const data1 = [
@@ -299,7 +296,19 @@ const EditProduct = ({
           showHeader={true}
         />
       </Modal>
-      <ToastContainer />
+      {/* <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        // transition: Bounce,
+      /> */}
     </div>
   );
 };

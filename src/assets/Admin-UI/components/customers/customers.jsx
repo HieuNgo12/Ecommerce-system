@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const Customers = () => {
-  const { dataUserName, updateDataNewUserName } = useAdminContext();
+  const { dataUserName, callApi } = useAdminContext();
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,12 +25,7 @@ const Customers = () => {
     birthdate: item.birthdate.slice(0, 10),
   }));
 
-  useEffect(() => setNewData(dataWithChanged), []);
-
-  const updateData = (updatedData) => {
-    setNewData(updatedData);
-    updateDataNewUserName(updatedData);
-  };
+  useEffect(() => setNewData(dataWithChanged), [dataUserName]);
 
   const filtersID = dataWithChanged.map((item) => ({
     text: item.id.toString(),
@@ -77,17 +72,28 @@ const Customers = () => {
   };
 
   const delUser = async (xxx) => {
-    const res = await fetch(`https://fakestoreapi.com/users/${xxx}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `https://66b0ab0f6a693a95b539b080.mockapi.io/users/${xxx.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const json = await res.json();
     console.log(json);
-    const updatedData = newData.filter((user) => user.id !== xxx);
-    updateDataNewUserName(updatedData);
-    toast("Delete successful!");
+    callApi();
+    toast.warn("Delete successful", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
   };
 
   const menu = (record) => (
@@ -265,19 +271,19 @@ const Customers = () => {
     },
   ];
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("Pagination:", pagination);
-    console.log("Filters:", filters);
-    console.log("Sorter:", sorter);
-    console.log("Extra:", extra);
-  };
+  // const onChange = (pagination, filters, sorter, extra) => {
+  //   console.log("Pagination:", pagination);
+  //   console.log("Filters:", filters);
+  //   console.log("Sorter:", sorter);
+  //   console.log("Extra:", extra);
+  // };
 
   return (
     <div>
       <Table
         columns={columns}
         dataSource={newData}
-        onChange={onChange}
+        // onChange={onChange}
         rowKey="id"
         showSorterTooltip={{
           target: "sorter-icon",
@@ -286,14 +292,7 @@ const Customers = () => {
         style={{ maxWidth: 1072 }}
         sticky
       />
-      {modal && (
-        <ModalCustomer
-          setModal={setModal}
-          selected={selected}
-          dataUserName={newData}
-          updateData={updateData}
-        />
-      )}
+      {modal && <ModalCustomer setModal={setModal} selected={selected} />}
       <ToastContainer />
     </div>
   );

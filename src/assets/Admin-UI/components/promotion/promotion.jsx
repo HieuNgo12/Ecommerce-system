@@ -3,34 +3,25 @@ import { Table, Modal, Dropdown, Menu, Space } from "antd";
 import ModalPromotion from "./modalPromotion";
 import { DownOutlined, EyeOutlined } from "@ant-design/icons";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
-import dataPromotion from "../data/dataPromotion";
+import dataPromotionJSX from "../data/dataPromotion";
 
 const Promotion = () => {
-  const { dataNewProduct } = useAdminContext();
+  const { dataPromotion } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [test, setTest] = useState();
 
-  const filtersID = dataPromotion.map((item) => ({
-    text: item.id.toString(),
-    value: item.id.toString(),
-  }));
+  const arrPromotion = [...dataPromotionJSX, dataPromotion];
 
-  const filtersTitle = dataPromotion.map((item) => ({
-    text: item.title.toString(),
-    value: item.title.toString(),
-  }));
+  useEffect(() => setTest(arrPromotion), []);
 
-  const filtersStatus = [
-    { text: "active", value: "active" },
-    { text: "block", value: "block" },
-  ];
+  const openModal = (xxx) => {
+    setIsModalOpen(true)
+  }
 
   const menu = (record) => (
     <Menu>
       <Menu.Item key="0">
         <button onClick={() => openModal(record)}>Edit</button>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <button>Detail</button>
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="2">
@@ -44,7 +35,7 @@ const Promotion = () => {
       title: "ID",
       dataIndex: "id",
       key: "id",
-      filters: filtersID,
+      // filters: filtersID,
       width: 50,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
@@ -53,7 +44,6 @@ const Promotion = () => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      filters: filtersTitle,
       onFilter: (value, record) => record.title.indexOf(value) === 0,
       sorter: (a, b) => a.title.localeCompare(b.title),
     },
@@ -64,9 +54,15 @@ const Promotion = () => {
       width: 100,
     },
     {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      width: 150,
+    },
+    {
+      title: "Promotional Price",
+      dataIndex: "promotionalPrice",
+      key: "promotionalPrice",
       width: 150,
     },
     {
@@ -80,7 +76,6 @@ const Promotion = () => {
       key: "status",
       dataIndex: "status",
       width: 50,
-      filters: filtersStatus,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
     },
     {
@@ -103,7 +98,7 @@ const Promotion = () => {
 
   return (
     <div>
-      <Table columns={columns} dataSource={dataPromotion} rowKey="id" />
+      <Table columns={columns} dataSource={arrPromotion} rowKey="id" />
       {isModalOpen && <ModalPromotion openModal={setIsModalOpen} />}
     </div>
   );

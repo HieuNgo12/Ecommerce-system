@@ -14,15 +14,14 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const Products = () => {
-  const { newArrProduct, dataNewProduct } = useAdminContext();
+  const { dataProduct, callApi } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState();
   const [newDataProducts, setNewDataProducts] = useState([]);
 
-
   useEffect(() => {
-    if (dataNewProduct && dataNewProduct.length > 0) {
-      const dataChanged = dataNewProduct.map((item) => ({
+    if (dataProduct && dataProduct.length > 0) {
+      const dataChanged = dataProduct.map((item) => ({
         ...item,
         status: "Active",
         count: "10",
@@ -41,25 +40,11 @@ const Products = () => {
       }));
       setNewDataProducts(dataChanged);
     }
-  }, [dataNewProduct]);
-
-  console.log(dataNewProduct);
-  console.log(newDataProducts);
-
-  // useEffect(() => {
-  //   if (dataNewProduct && dataNewProduct.length > 0) {
-  //     setNewDataProducts(dataNewProduct);
-  //   }
-  // }, [dataNewProduct]);
+  }, [dataProduct]);
 
   const openModal = (product) => {
     setIsModalOpen(true);
     setSelectedProduct(product);
-  };
-
-  const updatedDataProducts = (dataUpdated) => {
-    setNewDataProducts(dataUpdated);
-    newArrProduct(dataUpdated);
   };
 
   const delProduct = async (xxx) => {
@@ -73,28 +58,30 @@ const Products = () => {
           },
         }
       );
-
-      if (res.ok) {
-        const updatedData = newDataProducts.filter(
-          (product) => product.id !== xxx
-        );
-        setNewDataProducts(updatedData);
-        toast("Delete successful!");
-      } else {
-        toast("Delete failed: " + res.statusText);
-      }
+      callApi();
+      toast.warn('Delete successful!', {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+      console.log(res);
     } catch (error) {
       console.error("Error deleting product:", error);
       toast("Error deleting product!");
     }
   };
 
-  const filtersID = dataNewProduct.map((item) => ({
+  const filtersID = newDataProducts.map((item) => ({
     text: item.id.toString(),
     value: item.id.toString(),
   }));
 
-  const filtersTitle = dataNewProduct.map((item) => ({
+  const filtersTitle = newDataProducts.map((item) => ({
     text: item.title.toString(),
     value: item.title.toString(),
   }));
@@ -140,10 +127,9 @@ const Products = () => {
       key: "id",
       filters: filtersID,
       fixed: "left",
-      with: 50,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text, record) => <div style={{ width: 50}}>{record.id}</div>,
     },
     {
       title: "Title",
@@ -294,15 +280,13 @@ const Products = () => {
         dataSource={newDataProducts}
         rowKey="id"
         scroll={{ x: true, y: 950 }}
-        style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1072 }}
         sticky
       />
       {isModalOpen && (
         <ModalProduct
           openModal={setIsModalOpen}
-          dataProducts={newDataProducts}
           selectedProduct={selectedProduct}
-          updatedDataProducts={updatedDataProducts}
         />
       )}
       <ToastContainer />

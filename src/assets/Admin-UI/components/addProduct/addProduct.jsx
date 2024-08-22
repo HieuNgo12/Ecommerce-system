@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const AddProduct = () => {
-  const { dataProducts, updatedArr } = useAdminContext();
+  const { callApi } = useAdminContext();
   const [newCategory, setNewCategory] = useState("");
   const [newID, setNewID] = useState("");
   const [newTitle, setNewTitle] = useState("");
@@ -27,10 +27,8 @@ const AddProduct = () => {
   const [quantitySizeXL, setQuantitySizeXL] = useState(0);
   const [quantitySizeXLL, setQuantitySizeXLL] = useState(0);
   const [quantitySizeXLLL, setQuantitySizeXLLL] = useState(0);
-  const [newProduct, setNewProduct] = useState(dataProducts);
   const navigate = useNavigate();
 
-  console.log(newProduct)
   const choiceCategory = (e) => {
     setNewCategory(e.target.value);
   };
@@ -56,49 +54,42 @@ const AddProduct = () => {
 
   const createNewProduct = async () => {
     try {
-      const res = await fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: newID,
-          title: newTitle,
-          price: newPrice,
-          description: newDescription,
-          category: newCategory,
-          image: newImage,
-          status: newStatus,
-        }),
-      });
+      const res = await fetch(
+        "https://66b0ab0f6a693a95b539b080.mockapi.io/products/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: newID,
+            title: newTitle,
+            price: newPrice,
+            description: newDescription,
+            category: newCategory,
+            image: newImage,
+            status: newStatus,
+          }),
+        }
+      );
       const json = await res.json();
       console.log(json);
-      
-
-      // const newArr = [
-      //   ...dataProducts,
-      //   {
-      //     id: newID,
-      //     title: newTitle,
-      //     price: newPrice,
-      //     description: newDescription,
-      //     category: newCategory,
-      //     image: newImage,
-      //     status: newStatus,
-      //   },
-      // ];
-      // setNewProduct(newArr);
-      // updatedArr(newProduct);
-      navigate("/products");
-
-      toast("Added product successful!");
-
+      callApi();
+      toast.success("Added product successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => navigate("/products"),
+      });
     } catch (error) {
       console.error("loading", error);
     }
-
   };
-  
 
   return (
     <div className="container mx-auto p-4">

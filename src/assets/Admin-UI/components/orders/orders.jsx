@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table, Modal, Dropdown, Menu, Space } from "antd";
 import sort from "../svg/icon-sort-vertical-svgrepo-com.svg";
 import { DownOutlined } from "@ant-design/icons";
@@ -7,31 +7,71 @@ import ModalOrder from "./modalOrder";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 
 const Orders = () => {
-  const { dataCart, dataNewProduct, dataUserName } = useAdminContext();
+  const { dataCart, dataProduct, dataUserName } = useAdminContext();
   const [selected, setSelected] = useState();
   const [modal, setModal] = useState(false);
+  const [dataOrder, setDataOrder] = useState([]);
 
-  const dataChanged = dataCart.map((item) => {
-    const dataName = dataUserName.find(
-      (item2) => parseInt(item2.id) === item.userId
-    );
-    if (dataName) {
+  useEffect(() => {
+    const dataChanged1 = dataCart.map((item) => {
+      const dataName = dataUserName.find(
+        (item2) => parseInt(item2.id) === item.userId
+      );
+      if (dataName) {
+        return {
+          ...item,
+          status: "New",
+          fristname: dataName.firstname,
+          lastname: dataName.lastname,
+          username: dataName.username,
+          email: dataName.email,
+          city: dataName.city,
+          street: dataName.street,
+          number: dataName.number,
+          phone: dataName.phone,
+          fullName: `${dataName.firstname} ${dataName.lastname}`,
+        };
+      }
+      return item;
+    });
+
+    const dataChanged2 = dataChanged1.map((item1) => {
+      const loop1 = item1.products.map((item2) => {
+        const dataItem = dataProduct.find(
+          (test) => item2.productId === parseInt(test.id)
+        );
+        if (dataItem) {
+          return {
+            ...item2,
+            price: dataItem.price,
+            title: dataItem.title,
+            totalPrice: parseInt(dataItem.price) * item2.quantity,
+          };
+        }
+        return item2;
+      });
       return {
-        ...item,
-        status: "New",
-        fristname: dataName.firstname,
-        lastname: dataName.lastname,
-        username: dataName.username,
-        email: dataName.email,
-        city: dataName.city,
-        street: dataName.street,
-        number: dataName.number,
-        phone: dataName.phone,
-        fullName: `${dataName.firstname} ${dataName.lastname}`,
+        ...item1,
+        products: loop1,
       };
-    }
-    return item;
-  });
+    });
+
+    const dataChanged3 = dataChanged2.map((item1) => {
+      const loop1 = item1.products.map((item2) => {
+        return item2.totalPrice;
+      });
+      // console.log(loop1);
+      const total = loop1.reduce((arr, cal) => {
+        return arr + cal;
+      }, 0);
+      return {
+        ...item1,
+        totalBill: total,
+      };
+    });
+
+    setDataOrder(dataChanged3);
+  }, [dataCart, dataProduct, dataUserName]);
 
   const opdenModal = (xxx) => {
     setSelected(xxx);
@@ -50,22 +90,22 @@ const Orders = () => {
     value: item.toString(),
   }));
 
-  const filtersEmail = dataChanged.map((item) => ({
+  const filtersEmail = dataOrder.map((item) => ({
     text: item.email.toString(),
     value: item.email.toString(),
   }));
 
-  const filtersUsername = dataChanged.map((item) => ({
+  const filtersUsername = dataOrder.map((item) => ({
     text: item.username.toString(),
     value: item.username.toString(),
   }));
 
-  const filtersPhone = dataChanged.map((item) => ({
+  const filtersPhone = dataOrder.map((item) => ({
     text: item.phone.toString(),
     value: item.phone.toString(),
   }));
 
-  const filtersFullName = dataChanged.map((item) => ({
+  const filtersFullName = dataOrder.map((item) => ({
     text: item.fullName,
     value: item.fullName,
   }));
@@ -98,9 +138,10 @@ const Orders = () => {
       dataIndex: "id",
       fixed: "left",
       filters: filtersID,
+      height: 133,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text, record) => <div style={{ width: 50}}>{record.id}</div>,
     },
     {
       title: "User ID",
@@ -111,7 +152,9 @@ const Orders = () => {
       onFilter: (value, record) =>
         record.userId.toString().indexOf(value) === 0,
       sorter: (a, b) => a.userId - b.userId,
-      render: (text, record) => <div style={{ width: 80 }}>{record.userId}</div>,
+      render: (text, record) => (
+        <div style={{ width: 80 }}>{record.userId}</div>
+      ),
     },
     {
       title: "User",
@@ -141,14 +184,13 @@ const Orders = () => {
       ),
     },
     {
-      title: "Price Per",
-      key: "productId",
+      title: "Per For Unit",
+      key: "price",
       width: 100,
       render: (text, record) => {
         const loop1 = record.products
           .map((product) => {
-            console.log;
-            const loop2 = dataNewProduct.find(
+            const loop2 = dataProduct.find(
               (item) => parseInt(item.id) === product.productId
             );
             if (loop2) {
@@ -160,11 +202,10 @@ const Orders = () => {
             return null;
           })
           .filter((item) => item !== null);
-
         return (
-          <div>
+          <div style={{height: 100, width: 80}}>
             {loop1.map((item, index) => (
-              <div style={{ width: 80 }} key={index} className="py-1">
+              <div  key={index} className="py-1">
                 {item.price}
               </div>
             ))}
@@ -187,11 +228,11 @@ const Orders = () => {
       ),
     },
     {
-      title: "Price",
+      title: "Total Price",
       key: "price",
       render: (text, record) => {
         const totalPrices = record.products.map((product) => {
-          const matchedProduct = dataNewProduct.find(
+          const matchedProduct = dataProduct.find(
             (dataProduct) => parseInt(dataProduct.id) === product.productId
           );
           if (matchedProduct) {
@@ -217,7 +258,7 @@ const Orders = () => {
       key: "total",
       render: (text, record) => {
         const totalPrices = record.products.map((product) => {
-          const matchedProduct = dataNewProduct.find(
+          const matchedProduct = dataProduct.find(
             (dataProduct) => parseInt(dataProduct.id) === product.productId
           );
           if (matchedProduct) {
@@ -228,7 +269,7 @@ const Orders = () => {
 
         const totalPrice = totalPrices.reduce((acc, curr) => acc + curr, 0);
 
-        return <div style={{ width: 100 }} >{totalPrice}</div>;
+        return <div style={{ width: 100, }}>{totalPrice}</div>;
       },
     },
     {
@@ -310,7 +351,6 @@ const Orders = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 100,
       render: (text, record) => (
         <Dropdown overlay={menu(record)} trigger={["click"]}>
           <a href="#">
@@ -328,20 +368,13 @@ const Orders = () => {
     <div className="overflow-x-auto">
       <Table
         columns={columns}
-        dataSource={dataChanged}
+        dataSource={dataOrder}
         rowKey={(record) => record.userId}
         scroll={{ x: true, y: 950 }}
-        style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1072 }}
         sticky
       />
-      {modal && (
-        <ModalOrder
-          setModal={setModal}
-          selected={selected}
-          dataCart={dataCart}
-          dataProducts={dataNewProduct}
-        />
-      )}
+      {modal && <ModalOrder setModal={setModal} selected={selected} />}
     </div>
   );
 };
