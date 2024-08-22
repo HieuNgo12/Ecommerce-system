@@ -23,9 +23,15 @@ import LogIn from "./assets/Admin-UI/components/logIn/logIn_admin";
 import SignUp from "./assets/Admin-UI/components/signUp/signUp_admin";
 import Test from "./assets/Admin-UI/test";
 import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
-import Analytics from "./assets/Admin-UI/components/analytics/analytics";
-import Quotes from "./assets/Admin-UI/components/analytics/analytics";
+import Setting from "./assets/Admin-UI/components/setting/setting";
+import Quotes from "./assets/Admin-UI/components/quotes/quotes";
 import Rating from "./assets/Admin-UI/components/rating/rating";
+import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
+import BackUp from "./assets/Admin-UI/components/backUp/backUp";
+import Help from "./assets/Admin-UI/components/help/help";
+import Analytics from "./assets/Admin-UI/components/analytics/analytics";
+import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
+
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("customer");
@@ -43,16 +49,23 @@ function App() {
           children: [{ path: "addproduct", element: <AddProduct /> }],
         },
         { path: "orders", element: <Orders /> },
-        { path: "customers", element: <Customers /> },
+        {
+          path: "customers",
+          element: <Customers />,
+          children: [{ path: "addcustomers", element: <AddCustomers /> }],
+        },
         { path: "rating", element: <Rating /> },
         {
           path: "promotion",
           element: <Promotion />,
-          children: [[{ path: "addPromotion" }]],
+          children: [{ path: "addpromotion", element: <AddPromotion /> }],
         },
         { path: "reviews", element: <Reviews /> },
-        { path: "analytics", element: <Analytics /> },
         { path: "quotes", element: <Quotes /> },
+        { path: "setting", element: <Setting /> },
+        { path: "backup", element: <BackUp /> },
+        { path: "help", element: <Help /> },
+        { path: "analytics", element: <Analytics /> },
       ],
     },
     {

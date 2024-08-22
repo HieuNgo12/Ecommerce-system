@@ -4,7 +4,8 @@ import { AdminProvider, useAdminContext } from "../../AdminContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-const ModalCustomer = ({ dataUserName, setModal, selected, updateData }) => {
+const ModalCustomer = ({ setModal, selected,  }) => {
+  const {callApi} = useAdminContext();
   const [newPhone, setNewPhone] = useState(selected.phone);
   const [newImage, setNewImage] = useState(selected.image);
   const [newFirstName, setNewFirstName] = useState(selected.firstname);
@@ -46,38 +47,21 @@ const ModalCustomer = ({ dataUserName, setModal, selected, updateData }) => {
       );
       const json = await response.json();
       console.log(json);
+      callApi()
+      toast.success("Updated successful!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => setModal(false),
+      });
     } catch (error) {
       console.error("Error updating customer:", error);
     }
-
-    const updatedCustomer = {
-      ...selected,
-      phone: newPhone,
-      firstname: newFirstName,
-      lastname: newLastName,
-      city: newCity,
-      number: newNumber,
-      street: newStreet,
-      gender: newGender,
-      zipcode: newZipcode,
-      birthdate: newBirthdate,
-      avatar: newImage,
-      status: newStatus,
-    };
-
-    const updatedUserList = dataUserName.map((item) =>
-      item.id === selected.id
-        ? {
-            ...item,
-            ...updatedCustomer,
-            fullName: `${newFirstName} ${newLastName}`,
-            fullAddress: `${newCity}, ${newStreet}, ${newNumber}`,
-          }
-        : item
-    );
-
-    updateData(updatedUserList);
-    toast("Update successful!");
   };
 
   const handleImageUpload = (e) => {
@@ -344,7 +328,7 @@ const ModalCustomer = ({ dataUserName, setModal, selected, updateData }) => {
           showHeader={true}
         />
       </Modal>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
