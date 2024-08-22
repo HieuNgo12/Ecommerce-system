@@ -39,8 +39,6 @@ function ShoppingCartBody() {
     },
     validationSchema: SignupSchema,
     onSubmit:  (values) => {
-      alert(JSON.stringify(values, null, 2));
-    //   console.log("isValid", isValid);
 
        axios
         .post("https://66b0ab0f6a693a95b539b080.mockapi.io/delivery", {
@@ -65,7 +63,6 @@ function ShoppingCartBody() {
       const cartList = JSON?.parse(localStorage?.getItem("billingList")) || [];
       let cartItemList = [];
       let quantityCartList = {};
-      console.log(cartList);
       cartList.map((item) => {
           subTotalOverall += Number(item[1][0].price) * Number(item[2]);
         
