@@ -13,16 +13,13 @@ const SignupSchema = Yup.object().shape({
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
-  streetAddress: Yup.string().email("Invalid email").required("Required"),
-  apartment: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+//   streetAddress: Yup.string().required("Required"),
+  apartment: Yup.string(),
   townCity: Yup.string().required("Required"),
-  phoneNumber: Yup.string().required("Required"),
+  phoneNumber: Yup.number().required("Required"),
   emailAddress: Yup.string()
     .required("Required")
-    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
+    .email("Invalid email")
 });
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
@@ -38,12 +35,13 @@ function ShoppingCartBody() {
       emailAddress: "",
       couponCode: "",
       paymentMethod: "",
+      saveThisInformation: "",
     },
     validationSchema: SignupSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      axios
-        .post("https://66b0ab0f6a693a95b539b080.mockapi.io/orders", {
+    onSubmit:  (values) => {
+
+       axios
+        .post("https://66b0ab0f6a693a95b539b080.mockapi.io/delivery", {
           ...values,
           isBank: true,
           isCashOnDelivery: false,
@@ -58,26 +56,20 @@ function ShoppingCartBody() {
     },
   });
   useEffect(() => {
-    let subTotalOverall = 0;
 
     const processData = () => {
-      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
+      let subTotalOverall = 0;
+
+      const cartList = JSON?.parse(localStorage?.getItem("billingList")) || [];
       let cartItemList = [];
       let quantityCartList = {};
-
-      cartList.forEach((product) => {
-        subTotalOverall += Number(product.price);
-        if (quantityCartList[product.title]) {
-          quantityCartList[product.title].push(product);
-        } else {
-          quantityCartList[product.title] = [product];
-        }
+      cartList.map((item) => {
+          subTotalOverall += Number(item[1][0].price) * Number(item[2]);
+        
+        return item;
       });
-      for (const [key, value] of Object.entries(quantityCartList)) {
-        cartItemList.push([key, value]);
-      }
       setSubTotal(subTotalOverall);
-      setItemList(cartItemList);
+      setItemList(cartList);
     };
     processData();
   }, []);
@@ -90,7 +82,7 @@ function ShoppingCartBody() {
           <li>My Account</li>
           <li>Product</li>
           <li>View Cart</li>
-          <li>Checkout</li>
+          <li className="bold">Checkout</li>
         </ul>
         <div className="flex ml-auto">
           <div className="flex words-left">
@@ -135,11 +127,11 @@ function ShoppingCartBody() {
               </div>
               <div>
                 <div
-                  id="companyName"
-                  name="companyName"
-                  type="companyName"
+                  id="streetAddress"
+                  name="streetAddress"
+                  type="streetAddress"
                   onChange={formik.handleChange}
-                  value={formik.values.companyName}
+                  value={formik.values.streetAddress}
                 >
                   Street Address
                 </div>
@@ -147,8 +139,8 @@ function ShoppingCartBody() {
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
-                    {formik.errors.companyName && (
-                      <div>{formik.errors.companyName}</div>
+                    {formik.errors.streetAddress && (
+                      <div>{formik.errors.streetAddress}</div>
                     )}
                   </div>
                 </div>
@@ -194,7 +186,7 @@ function ShoppingCartBody() {
                 <input
                   id="phoneNumber"
                   name="phoneNumber"
-                  type="phoneNumber"
+                  type="number"
                   onChange={formik.handleChange}
                   value={formik.values.phoneNumber}
                 />
@@ -241,9 +233,9 @@ function ShoppingCartBody() {
                 return (
                   <div className="flex item-card">
                     <img src={item[1][0].img} className="item-image" />
-                    <div>{item[1][0].title + " x " + item[1].length}</div>
+                    <div>{item[1][0].title + " x " + item[2]}</div>
                     <div className="price">
-                      {Number(item[1][0].price) * item[1].length + " $"}
+                      {(Number(item[1][0].price) || 0) * item[2] + " $"}
                     </div>
                   </div>
                 );
@@ -295,7 +287,24 @@ function ShoppingCartBody() {
                 onChange={formik.handleChange}
                 value={formik.values.couponCode}
               />
-              <button className="button-style apply">Apply Coupon</button>
+              <button
+                className="button-style apply"
+                onClick={async () => {
+                  try {
+                    const data = await axios.get(
+                      "https://66b0ab0f6a693a95b539b080.mockapi.io/delivery"
+                    );
+                    if (!data) {
+                      alert("Coupon not found!");
+                    }
+                  } catch (e) {
+                    console.log(e);
+                    alert("Coupon not found!");
+                  }
+                }}
+              >
+                Apply Coupon
+              </button>
             </div>
             <div className="flex">
               <button className="button-style" type="submit">

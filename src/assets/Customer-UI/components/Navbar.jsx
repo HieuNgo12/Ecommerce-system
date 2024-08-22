@@ -7,6 +7,9 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import GroupedSelect from "./utils/DropdownSelect";
+import NavbarDarkExample from "./utils/DropdownSelect";
+import BasicMenu from "./utils/DropdownSelect";
 
 const Navbar = () => {
   const { getWishlistCount } = useContext(WishlistContext);
@@ -128,8 +131,8 @@ const Navbar = () => {
                 )}
               </div>
             </NavLink>
-            <NavLink to="/edit-page">
-              <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
+            <NavLink>
+              <BasicMenu />
             </NavLink>
           </div>
         </div>

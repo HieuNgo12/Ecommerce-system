@@ -8,13 +8,16 @@ function ShoppingCartBody() {
   const [itemList, setItemList] = useState([]);
   
 
-  useEffect(()=> {
+
+  useEffect(() => {
+
     const processData = () => {
       let subTotalOverall = 0;
 
-      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
+      const cartList = JSON.parse(localStorage.getItem("cartList") || "[]"); // Default to an empty array if null
       let cartItemList = [];
       let quantityCartList = {};
+      console.log(cartList);
 
       cartList.forEach((product) => {
         subTotalOverall += Number(product.price);
@@ -26,11 +29,10 @@ function ShoppingCartBody() {
       });
 
       for (const [key, value] of Object.entries(quantityCartList)) {
-
-        cartItemList.push([key, value]);
+        cartItemList.push([key, value, value.length]);
       }
-      setSubTotal(subTotalOverall)
-      setItemList(cartItemList)
+      setSubTotal(subTotalOverall);
+      setItemList(cartItemList);
     };
 
     processData();
@@ -44,7 +46,7 @@ function ShoppingCartBody() {
       </ul>
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="table-head">
             <tr>
               <th scope="col" className="px-6 py-3">Product</th>
               <th scope="col" className="px-6 py-3">Price</th>
@@ -55,7 +57,7 @@ function ShoppingCartBody() {
           <tbody>
             {itemList.length ? (
               itemList.map((cartItem) => (
-                <CartRow key={cartItem[0]} cartItem={cartItem} setSubTotal={setSubTotal} />
+                <CartRow key={cartItem[0]} cartItem={cartItem} itemList={itemList} setSubTotal={setSubTotal} />
               ))
             ) : (
               <tr>
@@ -109,8 +111,16 @@ function ShoppingCartBody() {
           <div>
             <img src="./public/icons/long-line.png" alt="line" />
           </div>
-          <div>
-            <button className="proceed"><Link to={"/billing"}>Proceed to checkout</Link></button>
+          <div className="mt-8">
+            <Link
+              to={"/billingpage"}
+              className="proceed "
+              onClick={() => {
+                localStorage.setItem("billingList", JSON.stringify(itemList));
+              }}
+            >
+              Proceed to checkout
+            </Link>
           </div>
         </div>
       </div>
