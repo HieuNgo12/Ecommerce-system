@@ -20,7 +20,7 @@ export default function SimpleSlider(
   return (
     <Slider {...settings}>
         {}
-      <div>
+      <div className="container">
         <Card
           orgPrice={item.price + 99}
           review={Math.ceil(item.rating.count)}

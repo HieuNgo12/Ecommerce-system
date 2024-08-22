@@ -72,7 +72,7 @@ function ShoppingCartBody() {
           <Link to={"/"}>Return to shop</Link>
         </a>
         <button className="button-return-update ml-96 m-12">
-          Update To Cart
+          Update Cart
         </button>
       </div>
       <div className="coupon-code flex mb-80">
