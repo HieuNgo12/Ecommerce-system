@@ -1,8 +1,0 @@
-.ant-table-thead > tr > th {
-    position: -webkit-sticky; /* Cho trình duyệt webkit như Safari */
-    position: sticky;         /* Cho trình duyệt khác */
-    top: 0;                   /* Cố định tiêu đề ở trên cùng */
-    background: #fff;         /* Nền trắng để tiêu đề nổi bật */
-    z-index: 1;               /* Đảm bảo tiêu đề luôn nằm trên cùng */
-  }
-  

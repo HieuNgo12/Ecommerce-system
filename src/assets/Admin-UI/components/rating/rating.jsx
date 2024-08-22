@@ -14,32 +14,38 @@ import {
 } from "react-router-dom";
 
 const Rating = () => {
-  const { dataNewProduct } = useAdminContext();
+  const { dataProduct, dataReview } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataChanged, setDataChanged] = useState(dataNewProduct);
+  const [dataChanged, setDataChanged] = useState(dataProduct);
   const [selected, setSelected] = useState();
 
   useEffect(() => {
-    if (dataNewProduct && dataNewProduct.length > 0) {
-      const newDataChanged = dataNewProduct.map((item) => {
-        return {
-          ...item,
-          status: "Active",
-          comment: "10",
-        };
+    if (dataProduct && dataProduct.length > 0) {
+      const dataChanged = dataProduct.map((item1) => {
+        const reviews = dataReview.filter(
+          (item2) => parseInt(item1.id) === item2.postID
+        );
+        if (reviews.length > 0) {
+          const totalComment = reviews.reduce((arr) => arr+1,0)
+          return {
+            ...item1,
+            review: [...(item1.review || []), ...reviews],
+            totalComment: totalComment
+          };
+        }
+        return item1;
       });
-      setDataChanged(newDataChanged);
+      setDataChanged(dataChanged);
     }
-  }, [dataNewProduct]);
+  }, [dataProduct]);
 
- 
 
-  const filtersID = dataNewProduct.map((item) => ({
+  const filtersID = dataProduct.map((item) => ({
     text: item.id.toString(),
     value: item.id.toString(),
   }));
 
-  const filtersTitle = dataNewProduct.map((item) => ({
+  const filtersTitle = dataProduct.map((item) => ({
     text: item.title.toString(),
     value: item.title.toString(),
   }));
@@ -62,7 +68,6 @@ const Rating = () => {
     setDataChanged(xxx);
   };
 
-  console.log(dataChanged)
 
   const menu = (record) => (
     <Menu>
@@ -134,13 +139,13 @@ const Rating = () => {
       ),
     },
     {
-      title: "Comment",
-      dataIndex: "comment",
-      key: "comment",
-      width: 100,
+      title: "Total Comment",
+      dataIndex: "Total comment",
+      key: "Total comment",
+      width: 130,
       render: (text, record) => (
         <div style={{ width: 70 }}>
-          <div>{record.comment}</div>
+          <div>{record.totalComment}</div>
         </div>
       ),
     },
