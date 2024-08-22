@@ -58,17 +58,18 @@ function ShoppingCartBody() {
     },
   });
   useEffect(() => {
-    let subTotalOverall = 0;
 
     const processData = () => {
+      let subTotalOverall = 0;
+
       const cartList = JSON?.parse(localStorage?.getItem("billingList")) || [];
       let cartItemList = [];
       let quantityCartList = {};
-      cartList.forEach((item) => {
-        for (let i = 0; i < item[1].length; i++) {
-          subTotalOverall += Number(item[1][i].price);
-        }
-        console.log(item);
+      console.log(cartList);
+      cartList.map((item) => {
+          subTotalOverall += Number(item[1][0].price) * Number(item[2]);
+        
+        return item;
       });
       setSubTotal(subTotalOverall);
       setItemList(cartList);

@@ -8,13 +8,16 @@ function ShoppingCartBody() {
   const [itemList, setItemList] = useState([]);
   
 
-  let subTotalOverall = 0;
 
   useEffect(() => {
+
     const processData = () => {
+      let subTotalOverall = 0;
+
       const cartList = JSON.parse(localStorage.getItem("cartList") || "[]"); // Default to an empty array if null
       let cartItemList = [];
       let quantityCartList = {};
+      console.log(cartList);
 
       cartList.forEach((product) => {
         subTotalOverall += Number(product.price);
@@ -54,7 +57,7 @@ function ShoppingCartBody() {
           <tbody>
             {itemList.length ? (
               itemList.map((cartItem) => (
-                <CartRow key={cartItem[0]} cartItem={cartItem} setSubTotal={setSubTotal} />
+                <CartRow key={cartItem[0]} cartItem={cartItem} itemList={itemList} setSubTotal={setSubTotal} />
               ))
             ) : (
               <tr>
@@ -110,7 +113,7 @@ function ShoppingCartBody() {
           </div>
           <div className="mt-8">
             <Link
-              to={"/billing"}
+              to={"/billingpage"}
               className="proceed "
               onClick={() => {
                 localStorage.setItem("billingList", JSON.stringify(itemList));

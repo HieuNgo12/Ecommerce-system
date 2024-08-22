@@ -131,7 +131,7 @@ const Navbar = () => {
                 )}
               </div>
             </NavLink>
-            <NavLink to="/edit-page">
+            <NavLink>
               <BasicMenu />
             </NavLink>
           </div>

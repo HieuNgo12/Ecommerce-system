@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-function CartRow({ cartItem, setSubTotal, setItemList, itemList,...props }) {
+function CartRow({ cartItem, setSubTotal, setItemList, itemList, ...props }) {
   const [quantity, setQuantity] = useState(cartItem[1].length);
   const [subTotalRow, setSubTotalRow] = useState(cartItem?.length);
   const oldValueRef = React.useRef(0);
-
   const quantityChange = () => {};
 
   return (
@@ -38,27 +37,28 @@ function CartRow({ cartItem, setSubTotal, setItemList, itemList,...props }) {
             const oldValue = oldValueRef.current;
             oldValueRef.current = e.target.value;
             setQuantity(e.target.value);
-            const items = itemList.map(item => {
-                console.log(cartItem,item);
-                if(cartItem[0] === item[0]){
-                    item[2] = e.target.value
-                }
-                console.log(item);
-                return item;
-            })
+            const items = itemList.map((item) => {
+              console.log(cartItem, item);
+              if (cartItem[0] === item[0]) {
+                item[2] = e.target.value;
+              }
+              return item;
+            });
             setSubTotal((subtotal) => {
-              return (
-                subtotal +
-                (cartItem[1][0].price * e.target.value -
-                  cartItem[1][0].price * oldValue)
-              );
+              console.log(subtotal);
+              console.log(Number(e.target.value), Number(oldValue));
+              if (Number(e.target.value) > Number(oldValue)) {
+                return Math.round((Number(subtotal) + Number(cartItem[1][0].price)) * 100) / 100 ;
+              } else {
+                return Math.round((Number(subtotal) - Number(cartItem[1][0].price)) * 100) / 100;
+              }
             });
           }}
           defaultValue={quantity}
         />
       </td>
       <td className="px-6 py-4">
-        {subTotalRow ? `${subTotalRow.toFixed(2)} $` : null}
+        {subTotalRow ? `${Math.round(cartItem[1][0].price * quantity * 100) / 100} $` : null}
       </td>
     </tr>
   );
