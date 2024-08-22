@@ -8,11 +8,11 @@ function ShoppingCartBody() {
   const [itemList, setItemList] = useState([]);
   
 
-  let subTotalOverall = 0;
-
-  useEffect(() => {
+  useEffect(()=> {
     const processData = () => {
-      const cartList = JSON.parse(localStorage.getItem("cartList") || "[]"); // Default to an empty array if null
+      let subTotalOverall = 0;
+
+      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
       let cartItemList = [];
       let quantityCartList = {};
 
