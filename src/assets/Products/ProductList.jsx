@@ -17,6 +17,8 @@ const ProductList = () => {
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get("search")?.toLowerCase() || "";
 
+
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -32,6 +34,10 @@ const ProductList = () => {
           expandedItems = [...expandedItems, ...clothingItems];
         }
         expandedItems = expandedItems.slice(0, 100); // Ensure exactly 100 items
+        
+
+
+
 
         // Filter products based on search query
         const filtered = expandedItems.filter((product) =>
@@ -39,7 +45,7 @@ const ProductList = () => {
         );
 
         setProducts(expandedItems);
-        setFilteredProducts(filtered.slice(0, itemsPerPage ));
+        setFilteredProducts(filtered.slice(0, itemsPerPage));
       })
       .catch((error) => console.error("Error fetching products:", error));
   }, [searchQuery]); // Re-run when searchQuery changes
@@ -84,13 +90,28 @@ const ProductList = () => {
                     {product.title}
                   </h2>
                   <div className="flex items-center mb-2">
-                    {[...Array(5)].map((_, i) => (
-                      <span key={i} className="text-yellow-400 text-sm">★</span>
+                    {[...Array(5)].map((_, index) => (
+                      <span
+                        key={index}
+                        className={`text-sm ${
+                          index < Math.round(product.rating.rate)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </span>
                     ))}
-                    <span className="text-gray-500 text-xs ml-1">(75)</span>
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({product.rating.rate}) {product.rating.count}{" "}
+                      reviews
+                    </span>
                   </div>
+                  <div></div>
                   <div className="flex items-center justify-between">
-                    <span className="text-red-600 font-bold">${product.price}</span>
+                    <span className="text-red-600 font-bold">
+                      ${product.price}
+                    </span>
                   </div>
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 px-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -91,17 +91,17 @@ const ProductDetails = () => {
           <ul className="flex flex-wrap items-center">
             <li>
               <Link to="/" className="text-gray-500 hover:underline">
-                Account
+                Products
               </Link>
             </li>
-            <li>
+            {/* <li>
               <span className="mx-2">/</span>
             </li>
             <li>
               <Link to="/gaming" className="text-gray-500 hover:underline">
                 Gaming
               </Link>
-            </li>
+            </li> */}
             <li>
               <span className="mx-2">/</span>
             </li>
@@ -133,10 +133,22 @@ const ProductDetails = () => {
 
           <div className="lg:w-1/2 space-y-6">
             <h1 className="text-2xl font-bold">{product.title}</h1>
-            <div className="flex items-center space-x-2">
-              <div className="flex text-yellow-400">{"★★★★☆"}</div>
-              <span className="text-gray-600">(150 Reviews)</span>
-              <span className="text-green-500 ml-2">In Stock</span>
+            <div className="flex items-center mb-2">
+              {[...Array(5)].map((_, index) => (
+                <span
+                  key={index}
+                  className={`text-sm ${
+                    index < Math.round(product.rating.rate)
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </span>
+              ))}
+              <span className="ml-2 text-sm text-gray-600">
+                ({product.rating.rate}) {product.rating.count} reviews
+              </span>
             </div>
             <p className="text-3xl font-bold">${product.price}</p>
             <div className="max-h-40 overflow-y-auto pr-2">
@@ -145,13 +157,13 @@ const ProductDetails = () => {
               </p>
             </div>
 
-            <div>
+            {/* <div>
               <h2 className="font-semibold mb-2">Colours:</h2>
               <div className="flex gap-2">
                 <button className="w-6 h-6 rounded-full bg-gray-200 border-2 border-gray-400"></button>
                 <button className="w-6 h-6 rounded-full bg-red-500"></button>
               </div>
-            </div>
+            </div> */}
 
             <div>
               <h2 className="font-semibold mb-2">Size:</h2>
