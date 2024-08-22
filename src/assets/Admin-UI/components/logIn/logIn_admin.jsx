@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import userAdmin from "../data/userAdmin.json";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
-import img from "../img/signupandlogin.jpg"
+import img from "../img/signupandlogin.jpg";
+import { ToastContainer, toast } from "react-toastify";
 
 function LogIn() {
   const { dataUserName } = useAdminContext();
@@ -15,17 +16,36 @@ function LogIn() {
   const logIn = (e) => {
     e.preventDefault();
     if (username === "" || password === "") {
-      alert("Vui lòng nhập đầy đủ thông tin");
+      toast.warn("Vui lòng nhập đầy đủ thông tin", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+      });
     } else {
       const user = dataUserName.find(
         (user) =>
-          (user.email === username || (user.username === username)) &&
+          (user.email === username || user.username === username) &&
           user.password === password
       );
       if (user) {
         sessionStorage.setItem("customer", username);
-        alert("Đăng nhập thành công");
-        navigate("/test");
+        toast.success("Đăng nhập thành công", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => navigate("/test"),
+        });
         return;
       }
 
@@ -33,12 +53,31 @@ function LogIn() {
         (admin) => admin.email === username && admin.password === password
       );
       if (admin) {
-        alert("Đăng nhập ADMIN thành công");
         const getLicense = admin.license;
         sessionStorage.setItem("admin", getLicense);
-        navigate("/");
+        toast.success("Đăng nhập ADMIN thành công", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => navigate("/"),
+        });
       } else {
-        alert("Đăng nhập thất bại");
+        toast.error("Đăng nhập thất bại", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
       }
     }
   };
@@ -49,7 +88,7 @@ function LogIn() {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <img src={img} className="w-2/3 h-2/3"/>
+      <img src={img} className="w-2/3 h-2/3" />
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
         <form onSubmit={logIn} className="space-y-6">
           <div className="text-center">
@@ -110,6 +149,7 @@ function LogIn() {
           </p>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

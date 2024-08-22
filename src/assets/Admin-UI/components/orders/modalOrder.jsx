@@ -1,55 +1,119 @@
-import React from "react";
-import { Modal, Table } from "antd";
+import React, { useState } from "react";
+import { Modal, Table, Select } from "antd";
 
-const ModalOrder = ({ setModal, selected, dataProducts }) => {
-  const productsData = selected.products.map((product) => {
-    const matchedProduct = dataProducts.find(
-      (item) => item.id === product.productId
-    );
-    return {
-      productId: product.productId,
-      quantity: product.quantity,
-      pricePerUnit: matchedProduct ? matchedProduct.price : 0,
-      totalPrice: matchedProduct ? product.quantity * matchedProduct.price : 0,
-    };
-  });
+const { Option } = Select;
 
-  // Calculate total bill
-  const totalBill = productsData.reduce(
-    (acc, curr) => acc + curr.totalPrice,
-    0
-  );
+const ModalOrder = ({ setModal, selected }) => {
+  const {
+    products = [],
+    id,
+    username,
+    totalBill,
+    status,
+    phone,
+    userId,
+    date,
+  } = selected;
 
-  // Handle Modal actions
+  console.log(selected);
+  const [newStatus, setNewStatus] = useState(status);
+
   const handleCancel = () => {
     setModal(false);
   };
 
   const handleOk = () => {
-    alert("Cập nhập thành công!");
+    alert("Cập nhật thành công!");
   };
 
-  // Define columns for the Ant Table
-  const columns = [
+  const productColumns = [
     {
       title: "Product ID",
       dataIndex: "productId",
       key: "productId",
+      render: (text, record) => <div>{record.productId}</div>,
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      render: (text, record) => <div>{record.title}</div>,
+    },
+    {
+      title: "Price Per Unit",
+      dataIndex: "price",
+      key: "price",
+      render: (text, record) => <div>{record.price}</div>,
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
-    },
-    {
-      title: "Price Per Unit",
-      dataIndex: "pricePerUnit",
-      key: "pricePerUnit",
+      render: (text, record) => <div>{record.quantity}</div>,
     },
     {
       title: "Total Price",
-      dataIndex: "totalPrice",
       key: "totalPrice",
+      render: (text, record) => <div>{record.quantity * record.price}</div>,
+    },
+  ];
+
+  const orderColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: () => <div>{id}</div>,
+    },
+    {
+      title: "user ID",
+      dataIndex: "userId",
+      key: "userId",
+      render: () => <div>{userId}</div>,
+    },
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+      render: () => <div>{username}</div>,
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      render: () => <div>{phone}</div>,
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      render: () => <div>{date.slice(0, 10)}</div>,
+    },
+    {
+      title: "Total Bill",
+      dataIndex: "totalBill",
+      key: "totalBill",
+      render: () => <div>{totalBill}</div>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 150,
+      render: () => (
+        <Select
+          value={newStatus}
+          onChange={(value) => setNewStatus(value)}
+          style={{ width: "150px" }}
+        >
+          <Option value="New">New</Option>
+          <Option value="Prepare">Prepare</Option>
+          <Option value="Delivery">Delivery</Option>
+          <Option value="Complete">Complete</Option>
+          <Option value="Refund">Refund</Option>
+          <Option value="Resolve">Resolve</Option>
+        </Select>
+      ),
     },
   ];
 
@@ -60,15 +124,27 @@ const ModalOrder = ({ setModal, selected, dataProducts }) => {
       onOk={handleOk}
       onCancel={handleCancel}
       width={1200}
-      bodyStyle={{ height: 400 }}
+      bodyStyle={{ height: 600 }}
     >
-      <Table
-        columns={columns}
-        dataSource={productsData}
-        pagination={false}
-        rowKey="productId"
-        footer={() => <div>Total Bill: {totalBill}</div>}
-      />
+      <div style={{ marginBottom: 16 }}>
+        <h3>Order Details</h3>
+        <Table
+          columns={orderColumns}
+          dataSource={[selected]} // Pass selected as an array
+          pagination={false}
+          rowKey="id"
+          style={{ marginBottom: 16 }}
+        />
+      </div>
+      <div>
+        <h3>Products</h3>
+        <Table
+          columns={productColumns}
+          dataSource={products}
+          pagination={false}
+          rowKey="productId"
+        />
+      </div>
     </Modal>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
+import { ToastContainer, toast } from "react-toastify";
 
 function SignUp() {
   const { dataUserName } = useAdminContext();
@@ -28,16 +29,49 @@ function SignUp() {
       alert("không được tạo tài khoản có chứa kí tự là admin");
     } else {
       if (userName === "" || email === "" || password === "") {
-        alert("Vui lòng nhập đầy đủ thông tin!");
+        toast.warn("Vui lòng nhập đầy đủ thông tin!", {
+          position: "top-center",
+          autoClose:1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
       } else {
         if (password !== confirm) {
-          alert("Mật khẩu và xác nhận không trùng khớp. Vui lòng nhập lại!");
+          toast.warn(
+            "Mật khẩu và xác nhận không trùng khớp. Vui lòng nhập lại!",
+            {
+              position: "top-center",
+              autoClose:1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
+            }
+          );
         } else {
           const checkUserName = dataUserName.find(
             (item) => item.username === userName
           );
           if (checkUserName) {
-            alert("Username đã có người sử dụng");
+            toast.warn("Username đã có người sử dụng", {
+              position: "top-center",
+              autoClose:1500,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
+            });
           } else {
             const checkEmail = dataUserName.find(
               (item) => item.email === email
@@ -46,7 +80,17 @@ function SignUp() {
               alert("Email đã có người sử dụng");
             } else {
               if (password.length < 5) {
-                alert("Password phải dài hơn 5 ký tự");
+                toast.warn("Password phải dài hơn 5 ký tự", {
+                  position: "top-center",
+                  autoClose:1500,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  // transition: Bounce,
+                });
               } else {
                 try {
                   const res = await fetch(
@@ -60,16 +104,36 @@ function SignUp() {
                         username: userName,
                         password: password,
                         email: email,
+                        license: "customer",
                       }),
                     }
                   );
                   const json = await res.json();
                   console.log(json);
-                  alert("Đăng ký thành công!");
-                  navigate("/login");
+                  toast.success("Đăng ký thành công", {
+                    position: "top-center",
+                    autoClose: 1500,
+                    hideProgressBar: false,
+                    closeOnClick: false,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    onClose: () => navigate("/login"),
+                  });
                 } catch (error) {
                   console.error("Đăng ký thất bại:", error);
-                  alert("Đăng ký thất bại. Vui lòng thử lại.");
+                  toast.error("Đăng ký thất bại", {
+                    position: "top-center",
+                    autoClose:1500,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    // transition: Bounce,
+                  });
                 }
               }
             }
@@ -162,6 +226,7 @@ function SignUp() {
           </p>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

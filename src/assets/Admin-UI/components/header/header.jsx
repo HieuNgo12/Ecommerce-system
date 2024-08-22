@@ -4,6 +4,7 @@ import { AdminProvider, useAdminContext } from "../../AdminContext";
 import { Navigate } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import dataSideBar from "../data/dataSideBar";
+import AddCustomers from "../addCustomers/addCustomers";
 
 function Header() {
   const navigate = useNavigate();
@@ -34,6 +35,14 @@ function Header() {
     navigate("/products/addproduct");
   };
 
+  const addPromotion = () => {
+    navigate("/promotion/addpromotion");
+  };
+
+  const addCustomers = () => {
+    navigate("/customers/addcustomers");
+  }
+
   return (
     <div className="w-full p-6 bg-gray-100">
       <div className="w-full flex items-center justify-between pb-3">
@@ -51,6 +60,17 @@ function Header() {
             Admin {">"} Products {">"} Add Product
           </div>
         )}
+        {currentPath === `/promotion/addpromotion` && (
+          <div className="text-gray-500">
+            Admin {">"} Promotion {">"} Add Promotion
+          </div>
+        )}
+        {currentPath === `/customres/addcustomers` && (
+          <div className="text-gray-500">
+            Admin {">"} Customres {">"} Add Customres
+          </div>
+        )}
+
         <div className="flex items-center space-x-4">
           <span className="font-bold italic">{licenseAdmin}</span>
           <img src={icon} alt="" className="cursor-pointer" onClick={logOut} />
@@ -69,6 +89,12 @@ function Header() {
         {currentPath === `/products/addproduct` && (
           <div className="text-3xl font-bold">Add Product</div>
         )}
+        {currentPath === `/promotion/addpromotion` && (
+          <div className="text-3xl font-bold">Add Promotion</div>
+        )}
+        {currentPath === `/customres/addcustomers` && (
+          <div className="text-3xl font-bold">Add Customres</div>
+        )}
 
         <div className="flex gap-8">
           {currentPath === "/products" && (
@@ -77,6 +103,22 @@ function Header() {
               onClick={addProduct}
             >
               ADD PRODUCT
+            </button>
+          )}
+          {currentPath === "/promotion" && (
+            <button
+              className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
+              onClick={addPromotion}
+            >
+              ADD PROMOTION
+            </button>
+          )}
+          {currentPath === "/customers" && (
+            <button
+              className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
+              onClick={addCustomers}
+            >
+              ADD CUSTOMERS
             </button>
           )}
           <input
