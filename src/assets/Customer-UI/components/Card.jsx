@@ -43,7 +43,7 @@ function Card({
   };
   return (
     <div
-      className="hover-product-card"
+      className="hover-product-card mt-12"
       style={{ backgroundImage: img, cursor: "pointer" }}
       onMouseEnter={(e) => {
         setHover(true);
@@ -52,46 +52,57 @@ function Card({
         setHover(false);
       }}
     >
-      {showSuccessAlert ? <Alert /> : null}
+                  {showSuccessAlert ? <Alert /> : null}
+
       <a class="flex sales-card block max-w-sm p-6 ">
         <div className="discount">
-          {Math.round(((price - (Number(price) + 99)) / (Number(price) + 99)) * 100) + "%"}
+          {Math.round(
+            ((price - (Number(price) + 99)) / (Number(price) + 99)) * 100
+          ) + "%"}
         </div>
         <div>
-          <img src={img} style={{ marginLeft: "15%", height: "120px" }} />
+          <img src={img} style={{ minWidth: "120px", height: "120px" }} />
         </div>
-        <div className="ml-20 ">
+        <div className=" ">
           <img src="./icons/fill-heart.png" />
           <img src="./icons/fill-eye.png" />
         </div>
       </a>
       <div>
         {hover && (
-          <div
-            className="add-to-cart"
-
-            onClick={() => {
-              onClickCard();
-            }}
-          >
-        
-            Add to Cart
+          <div>
+            <div
+              className="add-to-cart"
+              onClick={() => {
+                onClickCard();
+              }}
+            >
+              Add to Cart
+            </div>
           </div>
         )}
       </div>
 
-      <div className="text-left">
-        <p class="text-left text-2xl m-0 font-bold tracking-tight text-gray-900 dark:text-white">
+      <div className="text-left card-item">
+        <p class="text-left  text-2xl m-0 font-bold tracking-tight text-gray-900 dark:text-white">
           {title}
         </p>
         <div className="flex">
-          <p className="price p-0">${price}</p>
-          <p className="org-price line-through">${Number(price) + 99}</p>
+          <div>
+            <p className="price ">${price}</p>
+          </div>
+          <div>
+            <p className="org-price line-through">${Number(price) + 99}</p>
+          </div>
         </div>
-        <div className="flex text-xl md:shrink-0">
-          {rating ? <p class="font-normal text-gray-700 dark:text-gray-400">
-            <Stars stars={Math.round(rating)} />
-          </p> : "No Rating yet"}
+        <div className="flex text-xl">
+          {rating ? (
+            <p class=" text-gray-700 dark:text-gray-400">
+              <Stars stars={Math.round(rating)} />
+            </p>
+          ) : (
+            "No Rating yet"
+          )}
           <p className="rating">
             {"("} {review ? review : 0} {")"}
           </p>

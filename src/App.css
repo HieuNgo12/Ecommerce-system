@@ -7,3 +7,13 @@
 }
 
 
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  max-width: 1200px;
+  margin: auto;
+  place-items: center;
+  gap: 10px;
+  overflow: hidden;
+  padding: 10px;
+}

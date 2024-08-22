@@ -86,7 +86,7 @@ function ProfilePageBody() {
             <div>
               <div>
                 <div className="flex">
-                  <div className="text-very-left ">First Name</div>
+                  <div className="text-very-left ml-4">First Name</div>
                   <div className="text-very-left">Last Name</div>
                 </div>
                 <div className="flex">
@@ -126,7 +126,7 @@ function ProfilePageBody() {
               </div>
               <div>
                 <div className="flex">
-                  <div className="text-very-left ">Email</div>
+                  <div className="text-very-left ml-4">Email</div>
                   <div className="text-very-left">Address</div>
                 </div>
                 <div className="flex">
@@ -164,7 +164,7 @@ function ProfilePageBody() {
               </div>
               <div>
                 <div>
-                  <div className="password">Password Changes</div>
+                  <div className="password ml-4">Password Changes</div>
                 </div>
                 <div className="flex">
                   <input
@@ -229,8 +229,10 @@ function ProfilePageBody() {
                 </div>
               </div>
             </div>
-            <div className="buttons">
-              <button className="cancel-button ">Cancel</button>
+
+            <div className="buttons flex">
+            <button className="cancel-button mr-auto">Cancel</button>
+
               <button type="submit" className="save-changes">
                 Save Changes
               </button>

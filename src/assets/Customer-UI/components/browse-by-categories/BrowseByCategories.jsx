@@ -60,7 +60,7 @@ function BrowseByCategories() {
         <div>
 
         </div>
-        <div className='grid grid-cols-6 gap-8 ' style={{cursor: "pointer"}} 
+        <div className='md:grid md:grid-cols-6 md:gap-8 sm:container ' style={{cursor: "pointer"}} 
         >
         {
             itemsList.map((item, index) => {

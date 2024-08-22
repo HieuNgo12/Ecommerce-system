@@ -13,13 +13,11 @@ const SignupSchema = Yup.object().shape({
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
-//   streetAddress: Yup.string().required("Required"),
+  //   streetAddress: Yup.string().required("Required"),
   apartment: Yup.string(),
   townCity: Yup.string().required("Required"),
   phoneNumber: Yup.number().required("Required"),
-  emailAddress: Yup.string()
-    .required("Required")
-    .email("Invalid email")
+  emailAddress: Yup.string().required("Required").email("Invalid email"),
 });
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
@@ -38,9 +36,8 @@ function ShoppingCartBody() {
       saveThisInformation: "",
     },
     validationSchema: SignupSchema,
-    onSubmit:  (values) => {
-
-       axios
+    onSubmit: (values) => {
+      axios
         .post("https://66b0ab0f6a693a95b539b080.mockapi.io/delivery", {
           ...values,
           isBank: true,
@@ -56,7 +53,6 @@ function ShoppingCartBody() {
     },
   });
   useEffect(() => {
-
     const processData = () => {
       let subTotalOverall = 0;
 
@@ -64,8 +60,8 @@ function ShoppingCartBody() {
       let cartItemList = [];
       let quantityCartList = {};
       cartList.map((item) => {
-          subTotalOverall += Number(item[1][0].price) * Number(item[2]);
-        
+        subTotalOverall += Number(item[1][0].price) * Number(item[2]);
+
         return item;
       });
       setSubTotal(subTotalOverall);
@@ -89,7 +85,7 @@ function ShoppingCartBody() {
             <div>
               <h1 className="billing-details">Billing Details</h1>
               <div>
-                <div>First Name</div>
+                <div >First Name</div>
                 <input
                   id="firstName"
                   name="firstName"
