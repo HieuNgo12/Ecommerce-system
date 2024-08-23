@@ -57,6 +57,16 @@ function ShoppingCartBody() {
       setSuccess(true);
     },
   });
+  const coupons = [
+    {
+      id: 1,
+      title: ""
+    },
+    {
+      id:2,
+      title: ""
+    },
+  ]
   useEffect(() => {
     const processData = () => {
       let subTotalOverall = 0;
@@ -74,7 +84,7 @@ function ShoppingCartBody() {
     };
     processData();
   }, []);
-  
+
   useEffect(() => {
     const timeId = setTimeout(() => {
       setLoading(false);
