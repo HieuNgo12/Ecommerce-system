@@ -34,6 +34,7 @@ function LogIn() {
           user.password === password
       );
       if (user) {
+        
         sessionStorage.setItem("customer", username);
         toast.success("Đăng nhập thành công", {
           position: "top-center",
