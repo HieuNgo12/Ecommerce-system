@@ -53,3 +53,11 @@
 .card-item {
   margin-left: 15%;
 }
+
+.card-title{
+    font-size: 16px !important;
+}
+
+.price{
+    color:#db4444 !important;
+}

@@ -8,7 +8,7 @@
 }
 
 
-.container {
+.container-home-page {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   max-width: 1200px;
@@ -17,4 +17,18 @@
   gap: 10px;
   overflow: hidden;
   padding: 10px;
+}
+
+button:hover {
+  background-color: brown;
+}
+
+/* a:hover {
+  background-color: brown;
+
+} */
+
+nav a:hover {
+  background-color: white !important;
+  padding-top: 4px;
 }

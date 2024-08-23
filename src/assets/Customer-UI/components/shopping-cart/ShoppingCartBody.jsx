@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import "./ShoppingCartBody.css";
 import { Link } from "react-router-dom";
 import CartRow from "./CartRow";
+import Loading from "../utils/Loading";
 
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
-  
-
+  const [loading, setLoading] = useState(false);
+  const [updateCart, setUpdateCart] = useState(false);
 
   useEffect(() => {
-
     const processData = () => {
       let subTotalOverall = 0;
 
@@ -38,8 +38,18 @@ function ShoppingCartBody() {
     processData();
   }, []);
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
+
   return (
     <div className="shopping-cart">
+      {loading ? <Loading /> : null}
       <ul className="breadcrumb text-left">
         <li>Home</li>
         <li>Cart</li>
@@ -48,30 +58,52 @@ function ShoppingCartBody() {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="table-head">
             <tr>
-              <th scope="col" className="px-6 py-3">Product</th>
-              <th scope="col" className="px-6 py-3">Price</th>
-              <th scope="col" className="px-6 py-3">Quantity</th>
-              <th scope="col" className="px-6 py-3">Subtotal</th>
+              <th scope="col" className="px-6 py-3">
+                Product
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Subtotal
+              </th>
             </tr>
           </thead>
           <tbody>
             {itemList.length ? (
               itemList.map((cartItem) => (
-                <CartRow key={cartItem[0]} cartItem={cartItem} itemList={itemList} setSubTotal={setSubTotal} />
+                <CartRow
+                  updateCart={updateCart}
+                  key={cartItem[0]}
+                  cartItem={cartItem}
+                  itemList={itemList}
+                  setSubTotal={setSubTotal}
+                />
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4">Your cart is empty</td>
+                <td colSpan="4" className="text-center py-4">
+                  Your cart is empty
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
       <div>
-        <a className="button-return-update mr-96">
-          <Link to={"/"}>Return to shop</Link>
-        </a>
-        <button className="button-return-update ml-96 m-12">
+        <Link className="button-return-update mr-96" to={"/"}>
+          Return to shop
+        </Link>
+        <button
+          className="button-return-update ml-96 m-12"
+          onClick={() => {
+            setLoading(true);
+            setUpdateCart((updateCart) =>  !updateCart);
+          }}
+        >
           Update Cart
         </button>
       </div>
@@ -80,7 +112,11 @@ function ShoppingCartBody() {
           <input className="pl-4" placeholder={"Coupon Code"} />
         </div>
         <div>
-          <button className="apply-coupon">Apply Coupon</button>
+          <button className="apply-coupon"
+          onClick={()=>{
+            setLoading(true)
+          }}
+          >Apply Coupon</button>
         </div>
         <div className="cart-card">
           <div className="cart-total text-very-left">Cart total</div>
@@ -116,6 +152,7 @@ function ShoppingCartBody() {
               to={"/billingpage"}
               className="proceed "
               onClick={() => {
+
                 localStorage.setItem("billingList", JSON.stringify(itemList));
               }}
             >

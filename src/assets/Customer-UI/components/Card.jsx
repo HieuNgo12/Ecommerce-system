@@ -4,6 +4,7 @@ import Stars from "./Stars";
 import CustomArrows from "./ArrowSlider";
 import SimpleSlider from "./Slider";
 import Alert from "./utils/Alert";
+import Loading from "./utils/Loading";
 function Card({
   onClickViewAllProducts,
   price,
@@ -17,6 +18,15 @@ function Card({
   const [hover, setHover] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [cartList, setCartList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
 
   useEffect(() => {
     const timeId = setTimeout(() => {
@@ -41,6 +51,7 @@ function Card({
     localStorage.setItem("cartList", JSON.stringify(savedList));
     setShowSuccessAlert(true);
   };
+
   return (
     <div
       className="hover-product-card mt-12"
@@ -52,62 +63,63 @@ function Card({
         setHover(false);
       }}
     >
-                  {showSuccessAlert ? <Alert /> : null}
+      {/* {showSuccessAlert ? <Alert /> : null} */}
 
-      <a class="flex sales-card block max-w-sm p-6 ">
-        <div className="discount">
-          {Math.round(
-            ((price - (Number(price) + 99)) / (Number(price) + 99)) * 100
-          ) + "%"}
-        </div>
+      <>
+        <a class="flex sales-card block max-w-sm p-6 ">
+          <div className="discount">
+            {Math.round(
+              ((price - (Number(price) + 99)) / (Number(price) + 99)) * 100
+            ) + "%"}
+          </div>
+          <div>
+            <img src={img} style={{ minWidth: "120px", height: "120px" }} />
+          </div>
+          <div className=" ">
+            <img src="./icons/fill-heart.png" />
+            <img src="./icons/fill-eye.png" />
+          </div>
+        </a>
         <div>
-          <img src={img} style={{ minWidth: "120px", height: "120px" }} />
-        </div>
-        <div className=" ">
-          <img src="./icons/fill-heart.png" />
-          <img src="./icons/fill-eye.png" />
-        </div>
-      </a>
-      <div>
-        {hover && (
           <div>
             <div
               className="add-to-cart"
               onClick={() => {
                 onClickCard();
+                setLoading(true);
               }}
             >
-              Add to Cart
+              {loading ? <Loading /> : null}
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      <div className="text-left card-item">
-        <p class="text-left  text-2xl m-0 font-bold tracking-tight text-gray-900 dark:text-white">
-          {title}
-        </p>
-        <div className="flex">
-          <div>
-            <p className="price ">${price}</p>
-          </div>
-          <div>
-            <p className="org-price line-through">${Number(price) + 99}</p>
-          </div>
-        </div>
-        <div className="flex text-xl">
-          {rating ? (
-            <p class=" text-gray-700 dark:text-gray-400">
-              <Stars stars={Math.round(rating)} />
-            </p>
-          ) : (
-            "No Rating yet"
-          )}
-          <p className="rating">
-            {"("} {review ? review : 0} {")"}
+        <div className="text-left card-item">
+          <p class="text-left card-title m-0 font-bold tracking-tight text-gray-900 dark:text-white">
+            {title}
           </p>
+          <div className="flex">
+            <div>
+              <p className="price ">${price}</p>
+            </div>
+            <div>
+              <p className="org-price line-through">${Number(price) + 99}</p>
+            </div>
+          </div>
+          <div className="flex text-xl">
+            {rating ? (
+              <p class=" text-gray-700 dark:text-gray-400">
+                <Stars stars={Math.round(rating)} />
+              </p>
+            ) : (
+              "No Rating yet"
+            )}
+            <p className="rating">
+              {"("} {review ? review : 0} {")"}
+            </p>
+          </div>
         </div>
-      </div>
+      </>
     </div>
   );
 }

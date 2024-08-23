@@ -19,7 +19,7 @@ function ExploreOurProducts({ products, ...props }) {
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />
 
-      <div className="container">
+      <div className="container-home-page">
         {!viewAllProducts
           ? products.map((item, index) => {
               if (item.id > 0 && item.id < 5) {
