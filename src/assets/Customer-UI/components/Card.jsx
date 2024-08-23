@@ -89,7 +89,7 @@ function Card({
                 setLoading(true);
               }}
             >
-              {loading ? <Loading /> : null}
+              {loading ? <Loading /> : <div>Add to cart</div>}
             </div>
           </div>
         </div>

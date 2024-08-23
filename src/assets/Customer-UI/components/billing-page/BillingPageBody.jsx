@@ -74,6 +74,7 @@ function ShoppingCartBody() {
     };
     processData();
   }, []);
+  
   useEffect(() => {
     const timeId = setTimeout(() => {
       setLoading(false);
@@ -82,6 +83,7 @@ function ShoppingCartBody() {
       clearTimeout(timeId);
     };
   }, [loading]);
+
   return (
     <div className=" shopping-cart">
 
