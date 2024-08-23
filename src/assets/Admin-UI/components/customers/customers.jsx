@@ -114,6 +114,7 @@ const Customers = () => {
       dataIndex: "id",
       filters: filtersID,
       fixed: "left",
+      width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
       render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
@@ -124,7 +125,7 @@ const Customers = () => {
       showSorterTooltip: {
         target: "full-header",
       },
-      fixed: "left",
+      // fixed: "left",
       filters: filtersEmail,
       onFilter: (value, record) => record.email.indexOf(value) === 0,
       sorter: (a, b) => a.email.localeCompare(b.email),
@@ -289,7 +290,7 @@ const Customers = () => {
           target: "sorter-icon",
         }}
         scroll={{ x: true, y: 950 }}
-        style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1080 }}
         sticky
       />
       {modal && <ModalCustomer setModal={setModal} selected={selected} />}

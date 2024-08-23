@@ -60,52 +60,58 @@ const Quotes = () => {
       fixed: "left",
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      width: 100,
+      // render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
     },
     {
       title: "Author",
       dataIndex: "author",
       key: "author",
+      // width: 200,
       sorter: (a, b) => a.author.localeCompare(b.author),
-      render: (text, record) => (
-        <div style={{ width: 150 }}>{record.author}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 150 }}>{record.author}</div>
+      // ),
     },
     {
       title: "Quote",
       dataIndex: "quote",
       key: "quote",
-      render: (text, record) => (
-        <div style={{ width: 250, height: 100 }}>
-          <p>{record.quote}</p>
-        </div>
-      ),
+      // width:300,
+      // render: (text, record) => (
+      //   <div style={{ width: 300, }}>
+      //     <p>{record.quote}</p>
+      //   </div>
+      // ),
     },
     {
       title: "Response",
       dataIndex: "reply",
       key: "reply",
-      render: (text, record) => (
-        <div style={{ width: 250, height: 100 }}>
-          <p>{record.reply}</p>
-        </div>
-      ),
+      // width: 250,
+      // render: (text, record) => (
+      //   <div style={{ width: 250, height: 100 }}>
+      //     <p>{record.reply}</p>
+      //   </div>
+      // ),
     },
     {
       title: "Date Created",
       dataIndex: "dateCreate",
       key: "dateCreate",
-      render: (text, record) => (
-        <div style={{ width: 100 }}>{record.dateCreate}</div>
-      ),
+      // width: 150,
+      // render: (text, record) => (
+      //   <div style={{ width: 100 }}>{record.dateCreate}</div>
+      // ),
     },
     {
       title: "Date Response",
       dataIndex: "reply",
       key: "reply",
-      render: (text, record) => (
-        <div style={{ width: 100 }}>{record.dateReply}</div>
-      ),
+      // width: 150,
+      // render: (text, record) => (
+      //   <div style={{ width: 100 }}>{record.dateReply}</div>
+      // ),
     },
 
     {
@@ -114,9 +120,9 @@ const Quotes = () => {
       dataIndex: "status",
       filters: filtersStatus,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => (
-        <div style={{ width: 50 }}>{record.status}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 50 }}>{record.status}</div>
+      // ),
     },
     {
       title: "Action",
@@ -137,13 +143,13 @@ const Quotes = () => {
   ];
 
   return (
-    <div>
+    <div className="overflow-hidden">
       <Table
         columns={columns}
         dataSource={newDataQuotes}
         rowKey="id"
-        scroll={{ x: true, y: 950 }}
-        style={{ maxWidth: 1072 }}
+        scroll={{ x: 1200, y: 950 }}
+        // style={{ maxWidth: 1080 }}
         sticky
       />
       {isModalOpen && (

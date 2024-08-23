@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import "./indexAdmin.css";
 import Sidebar from "./components/sideBar/sideBar";
 import Header from "./components/header/header";
 import Dashboard from "./components/dashBoard/dashBoard";
@@ -18,36 +17,34 @@ import BackUp from "./components/backUp/backUp";
 import Setting from "./components/setting/setting";
 import Help from "./components/help/help";
 import Analytics from "./components/analytics/analytics";
-import AddCustomers from "./components/addCustomers/addCustomers"
+import AddCustomers from "./components/addCustomers/addCustomers";
 
 const AdminUI = () => {
-  const { dataUserName, dataProducts, dataCart } = useAdminContext();
+  // const { dataUserName, dataProducts, dataCart } = useAdminContext();
 
   return (
-    <div>
-      <div className="flex h-[73.563rem]">
-        <Sidebar />
-        <div className="flex flex-col flex-1">
-          <Header />
-          <div className="content flex-1">
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/addproduct" element={<AddProduct />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/customers/addcustomers" element={<AddCustomers />} />
-              <Route path="/reviews" element={<Reviews />} />
-              <Route path="/rating" element={<Rating />} />
-              <Route path="/promotion" element={<Promotion />} />
-              <Route path="/promotion/addpromotion" element={<AddPromotion /> }/>
-              <Route path="/quotes" element={<Quotes />} />
-              <Route path="/backup" element={<BackUp />} />
-              <Route path="/setting" element={<Setting />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/analytics" element={<Analytics />} />
-            </Routes>
-          </div>
+    <div className="h-screen flex w-full">
+      <Sidebar />
+      <div className="flex flex-col w-full overflow-hidden">
+        <Header />
+        <div>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/addproduct" element={<AddProduct />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/customers/addcustomers" element={<AddCustomers />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/rating" element={<Rating />} />
+            <Route path="/promotion" element={<Promotion />} />
+            <Route path="/promotion/addpromotion" element={<AddPromotion />} />
+            <Route path="/quotes" element={<Quotes />} />
+            <Route path="/backup" element={<BackUp />} />
+            <Route path="/setting" element={<Setting />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/analytics" element={<Analytics />} />
+          </Routes>
         </div>
       </div>
     </div>

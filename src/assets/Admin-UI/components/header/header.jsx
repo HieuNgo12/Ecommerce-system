@@ -123,7 +123,7 @@ function Header() {
           )}
           <input
             type="text"
-            className="rounded-md p-2"
+            className="rounded-md p-2 hidden sm:block"
             placeholder="Search"
             onChange={searchInput}
             value={search}
