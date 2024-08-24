@@ -3,13 +3,25 @@ import "./ShoppingCartBody.css";
 import { Link } from "react-router-dom";
 import CartRow from "./CartRow";
 import Loading from "../utils/Loading";
+import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
 
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [updateCart, setUpdateCart] = useState(false);
-
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const coupons = [
+    {
+      id: 1,
+      title: "123456",
+    },
+    {
+      id: 2,
+      title: "123457",
+    },
+  ];
   useEffect(() => {
     const processData = () => {
       let subTotalOverall = 0;
@@ -101,22 +113,43 @@ function ShoppingCartBody() {
           className="button-return-update ml-96 m-12"
           onClick={() => {
             setLoading(true);
-            setUpdateCart((updateCart) =>  !updateCart);
+            setUpdateCart((updateCart) => !updateCart);
           }}
         >
           Update Cart
         </button>
       </div>
+      {couponMessage ? (
+        coupons.filter((coupon) => {
+          console.log(coupon.title?.toString(), couponCode);
+          return coupon.title?.toString() === couponCode;
+        }).length ? (
+          <div className="text-left">Successfully applied coupon message</div>
+        ) : (
+          <div className="text-left">Failed to apply coupon message</div>
+        )
+      ) : null}
       <div className="coupon-code flex mb-80">
         <div className="mr-28">
-          <input className="pl-4" placeholder={"Coupon Code"} />
+          <input
+            className="pl-4"
+            onChange={(e) => {
+              setCouponMessage(faSlidersH);
+              setCouponCode(e.target.value);
+            }}
+            placeholder={"Coupon Code"}
+          />
         </div>
         <div>
-          <button className="apply-coupon"
-          onClick={()=>{
-            setLoading(true)
-          }}
-          >Apply Coupon</button>
+          <button
+            className="apply-coupon"
+            onClick={() => {
+              setCouponMessage(true);
+              setLoading(true);
+            }}
+          >
+            Apply Coupon
+          </button>
         </div>
         <div className="cart-card">
           <div className="cart-total text-very-left">Cart total</div>
@@ -149,10 +182,9 @@ function ShoppingCartBody() {
           </div>
           <div className="mt-8">
             <Link
-              to={"/billingpage"}
+              to={itemList.length ? "/billingpage" : "/shopping-cart"}
               className="proceed "
               onClick={() => {
-
                 localStorage.setItem("billingList", JSON.stringify(itemList));
               }}
             >
