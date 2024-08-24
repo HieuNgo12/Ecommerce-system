@@ -25,10 +25,12 @@ import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
 import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage"
 
 function App() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState("admin");
+  
   const adminRouter = createBrowserRouter([
     {
       path: "/admin",
@@ -69,10 +71,6 @@ function App() {
       element: <SignUp />,
     },
     {
-      path: "/adminui",
-      element: <AdminUI />,
-    },
-    {
       path: "/test",
       element: <Test />,
     },
@@ -83,10 +81,44 @@ function App() {
   ]);
 
   const customerRouter = createBrowserRouter([
+    // {
+    //   path: "/",
+    //   element: <HomePage />,
+    //   errorElement: <ErrorPage />,
+    //   children: [],
+    // },
+    // {
+    //   path: "/shopping-cart",
+    //   element: <ShoppingCart />,
+    // },
     {
-      path: "/",
-      element: <CustomerUI />,
+      path: "/edit-page",
+      element: <ProfilePage />,
     },
+    // {
+    //   path: "/productlist",
+    //   element: <ProductList />,
+    // },
+    // {
+    //   path: "/product/:id",
+    //   element: <ProductDetails />,
+    // },
+    // {
+    //   path: "/productwishlist",
+    //   element: <ProductWishlist />, // Define route for ProductWishlist
+    // },
+    // {
+    //   path: "/contactpage",
+    //   element: <ContactPage />,
+    // },
+    // {
+    //   path: "/aboutpage",
+    //   element: <AboutPage />,
+    // },
+    // {
+    //   path: "/billingpage",
+    //   element: <BillingPage />,
+    // },
   ]);
 
   // const sellerRouter = createBrowserRouter([
