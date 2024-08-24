@@ -12,6 +12,7 @@ const ProductWishlist = () => {
     useContext(WishlistContext);
   const [justForYouItems, setJustForYouItems] = useState([]);
 
+   // Fetch 'Just For You' items when `favoriteItems` changes
   useEffect(() => {
     const fetchJustForYouItems = async () => {
       try {
@@ -30,6 +31,7 @@ const ProductWishlist = () => {
     }
   }, [favoriteItems]);
 
+   // Add a specific item from the wishlist to the cart
   const handleAddToCart = (favoriteItems) => {
     const cartList = JSON.parse(localStorage.getItem("cartList") || "[]");
     const quantity = 1; // Define quantity here
@@ -50,7 +52,7 @@ const ProductWishlist = () => {
 
   const moveAllToCart = () => {
     const cartList = JSON.parse(localStorage.getItem("cartList") || "[]");
-
+     // Iterate through each item in the wishlist and add it to the cart
     favoriteItems.forEach((item) => {
       const quantity = 1; // Define quantity here
       const newItem = {
@@ -88,6 +90,7 @@ const ProductWishlist = () => {
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {/* Button move all items to cart only visible if there are items in the wishlist */}
           {favoriteItems.map((item) => (
             <div key={item.id} className=" p-4 relative rounded-lg">
               <div className="bg-grey-500 shadow-lg">
@@ -123,6 +126,7 @@ const ProductWishlist = () => {
           ))}
         </div>
 
+        {/* conditional rendering */}
         {favoriteItems.length > 0 && justForYouItems.length > 0 && (
           <div>
             <div className="flex justify-between items-center mb-6">

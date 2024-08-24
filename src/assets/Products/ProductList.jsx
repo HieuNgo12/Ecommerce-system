@@ -13,7 +13,9 @@ const ProductList = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 12; // Number of items per page
 
+  //access the current location in the app
   const location = useLocation();
+  //extract the search query from the query string
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get("search")?.toLowerCase() || "";
 

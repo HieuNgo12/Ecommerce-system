@@ -18,6 +18,9 @@ export const WishlistProvider = ({ children }) => {
     });
   };
 
+
+
+  //remove an item from the wishlist by its ID
   const removeFromWishlist = (id) => {
     setFavoriteItems((prevItems) => {
       const newItems = prevItems.filter((item) => item.id !== id);
@@ -26,6 +29,7 @@ export const WishlistProvider = ({ children }) => {
     });
   };
 
+  //clear all items from the wishlist
   const clearWishlist = () => {
     setFavoriteItems([]);
     localStorage.removeItem("wishlist");
