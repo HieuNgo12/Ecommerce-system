@@ -5,6 +5,8 @@ import CustomArrows from "./ArrowSlider";
 import SimpleSlider from "./Slider";
 import Alert from "./utils/Alert";
 import Loading from "./utils/Loading";
+import { ToastContainer, toast } from "react-toastify";
+
 function Card({
   onClickViewAllProducts,
   price,
@@ -87,6 +89,16 @@ function Card({
               onClick={() => {
                 onClickCard();
                 setLoading(true);
+                toast.success("Added to cart successfully", {
+                  position: "top-center",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
               }}
             >
               {loading ? <Loading /> : <div>Add to cart</div>}
