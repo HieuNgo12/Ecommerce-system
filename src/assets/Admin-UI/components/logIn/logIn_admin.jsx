@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
+import Footer from "../../../Customer-UI/components/Footer";
+import Navbar from "../../../Customer-UI/components/Navbar"
 
 function LogIn() {
   const { dataUserName } = useAdminContext();
@@ -25,7 +27,6 @@ function LogIn() {
         draggable: true,
         progress: undefined,
         theme: "light",
-        // transition: Bounce,
       });
     } else {
       const user = dataUserName.find(
@@ -34,7 +35,6 @@ function LogIn() {
           user.password === password
       );
       if (user) {
-        
         sessionStorage.setItem("customer", username);
         toast.success("Đăng nhập thành công", {
           position: "top-center",
@@ -65,7 +65,7 @@ function LogIn() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          onClose: () => navigate("/"),
+          onClose: () => navigate("/admin"),
         });
       } else {
         toast.error("Đăng nhập thất bại", {
@@ -77,7 +77,6 @@ function LogIn() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          // transition: Bounce,
         });
       }
     }
@@ -88,68 +87,81 @@ function LogIn() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <img src={img} className="w-2/3 h-2/3" />
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
-        <form onSubmit={logIn} className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">Log in to Exclusive</h2>
-            <div className="border-b-2 border-gray-300"></div>
-          </div>
-          <div>
-            <label htmlFor="username" className="block mb-1 font-medium">
-              Email:
-            </label>
-            <input
-              type="text"
-              id="username"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="Email or Phone Number"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <label htmlFor="password" className="block mb-1 font-medium">
-              Password:
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="flex items-center mb-4">
-              <input
-                type="checkbox"
-                id="showPassword"
-                className="mr-2"
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-              />
-              <label htmlFor="showPassword" className="text-sm font-medium">
-                Show Password
-              </label>
+    <div className="h-screen">
+      <Navbar />
+      <div className="flex items-center space-y-4 gap-10">
+        <img src={img} className="w-2/3" />
+        <div className="bg-white shadow-lg rounded-lg p-8 w-1/3">
+          <form onSubmit={logIn} className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-2">Log in to Exclusive</h2>
+              <div className="border-b-2 border-gray-300"></div>
             </div>
-          </div>
-          <button
-            type="submit"
-            className="block w-full p-2 bg-red-500 text-white rounded-md"
-          >
-            Log In
-          </button>
-          <p className="mt-4 text-sm text-center">
-            Don't have an account?{" "}
-            <button
-              type="button"
-              className="text-blue-500"
-              onClick={onSwitchToSignUp}
-            >
-              Sign Up
-            </button>
-          </p>
-        </form>
+            <div>
+              <label htmlFor="username" className="block mb-1 font-medium">
+                Email:
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="Email or Phone Number"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <label htmlFor="password" className="block mb-1 font-medium">
+                Password:
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  id="showPassword"
+                  className="mr-2"
+                  checked={showPassword}
+                  onChange={() => setShowPassword(!showPassword)}
+                />
+                <label htmlFor="showPassword" className="text-sm font-medium">
+                  Show Password
+                </label>
+              </div>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <button
+                type="submit"
+                className="block w-full p-2 bg-red-500 text-white rounded-md"
+              >
+                Log In
+              </button>
+              <button
+                type="button"
+                className="text-blue-500"
+                onClick={() => navigate("/forgot-password")}
+              >
+                Forgot Password?
+              </button>
+            </div>
+            <p className="mt-4 text-sm text-center">
+              Don't have an account?{" "}
+              <button
+                type="button"
+                className="text-blue-500"
+                onClick={onSwitchToSignUp}
+              >
+                Sign Up
+              </button>
+            </p>
+          </form>
+        </div>
       </div>
+      <Footer />
       <ToastContainer />
     </div>
   );

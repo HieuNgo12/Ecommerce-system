@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import Loading from "../utils/Loading";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
@@ -22,6 +23,9 @@ const SignupSchema = Yup.object().shape({
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [couponMessage, setCouponMessage] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -37,6 +41,7 @@ function ShoppingCartBody() {
     },
     validationSchema: SignupSchema,
     onSubmit: (values) => {
+      setLoading(true);
       axios
         .post("https://66b0ab0f6a693a95b539b080.mockapi.io/delivery", {
           ...values,
@@ -50,8 +55,20 @@ function ShoppingCartBody() {
         .catch(function (error) {
           console.log(error);
         });
+      localStorage.setItem("orders", JSON.stringify(values));
+      setSuccess(true);
     },
   });
+  const coupons = [
+    {
+      id: 1,
+      title: "123456",
+    },
+    {
+      id: 2,
+      title: "123457",
+    },
+  ];
   useEffect(() => {
     const processData = () => {
       let subTotalOverall = 0;
@@ -70,9 +87,19 @@ function ShoppingCartBody() {
     processData();
   }, []);
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
+
   return (
     <div className=" shopping-cart">
       <form onSubmit={formik.handleSubmit}>
+        {loading && <Loading />}
         <ul className="breadcrumb text-left">
           <li>Account</li>
           <li>My Account</li>
@@ -85,7 +112,7 @@ function ShoppingCartBody() {
             <div>
               <h1 className="billing-details">Billing Details</h1>
               <div>
-                <div >First Name</div>
+                <div>First Name</div>
                 <input
                   id="firstName"
                   name="firstName"
@@ -201,7 +228,9 @@ function ShoppingCartBody() {
                   id="emailAddress"
                   name="emailAddress"
                   type="emailAddress"
-                  onChange={formik.handleChange}
+                  onChange={
+                    formik.handleChange
+                  }
                   value={formik.values.emailAddress}
                 />
                 <div className="flex">
@@ -273,6 +302,18 @@ function ShoppingCartBody() {
               <input name="paymentMethod" value="cashOnDelivery" type="radio" />
               <div className="ml-2">Cash On Delivery</div>
             </div>
+            {couponMessage ? (
+              coupons.filter((coupon) => {
+                console.log(coupon.title?.toString(), couponCode);
+                return coupon.title?.toString() === couponCode;
+              }).length ? (
+                <div className="text-left text-green-300">
+                  Successfully applied coupon message
+                </div>
+              ) : (
+                <div className="text-left text-red-300">Failed to apply coupon message</div>
+              )
+            ) : null}
             <div className="flex">
               <input
                 className="coupon-input"
@@ -287,15 +328,12 @@ function ShoppingCartBody() {
                 className="button-style apply"
                 onClick={async () => {
                   try {
-                    const data = await axios.get(
-                      "https://66b0ab0f6a693a95b539b080.mockapi.io/delivery"
-                    );
-                    if (!data) {
-                      alert("Coupon not found!");
-                    }
+                    // const data = await axios.get(
+                    //   "https://66b0ab0f6a693a95b539b080.mockapi.io/delivery"
+                    // );
+                    setCouponMessage(true);
                   } catch (e) {
                     console.log(e);
-                    alert("Coupon not found!");
                   }
                 }}
               >

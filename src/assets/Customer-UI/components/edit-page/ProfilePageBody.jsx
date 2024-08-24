@@ -81,13 +81,13 @@ function ProfilePageBody() {
           <div className="head-link mt-5">My Wishlist</div>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <div className="ml-32">
-            <div className="edit-your-profile">Edit Your Profile</div>
+          <div className="ml-64">
+            <div className="edit-your-profile ml-4 ">Edit Your Profile</div>
             <div>
               <div>
                 <div className="flex">
                   <div className="text-very-left ml-4">First Name</div>
-                  <div className="text-very-left">Last Name</div>
+                  <div className="text-very-left ml-4">Last Name</div>
                 </div>
                 <div className="flex">
                   <input

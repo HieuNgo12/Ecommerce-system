@@ -21,3 +21,8 @@
     align-items: end;
     margin-left: 450%;
 }
+
+.view-all:hover {
+    background-color: brown;
+
+}

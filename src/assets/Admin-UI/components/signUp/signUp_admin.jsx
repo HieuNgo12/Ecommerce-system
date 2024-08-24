@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
+import Footer from "../../../Customer-UI/components/Footer";
+import Navbar from "../../../Customer-UI/components/Navbar";
 
 function SignUp() {
   const { dataUserName } = useAdminContext();
@@ -31,7 +33,7 @@ function SignUp() {
       if (userName === "" || email === "" || password === "") {
         toast.warn("Vui lòng nhập đầy đủ thông tin!", {
           position: "top-center",
-          autoClose:1500,
+          autoClose: 1500,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: true,
@@ -46,7 +48,7 @@ function SignUp() {
             "Mật khẩu và xác nhận không trùng khớp. Vui lòng nhập lại!",
             {
               position: "top-center",
-              autoClose:1500,
+              autoClose: 1500,
               hideProgressBar: false,
               closeOnClick: true,
               pauseOnHover: true,
@@ -63,7 +65,7 @@ function SignUp() {
           if (checkUserName) {
             toast.warn("Username đã có người sử dụng", {
               position: "top-center",
-              autoClose:1500,
+              autoClose: 1500,
               hideProgressBar: false,
               closeOnClick: true,
               pauseOnHover: true,
@@ -82,7 +84,7 @@ function SignUp() {
               if (password.length < 5) {
                 toast.warn("Password phải dài hơn 5 ký tự", {
                   position: "top-center",
-                  autoClose:1500,
+                  autoClose: 1500,
                   hideProgressBar: false,
                   closeOnClick: true,
                   pauseOnHover: true,
@@ -125,7 +127,7 @@ function SignUp() {
                   console.error("Đăng ký thất bại:", error);
                   toast.error("Đăng ký thất bại", {
                     position: "top-center",
-                    autoClose:1500,
+                    autoClose: 1500,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -148,84 +150,88 @@ function SignUp() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <img src={img} className="w-2/3 h-2/3" />
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
-        <form onSubmit={signUp} className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">Create an account</h2>
-            <div className="border-b-2 border-gray-300"></div>
-          </div>
-          <div>
-            <label htmlFor="name" className="block mb-1 font-medium">
-              UserName:
-            </label>
-            <input
-              type="text"
-              id="name"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="UserName"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-            <label htmlFor="email" className="block mb-1 font-medium">
-              Email:
-            </label>
-            <input
-              type="text"
-              id="email"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="Email or Phone Number"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <label htmlFor="password" className="block mb-1 font-medium">
-              Password:
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <label htmlFor="confirm" className="block mb-1 font-medium">
-              Confirm Password:
-            </label>
-            <input
-              type="password"
-              id="confirm"
-              className="block w-full p-2 border rounded-md mb-4"
-              placeholder="Confirm Password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="block w-full p-2 bg-red-500 text-white rounded-md"
-          >
-            Create Account
-          </button>
-          <button
-            type="button"
-            className="block w-full p-2 bg-white text-black border-2 rounded-md mt-2"
-          >
-            Sign up with Google
-          </button>
-          <p className="mt-4 text-sm text-center">
-            Already have an account?{" "}
+    <div className="h-screen">
+      <Navbar />
+      <div className="flex justify-center items-center gap-10">
+        <img src={img} className="w-2/3" />
+        <div className="bg-white shadow-lg rounded-lg p-8 w-1/3">
+          <form onSubmit={signUp} className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mb-2">Create an account</h2>
+              <div className="border-b-2 border-gray-300"></div>
+            </div>
+            <div>
+              <label htmlFor="name" className="block mb-1 font-medium">
+                UserName:
+              </label>
+              <input
+                type="text"
+                id="name"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="UserName"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+              <label htmlFor="email" className="block mb-1 font-medium">
+                Email:
+              </label>
+              <input
+                type="text"
+                id="email"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="Email or Phone Number"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <label htmlFor="password" className="block mb-1 font-medium">
+                Password:
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <label htmlFor="confirm" className="block mb-1 font-medium">
+                Confirm Password:
+              </label>
+              <input
+                type="password"
+                id="confirm"
+                className="block w-full p-2 border rounded-md mb-4"
+                placeholder="Confirm Password"
+                value={confirm}
+                onChange={(e) => setConfirm(e.target.value)}
+              />
+            </div>
+            <button
+              type="submit"
+              className="block w-full p-2 bg-red-500 text-white rounded-md"
+            >
+              Create Account
+            </button>
             <button
               type="button"
-              className="text-blue-500"
-              onClick={onSwitchToLogIn}
+              className="block w-full p-2 bg-white text-black border-2 rounded-md mt-2"
             >
-              Log In
+              Sign up with Google
             </button>
-          </p>
-        </form>
+            <p className="mt-4 text-sm text-center">
+              Already have an account?{" "}
+              <button
+                type="button"
+                className="text-blue-500"
+                onClick={onSwitchToLogIn}
+              >
+                Log In
+              </button>
+            </p>
+          </form>
+        </div>
       </div>
+      <Footer />
       <ToastContainer />
     </div>
   );

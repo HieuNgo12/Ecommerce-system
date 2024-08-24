@@ -61,7 +61,10 @@ ul.breadcrumb li a:hover {
   color: #fafafa;
   border-radius: 4px;
 }
+.proceed:hover {
+  background-color: brown !important;
 
+}
 .coupon-code {
   font-size: 16px;
   line-height: 24px;
@@ -131,6 +134,9 @@ input:focus {
     padding: 16px 48px 16px 48px;
     border-radius: 4px;
     align-items: end;
+}
+.button-return-update:hover{
+  background-color: #db4444 !important;
 }
 
 .image {

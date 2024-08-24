@@ -1,18 +1,11 @@
-import "./App.css";
-import { ToastContainer } from 'react-toastify';
 import { useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import HomePage from "./assets/Customer-UI/pages/HomePage";
-import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
-import ProductList from "./assets/Products/ProductList";
-import ProductDetails from "./assets/Products/ProductDetails";
-import ProductWishlist from "./assets/Products/ProductWishlist";
-import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
-import ContactPage from "./assets/Customer-UI/pages/ContactPage";
-import AboutPage from "./assets/Customer-UI/pages/AboutPage";
-import BillingPage from "./assets/Customer-UI/pages/BillingPage";
-import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+// import SellerUI from "./assets/Seller-UI/SellerUI";
+import CustomerUI from "./assets/Customer-UI/CustomerUI";
 import AdminUI from "./assets/Admin-UI/AdminUI";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./assets/Admin-UI/components/dashBoard/dashBoard";
 import Products from "./assets/Admin-UI/components/products/products";
 import Orders from "./assets/Admin-UI/components/orders/orders";
@@ -31,16 +24,15 @@ import BackUp from "./assets/Admin-UI/components/backUp/backUp";
 import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
+import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
 
 function App() {
-  // eslint-disable-next-line no-unused-vars
+  const [count, setCount] = useState(0);
   const [user, setUser] = useState("admin");
-
   const adminRouter = createBrowserRouter([
     {
-      path: "/",
+      path: "/admin",
       element: <AdminUI />,
-      errorElement: <ErrorPage />,
       children: [
         { path: "dashboard", element: <Dashboard /> },
         {
@@ -84,54 +76,30 @@ function App() {
       path: "/test",
       element: <Test />,
     },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
   ]);
 
   const customerRouter = createBrowserRouter([
     {
       path: "/",
-      element: <HomePage />,
-      errorElement: <ErrorPage />,
-      children: [],
-    },
-    {
-      path: "/shopping-cart",
-      element: <ShoppingCart />,
-    },
-    {
-      path: "/edit-page",
-      element: <ProfilePage />,
-    },
-    {
-      path: "/productlist",
-      element: <ProductList />,
-    },
-    {
-      path: "/product/:id",
-      element: <ProductDetails />,
-    },
-    {
-      path: "/productwishlist",
-      element: <ProductWishlist />, // Define route for ProductWishlist
-    },
-    {
-      path: "/contactpage",
-      element: <ContactPage />,
-    },
-    {
-      path: "/aboutpage",
-      element: <AboutPage />,
-    },
-    {
-      path: "/billingpage",
-      element: <BillingPage />,
+      element: <CustomerUI />,
     },
   ]);
 
+  // const sellerRouter = createBrowserRouter([
+  //   {
+  //     path: "/",
+  //     element: <SellerUI />,
+  //   },
+  // ]);
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
+      {/* {user === "seller" && <RouterProvider router={sellerRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
-      <ToastContainer />
     </>
   );
 }

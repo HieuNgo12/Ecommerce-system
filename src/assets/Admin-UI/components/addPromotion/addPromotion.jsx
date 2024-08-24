@@ -75,59 +75,101 @@ const AddPromotion = () => {
     const newData = { ...getData, promotionalPrice: promotionalPrice };
     console.log("Dữ liệu sản phẩm với giá khuyến mãi:", newData);
     newPromotion(newData);
-  
 
     const now = new Date();
     console.log("Thời gian hiện tại:", now);
-  
 
-    if (now >= startDateTime && now <= endDateTime) {
-      console.log("Khuyến mãi đang diễn ra");
-  
-      // Gửi PUT request để cập nhật giá trị price thành promotionalPrice
-      const updatePrice = async (price) => {
-        try {
-          const res = await fetch(
-            `https://66b0ab0f6a693a95b539b080.mockapi.io/products/${getData.id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                price: price,
-              }),
-            }
+    const updatePrice = async (price) => {
+      try {
+        const res = await fetch(
+          `https://66b0ab0f6a693a95b539b080.mockapi.io/products/${getData.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              price: price,
+              startDate: startDate,
+              startTime: startTime,
+              endDate: endDate,
+              endTime: endTime,
+            }),
+          }
+        );
+        const json = await res.json();
+        callApi();
+        console.log("Kết quả từ API:", json);
+        toast.success("Added product successful!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } catch (error) {
+        console.error("Lỗi:", error);
+      }
+    };
+
+    if (now < startDateTime) {
+      console.log("Khuyến mãi chưa bắt đầu, bắt đầu đếm ngược.");
+
+      const timeUntilStart = startDateTime - now;
+      console.log("Thời gian đến khi bắt đầu khuyến mãi (ms):", timeUntilStart);
+
+      const countdownToStart = setTimeout(() => {
+        console.log("Khuyến mãi bắt đầu ngay bây giờ.");
+        startPromotion();
+      }, timeUntilStart);
+
+      const countdownInterval = setInterval(() => {
+        const timeLeft = startDateTime - new Date();
+        if (timeLeft <= 0) {
+          clearInterval(countdownInterval);
+        } else {
+          console.log(
+            "Thời gian còn lại cho đến khi khuyến mãi bắt đầu:",
+            Math.floor(timeLeft / 1000),
+            "giây"
           );
-          const json = await res.json();
-          console.log("Kết quả từ API:", json);
-          toast.success("Added product successful!", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        } catch (error) {
-          console.error("Lỗi:", error);
         }
+      }, 1000);
+
+      return () => {
+        clearTimeout(countdownToStart);
+        clearInterval(countdownInterval);
+        console.log("Countdown tới startDate đã bị hủy.");
       };
-  
-      console.log("Cập nhật giá trị price thành giá khuyến mãi:", promotionalPrice);
+    } else if (now >= startDateTime && now <= endDateTime) {
+      startPromotion();
+    } else {
+      console.log("Khuyến mãi đã kết thúc.");
+    }
+
+    function startPromotion() {
+      console.log("Khuyến mãi đang diễn ra.");
+
+      console.log(
+        "Cập nhật giá trị price thành giá khuyến mãi:",
+        promotionalPrice
+      );
       updatePrice(promotionalPrice);
-  
-      const timeRemaining = endDateTime - now;
+
+      const timeRemaining = endDateTime - new Date();
       console.log("Thời gian còn lại cho khuyến mãi (ms):", timeRemaining);
-  
+
       const timer = setTimeout(() => {
         console.log("Thời gian khuyến mãi đã kết thúc.");
 
         console.log("Khôi phục giá trị price về giá ban đầu:", originalPrice);
         updatePrice(originalPrice);
-        alert("Thời gian khuyến mãi đã kết thúc, giá sản phẩm trở về giá ban đầu!");
+        alert(
+          "Thời gian khuyến mãi đã kết thúc, giá sản phẩm trở về giá ban đầu!"
+        );
       }, timeRemaining);
 
       const countdownInterval = setInterval(() => {
@@ -135,22 +177,21 @@ const AddPromotion = () => {
         if (timeLeft <= 0) {
           clearInterval(countdownInterval);
         } else {
-          console.log("Thời gian còn lại:", Math.floor(timeLeft / 1000), "giây");
+          console.log(
+            "Thời gian còn lại:",
+            Math.floor(timeLeft / 1000),
+            "giây"
+          );
         }
       }, 1000);
-  
+
       return () => {
         clearTimeout(timer);
         clearInterval(countdownInterval);
         console.log("Timer và countdown đã bị hủy.");
       };
-    } else {
-      console.log("Khuyến mãi chưa bắt đầu hoặc đã kết thúc.");
     }
   };
-  
-  
-  
 
   return (
     <div className="container mx-auto p-4">
