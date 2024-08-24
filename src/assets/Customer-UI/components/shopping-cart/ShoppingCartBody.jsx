@@ -2,19 +2,34 @@ import React, { useEffect, useState } from "react";
 import "./ShoppingCartBody.css";
 import { Link } from "react-router-dom";
 import CartRow from "./CartRow";
+import Loading from "../utils/Loading";
+import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
 
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
-  
-
-  let subTotalOverall = 0;
-
+  const [loading, setLoading] = useState(false);
+  const [updateCart, setUpdateCart] = useState(false);
+  const [couponMessage, setCouponMessage] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const coupons = [
+    {
+      id: 1,
+      title: "123456",
+    },
+    {
+      id: 2,
+      title: "123457",
+    },
+  ];
   useEffect(() => {
     const processData = () => {
+      let subTotalOverall = 0;
+
       const cartList = JSON.parse(localStorage.getItem("cartList") || "[]"); // Default to an empty array if null
       let cartItemList = [];
       let quantityCartList = {};
+      console.log(cartList);
 
       cartList.forEach((product) => {
         subTotalOverall += Number(product.price);
@@ -26,59 +41,115 @@ function ShoppingCartBody() {
       });
 
       for (const [key, value] of Object.entries(quantityCartList)) {
-
-        cartItemList.push([key, value]);
+        cartItemList.push([key, value, value.length]);
       }
-      setSubTotal(subTotalOverall)
-      setItemList(cartItemList)
+      setSubTotal(subTotalOverall);
+      setItemList(cartItemList);
     };
 
     processData();
   }, []);
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
+
   return (
     <div className="shopping-cart">
+      {loading ? <Loading /> : null}
       <ul className="breadcrumb text-left">
         <li>Home</li>
         <li>Cart</li>
       </ul>
       <div className="relative overflow-x-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead className="table-head">
             <tr>
-              <th scope="col" className="px-6 py-3">Product</th>
-              <th scope="col" className="px-6 py-3">Price</th>
-              <th scope="col" className="px-6 py-3">Quantity</th>
-              <th scope="col" className="px-6 py-3">Subtotal</th>
+              <th scope="col" className="px-6 py-3">
+                Product
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Quantity
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Subtotal
+              </th>
             </tr>
           </thead>
           <tbody>
             {itemList.length ? (
               itemList.map((cartItem) => (
-                <CartRow key={cartItem[0]} cartItem={cartItem} setSubTotal={setSubTotal} />
+                <CartRow
+                  updateCart={updateCart}
+                  key={cartItem[0]}
+                  cartItem={cartItem}
+                  itemList={itemList}
+                  setSubTotal={setSubTotal}
+                />
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="text-center py-4">Your cart is empty</td>
+                <td colSpan="4" className="text-center py-4">
+                  Your cart is empty
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
       <div>
-        <a className="button-return-update mr-96">
-          <Link to={"/"}>Return to shop</Link>
-        </a>
-        <button className="button-return-update ml-96 m-12">
-          Update To Cart
+        <Link className="button-return-update mr-96" to={"/"}>
+          Return to shop
+        </Link>
+        <button
+          className="button-return-update ml-96 m-12"
+          onClick={() => {
+            setLoading(true);
+            setUpdateCart((updateCart) => !updateCart);
+          }}
+        >
+          Update Cart
         </button>
       </div>
+      {couponMessage ? (
+        coupons.filter((coupon) => {
+          console.log(coupon.title?.toString(), couponCode);
+          return coupon.title?.toString() === couponCode;
+        }).length ? (
+          <div className="text-left text-green-300">Successfully applied coupon message</div>
+        ) : (
+          <div className="text-left text-red-300">Failed to apply coupon message</div>
+        )
+      ) : null}
       <div className="coupon-code flex mb-80">
         <div className="mr-28">
-          <input className="pl-4" placeholder={"Coupon Code"} />
+          <input
+            className="pl-4"
+            onChange={(e) => {
+              setCouponMessage(faSlidersH);
+              setCouponCode(e.target.value);
+            }}
+            placeholder={"Coupon Code"}
+          />
         </div>
         <div>
-          <button className="apply-coupon">Apply Coupon</button>
+          <button
+            className="apply-coupon"
+            onClick={() => {
+              setCouponMessage(true);
+              setLoading(true);
+            }}
+          >
+            Apply Coupon
+          </button>
         </div>
         <div className="cart-card">
           <div className="cart-total text-very-left">Cart total</div>
@@ -109,8 +180,16 @@ function ShoppingCartBody() {
           <div>
             <img src="./public/icons/long-line.png" alt="line" />
           </div>
-          <div>
-            <button className="proceed"><Link to={"/billing"}>Proceed to checkout</Link></button>
+          <div className="mt-8">
+            <Link
+              to={itemList.length ? "/billingpage" : "/shopping-cart"}
+              className="proceed "
+              onClick={() => {
+                localStorage.setItem("billingList", JSON.stringify(itemList));
+              }}
+            >
+              Proceed to checkout
+            </Link>
           </div>
         </div>
       </div>

@@ -19,12 +19,12 @@ function ExploreOurProducts({ products, ...props }) {
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />
 
-      <div className="grid grid-cols-4 gap-8 ">
+      <div className="container-home-page">
         {!viewAllProducts
           ? products.map((item, index) => {
               if (item.id > 0 && item.id < 5) {
                 return (
-                  <div>
+                  <div className="container">
                     <Card
                       orgPrice={item.price + 99}
                       review={Math.ceil(item.rating.count)}
@@ -39,7 +39,7 @@ function ExploreOurProducts({ products, ...props }) {
             })
           : products.map((item, index) => {
               return (
-                <div>
+                <div className="container">
                   <Card
                     orgPrice={item.price + 99}
                     review={Math.ceil(item.rating.count)}

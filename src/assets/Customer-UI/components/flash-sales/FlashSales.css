@@ -20,8 +20,8 @@
 }
 
 .time-text{
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-    font-family: "Poppins"
+    font-size: 18px !important;
+    font-weight: 500 !important;
+    /* line-height: 18px !important; */
+    font-family: "Poppins" !important;
 }

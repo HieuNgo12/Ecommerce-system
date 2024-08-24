@@ -88,6 +88,7 @@ const Rating = () => {
       key: "id",
       filters: filtersID,
       fixed: "left",
+      width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
       render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
@@ -96,7 +97,6 @@ const Rating = () => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      fixed: "left",
       filters: filtersTitle,
       onFilter: (value, record) => record.title.indexOf(value) === 0,
       sorter: (a, b) => a.title.localeCompare(b.title),
@@ -142,9 +142,9 @@ const Rating = () => {
       title: "Total Comment",
       dataIndex: "Total comment",
       key: "Total comment",
-      width: 130,
+      // width: 130,
       render: (text, record) => (
-        <div style={{ width: 70 }}>
+        <div style={{ width: 100 }}>
           <div>{record.totalComment}</div>
         </div>
       ),
@@ -184,7 +184,7 @@ const Rating = () => {
         dataSource={dataChanged}
         rowKey="id"
         scroll={{ x: true, y: 950 }}
-        style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1080 }}
         sticky
       />
       {isModalOpen && (
