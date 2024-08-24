@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import dataSideBar from "../data/dataSideBar";
 import AddCustomers from "../addCustomers/addCustomers";
+import { ToastContainer, toast } from "react-toastify";
 
 function Header() {
   const navigate = useNavigate();
@@ -27,45 +28,55 @@ function Header() {
 
   const logOut = () => {
     sessionStorage.removeItem("admin");
-    alert("Đăng xuất thành công!");
-    navigate("/login");
+    toast.warn("Đăng xuất thành công", {
+      position: "top-center",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      // transition: Bounce,
+      onClose: () => navigate("/login"),
+    });
   };
 
   const addProduct = () => {
-    navigate("/products/addproduct");
+    navigate("/admin/products/addproduct");
   };
 
   const addPromotion = () => {
-    navigate("/promotion/addpromotion");
+    navigate("/admin/promotion/addpromotion");
   };
 
   const addCustomers = () => {
-    navigate("/customers/addcustomers");
-  }
+    navigate("/admin/customers/addcustomers");
+  };
 
   return (
     <div className="w-full p-6 bg-gray-100">
       <div className="w-full flex items-center justify-between pb-3">
         {dataSideBar.map(
           (item, index) =>
-            currentPath === `/${item.name.toLowerCase()}` && (
+            currentPath === `/admin/${item.name.toLowerCase()}` && (
               <div
                 key={index}
                 className="text-gray-500"
               >{`Admin > ${item.name}`}</div>
             )
         )}
-        {currentPath === `/products/addproduct` && (
+        {currentPath === `/admin/products/addproduct` && (
           <div className="text-gray-500">
             Admin {">"} Products {">"} Add Product
           </div>
         )}
-        {currentPath === `/promotion/addpromotion` && (
+        {currentPath === `/admin/promotion/addpromotion` && (
           <div className="text-gray-500">
             Admin {">"} Promotion {">"} Add Promotion
           </div>
         )}
-        {currentPath === `/customres/addcustomers` && (
+        {currentPath === `/admin/customres/addcustomers` && (
           <div className="text-gray-500">
             Admin {">"} Customres {">"} Add Customres
           </div>
@@ -80,24 +91,24 @@ function Header() {
       <div className="w-full bg-gray-100 flex items-center justify-between">
         {dataSideBar.map(
           (item, index) =>
-            currentPath === `/${item.name.toLowerCase()}` && (
+            currentPath === `/admin/${item.name.toLowerCase()}` && (
               <div key={index} className="text-3xl font-bold">
                 {item.name}
               </div>
             )
         )}
-        {currentPath === `/products/addproduct` && (
+        {currentPath === `/admin/products/addproduct` && (
           <div className="text-3xl font-bold">Add Product</div>
         )}
-        {currentPath === `/promotion/addpromotion` && (
+        {currentPath === `/admin/promotion/addpromotion` && (
           <div className="text-3xl font-bold">Add Promotion</div>
         )}
-        {currentPath === `/customres/addcustomers` && (
+        {currentPath === `/admin/customres/addcustomers` && (
           <div className="text-3xl font-bold">Add Customres</div>
         )}
 
         <div className="flex gap-8">
-          {currentPath === "/products" && (
+          {currentPath === "/admin/products" && (
             <button
               className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
               onClick={addProduct}
@@ -105,7 +116,7 @@ function Header() {
               ADD PRODUCT
             </button>
           )}
-          {currentPath === "/promotion" && (
+          {currentPath === "/admin/promotion" && (
             <button
               className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
               onClick={addPromotion}
@@ -113,7 +124,7 @@ function Header() {
               ADD PROMOTION
             </button>
           )}
-          {currentPath === "/customers" && (
+          {currentPath === "/admin/customers" && (
             <button
               className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
               onClick={addCustomers}
@@ -123,13 +134,14 @@ function Header() {
           )}
           <input
             type="text"
-            className="rounded-md p-2"
+            className="rounded-md p-2 hidden sm:block"
             placeholder="Search"
             onChange={searchInput}
             value={search}
           />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

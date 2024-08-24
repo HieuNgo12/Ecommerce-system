@@ -137,8 +137,8 @@ const Orders = () => {
       key: "id",
       dataIndex: "id",
       fixed: "left",
+      width: 100,
       filters: filtersID,
-      height: 133,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
       render: (text, record) => <div style={{ width: 50}}>{record.id}</div>,
@@ -147,13 +147,12 @@ const Orders = () => {
       title: "User ID",
       dataIndex: "userId",
       key: "userId",
-      fixed: "left",
       filters: filtersUserID,
       onFilter: (value, record) =>
         record.userId.toString().indexOf(value) === 0,
       sorter: (a, b) => a.userId - b.userId,
       render: (text, record) => (
-        <div style={{ width: 80 }}>{record.userId}</div>
+        <div style={{ width: 100 }}>{record.userId}</div>
       ),
     },
     {
@@ -162,21 +161,21 @@ const Orders = () => {
       showSorterTooltip: {
         target: "full-header",
       },
-      fixed: "left",
       filters: filtersUsername,
       onFilter: (value, record) => record.username.indexOf(value) === 0,
       sorter: (a, b) => a.username.localeCompare(b.username),
       render: (text, record) => (
-        <div style={{ width: 165 }}>{record.username}</div>
+        <div>{record.username}</div>
       ),
     },
     {
       title: "Pro ID",
       key: "productId",
+      width: 300,
       render: (text, record) => (
-        <div style={{ width: 80 }}>
+        <div>
           {record.products.map((item, index) => (
-            <div key={index} className="py-1">
+            <div style={{width:"80px"}} key={index} className="py-1">
               {item.productId}
             </div>
           ))}
@@ -186,7 +185,7 @@ const Orders = () => {
     {
       title: "Per For Unit",
       key: "price",
-      width: 100,
+      // width: 100,
       render: (text, record) => {
         const loop1 = record.products
           .map((product) => {
@@ -216,11 +215,11 @@ const Orders = () => {
     {
       title: "Quantity",
       key: "quantity",
-      width: 80,
+      width: 400,
       render: (text, record) => (
         <div>
           {record.products.map((product, idx) => (
-            <div style={{ width: 80 }} key={idx} className="py-1">
+            <div style={{width:"80px"}} key={idx} className="py-1">
               {product.quantity}
             </div>
           ))}
@@ -230,6 +229,7 @@ const Orders = () => {
     {
       title: "Total Price",
       key: "price",
+      width: 300,
       render: (text, record) => {
         const totalPrices = record.products.map((product) => {
           const matchedProduct = dataProduct.find(
@@ -245,7 +245,7 @@ const Orders = () => {
         return (
           <div>
             {totalPrices.map((price, index) => (
-              <div style={{ width: 80 }} key={index} className="py-1">
+              <div style={{width:"80px"}} key={index} className="py-1">
                 {price}
               </div>
             ))}
@@ -282,9 +282,9 @@ const Orders = () => {
       filters: filtersEmail,
       onFilter: (value, record) => record.email.indexOf(value) === 0,
       sorter: (a, b) => a.email.localeCompare(b.email),
-      render: (text, record) => (
-        <div style={{ width: 250 }}>{record.email}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 250 }}>{record.email}</div>
+      // ),
     },
     {
       title: "Name",
@@ -295,9 +295,9 @@ const Orders = () => {
       filters: filtersFullName,
       onFilter: (value, record) => record.fullName.indexOf(value) === 0,
       sorter: (a, b) => a.fullName.localeCompare(b.fullName),
-      render: (text, record) => (
-        <div style={{ width: 170 }}>{record.fullName}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 170 }}>{record.fullName}</div>
+      // ),
     },
     {
       title: "Phone",
@@ -308,25 +308,26 @@ const Orders = () => {
       filters: filtersPhone,
       onFilter: (value, record) => record.phone.indexOf(value) === 0,
       sorter: (a, b) => a.phone.localeCompare(b.phone),
-      render: (text, record) => (
-        <div style={{ width: 200 }}>{record.phone}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 200 }}>{record.phone}</div>
+      // ),
     },
     {
       title: "City",
       dataIndex: "city",
-      render: (text, record) => <div style={{ width: 100 }}>{record.city}</div>,
+      // render: (text, record) => <div style={{ width: 100 }}>{record.city}</div>,
     },
     {
       title: "Street",
       dataIndex: "street",
-      render: (text, record) => (
-        <div style={{ width: 100 }}>{record.street}</div>
-      ),
+      // render: (text, record) => (
+      //   <div style={{ width: 100 }}>{record.street}</div>
+      // ),
     },
     {
       title: "Number",
       dataIndex: "number",
+      width: 200,
       render: (text, record) => (
         <div style={{ width: 100 }}>{record.number}</div>
       ),
@@ -335,13 +336,14 @@ const Orders = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      width: 200,
-      render: (text) => <div style={{ width: 80 }}>{text.slice(0, 10)}</div>,
+      // width: 200,
+      // render: (text) => <div style={{ width: 80 }}>{text.slice(0, 10)}</div>,
     },
     {
       title: "Status",
       dataIndex: "status",
       filters: filtersStatus,
+      width: 100,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       render: (text, record) => (
         <div style={{ width: 50 }}>{record.status}</div>
@@ -351,6 +353,7 @@ const Orders = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
+      width: 100,
       render: (text, record) => (
         <Dropdown overlay={menu(record)} trigger={["click"]}>
           <a href="#">
@@ -371,7 +374,7 @@ const Orders = () => {
         dataSource={dataOrder}
         rowKey={(record) => record.userId}
         scroll={{ x: true, y: 950 }}
-        // style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1080 }}
         sticky
       />
       {modal && <ModalOrder setModal={setModal} selected={selected} />}
