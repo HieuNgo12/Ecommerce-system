@@ -161,14 +161,14 @@ function ShoppingCartBody() {
             </div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" alt="line" />
+            <img src="./icons/long-line.png" alt="line" />
           </div>
           <div className="flex card-box">
             <div className="text-left text-very-left">Shipping</div>
             <div className="text-right">Free</div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" alt="line" />
+            <img src="./icons/long-line.png" alt="line" />
           </div>
           <div className="flex total-card">
             <div className="text-left">Total</div>
@@ -178,7 +178,7 @@ function ShoppingCartBody() {
             </div>
           </div>
           <div>
-            <img src="./public/icons/long-line.png" alt="line" />
+            <img src="./icons/long-line.png" alt="line" />
           </div>
           <div className="mt-8">
             <Link

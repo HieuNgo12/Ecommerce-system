@@ -82,6 +82,11 @@
   line-height: 28px;
   margin-bottom: 12px;
 }
+
+.box-shadow {
+  box-shadow: 10px 10px lightblue;
+  border: 1px solid black;
+}
 .mcl-rimmel {
   color: #db4444;
 }

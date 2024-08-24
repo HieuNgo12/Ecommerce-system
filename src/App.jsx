@@ -1,11 +1,18 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-// import SellerUI from "./assets/Seller-UI/SellerUI";
-import CustomerUI from "./assets/Customer-UI/CustomerUI";
-import AdminUI from "./assets/Admin-UI/AdminUI";
+import { ToastContainer } from 'react-toastify';
+import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import HomePage from "./assets/Customer-UI/pages/HomePage";
+import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
+import ProductList from "./assets/Products/ProductList";
+import ProductDetails from "./assets/Products/ProductDetails";
+import ProductWishlist from "./assets/Products/ProductWishlist";
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
+import ContactPage from "./assets/Customer-UI/pages/ContactPage";
+import AboutPage from "./assets/Customer-UI/pages/AboutPage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import AdminUI from "./assets/Admin-UI/AdminUI";
 import Dashboard from "./assets/Admin-UI/components/dashBoard/dashBoard";
 import Products from "./assets/Admin-UI/components/products/products";
 import Orders from "./assets/Admin-UI/components/orders/orders";
@@ -16,23 +23,18 @@ import LogIn from "./assets/Admin-UI/components/logIn/logIn_admin";
 import SignUp from "./assets/Admin-UI/components/signUp/signUp_admin";
 import Test from "./assets/Admin-UI/test";
 import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
-import Setting from "./assets/Admin-UI/components/setting/setting";
-import Quotes from "./assets/Admin-UI/components/quotes/quotes";
-import Rating from "./assets/Admin-UI/components/rating/rating";
-import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
-import BackUp from "./assets/Admin-UI/components/backUp/backUp";
-import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
-import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
-import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
-
+import Quotes from "./assets/Admin-UI/components/analytics/analytics";
+import Rating from "./assets/Admin-UI/components/rating/rating";
 function App() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState("admin");
+  // eslint-disable-next-line no-unused-vars
+  const [user, setUser] = useState("customer");
+
   const adminRouter = createBrowserRouter([
     {
-      path: "/admin",
+      path: "/",
       element: <AdminUI />,
+      errorElement: <ErrorPage />,
       children: [
         { path: "dashboard", element: <Dashboard /> },
         {
@@ -41,23 +43,16 @@ function App() {
           children: [{ path: "addproduct", element: <AddProduct /> }],
         },
         { path: "orders", element: <Orders /> },
-        {
-          path: "customers",
-          element: <Customers />,
-          children: [{ path: "addcustomers", element: <AddCustomers /> }],
-        },
+        { path: "customers", element: <Customers /> },
         { path: "rating", element: <Rating /> },
         {
           path: "promotion",
           element: <Promotion />,
-          children: [{ path: "addpromotion", element: <AddPromotion /> }],
+          children: [[{ path: "addPromotion" }]],
         },
         { path: "reviews", element: <Reviews /> },
-        { path: "quotes", element: <Quotes /> },
-        { path: "setting", element: <Setting /> },
-        { path: "backup", element: <BackUp /> },
-        { path: "help", element: <Help /> },
         { path: "analytics", element: <Analytics /> },
+        { path: "quotes", element: <Quotes /> },
       ],
     },
     {
@@ -76,30 +71,54 @@ function App() {
       path: "/test",
       element: <Test />,
     },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />,
-    },
   ]);
 
   const customerRouter = createBrowserRouter([
     {
       path: "/",
-      element: <CustomerUI />,
+      element: <HomePage />,
+      errorElement: <ErrorPage />,
+      children: [],
+    },
+    {
+      path: "/shopping-cart",
+      element: <ShoppingCart />,
+    },
+    {
+      path: "/edit-page",
+      element: <ProfilePage />,
+    },
+    {
+      path: "/productlist",
+      element: <ProductList />,
+    },
+    {
+      path: "/product/:id",
+      element: <ProductDetails />,
+    },
+    {
+      path: "/productwishlist",
+      element: <ProductWishlist />, // Define route for ProductWishlist
+    },
+    {
+      path: "/contactpage",
+      element: <ContactPage />,
+    },
+    {
+      path: "/aboutpage",
+      element: <AboutPage />,
+    },
+    {
+      path: "/billingpage",
+      element: <BillingPage />,
     },
   ]);
 
-  // const sellerRouter = createBrowserRouter([
-  //   {
-  //     path: "/",
-  //     element: <SellerUI />,
-  //   },
-  // ]);
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
-      {/* {user === "seller" && <RouterProvider router={sellerRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
+      <ToastContainer />
     </>
   );
 }

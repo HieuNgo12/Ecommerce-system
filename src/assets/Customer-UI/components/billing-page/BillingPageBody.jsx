@@ -291,10 +291,10 @@ function ShoppingCartBody() {
               />
               <div className="ml-2 mt-auto">Bank</div>
               <div className="flex image-box">
-                <img src="./public/icons/payment-methods/Bkash.png" />
-                <img src="./public/icons/payment-methods/Visa.png" />
-                <img src="./public/icons/payment-methods/Mastercard.png" />
-                <img src="./public/icons/payment-methods/Nagad.png" />
+                <img src="./icons/payment-methods/Bkash.png" />
+                <img src="./icons/payment-methods/Visa.png" />
+                <img src="./icons/payment-methods/Mastercard.png" />
+                <img src="./icons/payment-methods/Nagad.png" />
               </div>
             </div>
 
