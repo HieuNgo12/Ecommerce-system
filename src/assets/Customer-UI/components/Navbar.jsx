@@ -119,6 +119,7 @@ const Navbar = () => {
             <NavLink to="/shopping-cart">
               <div className="relative">
                 <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+                <div className="cart-length">4</div>
               </div>
             </NavLink>
             <NavLink to="/productwishlist">

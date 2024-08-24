@@ -87,7 +87,7 @@ function ProfilePageBody() {
               <div>
                 <div className="flex">
                   <div className="text-very-left ml-4">First Name</div>
-                  <div className="text-very-left">Last Name</div>
+                  <div className="text-very-left ml-4">Last Name</div>
                 </div>
                 <div className="flex">
                   <input

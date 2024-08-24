@@ -124,9 +124,9 @@ function ShoppingCartBody() {
           console.log(coupon.title?.toString(), couponCode);
           return coupon.title?.toString() === couponCode;
         }).length ? (
-          <div className="text-left">Successfully applied coupon message</div>
+          <div className="text-left text-green-300">Successfully applied coupon message</div>
         ) : (
-          <div className="text-left">Failed to apply coupon message</div>
+          <div className="text-left text-red-300">Failed to apply coupon message</div>
         )
       ) : null}
       <div className="coupon-code flex mb-80">
