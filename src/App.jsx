@@ -28,7 +28,7 @@ import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotP
 
 function App() {
   const [count, setCount] = useState(0);
-  const [user, setUser] = useState("admin");
+  const [user, setUser] = useState("customer");
   const adminRouter = createBrowserRouter([
     {
       path: "/admin",
