@@ -26,6 +26,12 @@ import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import Quotes from "./assets/Admin-UI/components/analytics/analytics";
 import Rating from "./assets/Admin-UI/components/rating/rating";
+import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
+import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
+import Setting from "./assets/Admin-UI/components/setting/setting";
+import Help from "./assets/Admin-UI/components/help/help";
+import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
+import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("customer");
@@ -56,7 +62,7 @@ function App() {
         { path: "reviews", element: <Reviews /> },
         { path: "quotes", element: <Quotes /> },
         { path: "setting", element: <Setting /> },
-        { path: "backup", element: <BackUp /> },
+        { path: "backup", element: <BackupRestore /> },
         { path: "help", element: <Help /> },
         { path: "analytics", element: <Analytics /> },
       ],
