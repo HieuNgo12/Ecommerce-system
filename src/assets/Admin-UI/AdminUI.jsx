@@ -23,7 +23,7 @@ const AdminUI = () => {
   // const { dataUserName, dataProducts, dataCart } = useAdminContext();
 
   return (
-    <div className="h-screen flex w-full">
+    <div className="h-full flex w-full">
       <Sidebar />
       <div className="flex flex-col w-full overflow-hidden">
         <Header />

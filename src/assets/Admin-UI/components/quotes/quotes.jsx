@@ -58,10 +58,10 @@ const Quotes = () => {
       key: "id",
       filters: filtersID,
       fixed: "left",
+      width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      width: 100,
-      // render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
     },
     {
       title: "Author",

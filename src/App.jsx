@@ -2,7 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import SellerUI from "./assets/Seller-UI/SellerUI";
+// import SellerUI from "./assets/Seller-UI/SellerUI";
 import CustomerUI from "./assets/Customer-UI/CustomerUI";
 import AdminUI from "./assets/Admin-UI/AdminUI";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -24,13 +24,14 @@ import BackUp from "./assets/Admin-UI/components/backUp/backUp";
 import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
+import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
 
 function App() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState("admin");
   const adminRouter = createBrowserRouter([
     {
-      path: "/",
+      path: "/admin",
       element: <AdminUI />,
       children: [
         { path: "dashboard", element: <Dashboard /> },
@@ -75,6 +76,10 @@ function App() {
       path: "/test",
       element: <Test />,
     },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
   ]);
 
   const customerRouter = createBrowserRouter([
@@ -84,16 +89,16 @@ function App() {
     },
   ]);
 
-  const sellerRouter = createBrowserRouter([
-    {
-      path: "/",
-      element: <SellerUI />,
-    },
-  ]);
+  // const sellerRouter = createBrowserRouter([
+  //   {
+  //     path: "/",
+  //     element: <SellerUI />,
+  //   },
+  // ]);
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
-      {user === "seller" && <RouterProvider router={sellerRouter} />}
+      {/* {user === "seller" && <RouterProvider router={sellerRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
     </>
   );

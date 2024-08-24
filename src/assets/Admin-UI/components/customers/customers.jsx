@@ -86,7 +86,7 @@ const Customers = () => {
     callApi();
     toast.warn("Delete successful", {
       position: "top-center",
-      autoClose: 3000,
+      autoClose: 1500,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
