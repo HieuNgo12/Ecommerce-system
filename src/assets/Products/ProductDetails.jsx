@@ -293,7 +293,10 @@ const ProductDetails = () => {
                       ({item.rating.rate}) {item.rating.count} reviews
                     </span>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 px-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div
+                    className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 px-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    onClick={handleAddToCart}
+                  >
                     Add To Cart
                   </div>
                 </div>

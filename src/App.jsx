@@ -34,7 +34,6 @@ function App() {
   //   {
   //     path: "/admin",
   //     element: <AdminUI />,
-  //     errorElement: <ErrorPage />,
   //     children: [
   //       { path: "dashboard", element: <Dashboard /> },
   //       {
@@ -43,16 +42,23 @@ function App() {
   //         children: [{ path: "addproduct", element: <AddProduct /> }],
   //       },
   //       { path: "orders", element: <Orders /> },
-  //       { path: "customers", element: <Customers /> },
+  //       {
+  //         path: "customers",
+  //         element: <Customers />,
+  //         children: [{ path: "addcustomers", element: <AddCustomers /> }],
+  //       },
   //       { path: "rating", element: <Rating /> },
   //       {
   //         path: "promotion",
   //         element: <Promotion />,
-  //         children: [{ path: "addPromotion" }],
+  //         children: [{ path: "addpromotion", element: <AddPromotion /> }],
   //       },
   //       { path: "reviews", element: <Reviews /> },
-  //       { path: "analytics", element: <Analytics /> },
   //       { path: "quotes", element: <Quotes /> },
+  //       { path: "setting", element: <Setting /> },
+  //       { path: "backup", element: <BackUp /> },
+  //       { path: "help", element: <Help /> },
+  //       { path: "analytics", element: <Analytics /> },
   //     ],
   //   },
   //   {
@@ -70,6 +76,10 @@ function App() {
   //   {
   //     path: "/test",
   //     element: <Test />,
+  //   },
+  //   {
+  //     path: "/forgot-password",
+  //     element: <ForgotPassword />,
   //   },
   // ]);
 
