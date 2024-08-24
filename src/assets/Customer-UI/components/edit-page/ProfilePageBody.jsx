@@ -81,7 +81,7 @@ function ProfilePageBody() {
           <div className="head-link mt-5">My Wishlist</div>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <div className="ml-64">
+          <div className="ml-64 box-shadow">
             <div className="edit-your-profile ml-4 ">Edit Your Profile</div>
             <div>
               <div>
@@ -231,7 +231,7 @@ function ProfilePageBody() {
             </div>
 
             <div className="buttons flex">
-            <button className="cancel-button mr-auto">Cancel</button>
+              <button className="cancel-button mr-auto">Cancel</button>
 
               <button type="submit" className="save-changes">
                 Save Changes
