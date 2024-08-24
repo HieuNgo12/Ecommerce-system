@@ -12,12 +12,9 @@
   "dependencies": {
     "@bradgarropy/use-countdown": "^2.0.1",
     "@emailjs/browser": "^4.4.1",
-<<<<<<< Updated upstream
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
-=======
     "@mui/material": "^5.16.7",
->>>>>>> Stashed changes
     "@types/react-router-dom": "^5.3.3",
     "antd": "^5.19.4",
     "apexcharts": "^3.52.0",
