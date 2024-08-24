@@ -4,13 +4,14 @@ import { AdminProvider, useAdminContext } from "../../AdminContext";
 import { Navigate } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 import dataSideBar from "../data/dataSideBar";
-import AddCustomers from "../addCustomers/addCustomers";
 import { ToastContainer, toast } from "react-toastify";
+import refreshImg from "../svg/refresh-cw-alt-svgrepo-com.svg";
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { callApi } = useAdminContext();
 
   const [licenseAdmin, setlicenseAdmin] = useState("");
   const [search, setSearch] = useState("");
@@ -52,6 +53,10 @@ function Header() {
 
   const addCustomers = () => {
     navigate("/admin/customers/addcustomers");
+  };
+
+  const refresh = () => {
+    callApi();
   };
 
   return (
@@ -132,6 +137,12 @@ function Header() {
               ADD CUSTOMERS
             </button>
           )}
+          <img
+            src={refreshImg}
+            alt=""
+            className="cursor-pointer w-5"
+            onClick={() => refresh()}
+          />
           <input
             type="text"
             className="rounded-md p-2 hidden sm:block"

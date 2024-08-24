@@ -11,7 +11,7 @@ function ForgotPassword() {
     <div className="h-screen w-full flex flex-col">
       <Navbar />
       <div className="flex justify-center items-center gap-10">
-        <img src={img} className="w-2/3 mb-8" />
+        <img src={img} className="w-2/3" />
         <div className="w-1/3">
           <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
           <form className="bg-white shadow-lg rounded-lg p-8 w-full">
