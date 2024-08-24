@@ -11,15 +11,21 @@ function ExploreOurProducts({ products, ...props }) {
   const onClickViewAllProducts = () => {
     setViewAllProducts(!viewAllProducts);
   };
+
+  // Get the list of products to display based on viewAllProducts state
+  const displayedProducts = viewAllProducts
+    ? products
+    : products.filter((item) => item.id > 0 && item.id < 5);
+
   return (
-    <div>
+    <div className="w-full container mx-auto px-4 sm:px-8 lg:px-28 my-12">
       <Banter title={"Our Products"} />
-      <div>
-        <h1 className="text-left">Explore Our Products</h1>
+      <div className="mb-4">
+        <h1 className="text-left text-2xl font-bold">Explore Our Products</h1>
       </div>
       <CustomArrows products={products} viewAllProducts={viewAllProducts} />
 
-      <div className="container-home-page">
+      {/* <div className="container-home-page">
         {!viewAllProducts
           ? products.map((item, index) => {
               if (item.id > 0 && item.id < 5) {
@@ -51,13 +57,14 @@ function ExploreOurProducts({ products, ...props }) {
                 </div>
               );
             })}
-      </div>
+      </div> */}
+
       <ViewAllButton
-        title={"View All Products"}
+        title={viewAllProducts ? "View Less" : "View All Products"}
         onClickViewAllProducts={onClickViewAllProducts}
       />
 
-      <img className="mt-28 mb-20" src="./icons/line.png" />
+      <img className="mt-28 mb-20 w-full" src="/icons/line.png" alt="Line" />
     </div>
   );
 }

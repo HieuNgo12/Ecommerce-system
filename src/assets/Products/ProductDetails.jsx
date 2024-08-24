@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, NavLink } from "react-router-dom";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Navbar from "../Customer-UI/components/Navbar";
@@ -86,43 +86,48 @@ const ProductDetails = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-6 py-12">
-        <div className="text-sm breadcrumbs mb-4">
+      <div className="container mx-auto px-28 my-12">
+        <div className="text-sm breadcrumbs mb-8">
           <ul className="flex flex-wrap items-center">
             <li>
-              <Link to="/" className="text-gray-500 hover:underline">
+              <Link
+                to="/productlist"
+                className="text-gray-500  hover:text-blue-700"
+              >
                 Products
               </Link>
             </li>
-            {/* <li>
-              <span className="mx-2">/</span>
+            <li>
+              <span>/</span>
             </li>
             <li>
-              <Link to="/gaming" className="text-gray-500 hover:underline">
-                Gaming
-              </Link>
-            </li> */}
-            <li>
-              <span className="mx-2">/</span>
+              <NavLink
+                to={`/product/${product.id}`}
+                className={({ isActive }) =>
+                  isActive ? " font-semibold text-black" : "text-black"
+                }
+              >
+                {product.title}
+              </NavLink>
             </li>
-            <li className="text-gray-900 truncate max-w-xs">{product.title}</li>
           </ul>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-1/2 flex gap-4">
-            <div className="w-1/5 flex flex-col gap-4">
+        <div className="flex flex-col lg:flex-row gap-16">
+          {/* product image */}
+          <div className="lg:w-2/5 flex gap-2">
+            <div className="w-1/6 flex flex-col gap-2">
               {images.map((img, index) => (
                 <img
                   key={index}
                   src={img}
                   alt={`Thumbnail ${index + 1}`}
-                  className="w-full aspect-square object-cover cursor-pointer border rounded"
+                  className="w-full aspect-square object-contain cursor-pointer border rounded"
                   onClick={() => setCurrentImage(img)}
                 />
               ))}
             </div>
-            <div className="w-4/5">
+            <div className="w-5/6">
               <img
                 src={currentImage || product.image}
                 alt={product.title}
@@ -131,8 +136,9 @@ const ProductDetails = () => {
             </div>
           </div>
 
+          {/* product details */}
           <div className="lg:w-1/2 space-y-6">
-            <h1 className="text-2xl font-bold">{product.title}</h1>
+            <h1 className="text-2xl font-bold text-left">{product.title}</h1>
             <div className="flex items-center mb-2">
               {[...Array(5)].map((_, index) => (
                 <span
@@ -150,28 +156,25 @@ const ProductDetails = () => {
                 ({product.rating.rate}) {product.rating.count} reviews
               </span>
             </div>
-            <p className="text-3xl font-bold">${product.price}</p>
-            <div className="max-h-40 overflow-y-auto pr-2">
-              <p className="text-gray-600 leading-relaxed">
-                {product.description}
-              </p>
-            </div>
-
-            {/* <div>
-              <h2 className="font-semibold mb-2">Colours:</h2>
+            <h3 className="text-2xl text-left">${product.price}</h3>
+            <h6 className="text-gray-600 leading-tight text-left text-sm border-b-2 border-b-gray-400 pb-4">
+              {product.description}
+            </h6>
+            <div>
               <div className="flex gap-2">
+                <h2 className="font-semibold mb-2">Colours:</h2>
                 <button className="w-6 h-6 rounded-full bg-gray-200 border-2 border-gray-400"></button>
                 <button className="w-6 h-6 rounded-full bg-red-500"></button>
               </div>
-            </div> */}
+            </div>
 
             <div>
-              <h2 className="font-semibold mb-2">Size:</h2>
               <div className="flex flex-wrap gap-2">
+                <h2 className="font-semibold mb-2">Size:</h2>
                 {["XS", "S", "M", "L", "XL"].map((size) => (
                   <button
                     key={size}
-                    className={`px-4 py-2 border rounded-md text-sm ${
+                    className={`px-3 py-1 border rounded-md text-sm ${
                       selectedSize === size
                         ? "bg-red-500 text-white"
                         : "text-gray-700 hover:bg-gray-100"
@@ -187,14 +190,14 @@ const ProductDetails = () => {
             <div className="flex items-center gap-4 mt-6">
               <div className="flex items-center border rounded-md">
                 <button
-                  className="px-4 py-2 text-2xl font-bold"
+                  className="px-4 py-2 text-2xl font-bold  hover:bg-red-500"
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 >
                   -
                 </button>
                 <span className="px-4 py-2 border-x">{quantity}</span>
                 <button
-                  className="px-4 py-2 text-2xl font-bold"
+                  className="px-4 py-2 text-2xl font-bold hover:bg-red-500"
                   onClick={() => setQuantity(quantity + 1)}
                 >
                   +
@@ -217,26 +220,26 @@ const ProductDetails = () => {
             </div>
 
             <div className="space-y-4 mt-6">
-              <div className="border rounded-md p-4">
-                <div className="flex items-center gap-4">
+              <div className="border rounded-md p-4 h-20">
+                <div className="flex gap-4">
                   <span className="text-2xl">🚚</span>
-                  <div>
-                    <h3 className="font-semibold">Free Delivery</h3>
-                    <p className="text-sm text-gray-600">
+                  <div className="text-left text-sm">
+                    <h6 className="font-semibold">Free Delivery</h6>
+                    <h6 className="text-sm text-gray-600">
                       Enter your postal code for Delivery Availability
-                    </p>
+                    </h6>
                   </div>
                 </div>
               </div>
-              <div className="border rounded-md p-4">
-                <div className="flex items-center gap-4">
+              <div className="border rounded-md p-4 h-20">
+                <div className="flex gap-4">
                   <span className="text-2xl">🔁</span>
-                  <div>
-                    <h3 className="font-semibold">Return Delivery</h3>
-                    <p className="text-sm text-gray-600">
+                  <div className="text-left text-sm">
+                    <h6 className="font-semibold">Return Delivery</h6>
+                    <h6 className="text-sm text-gray-600">
                       Free 30 Days Delivery Returns.{" "}
                       <span className="underline cursor-pointer">Details</span>
-                    </p>
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -273,24 +276,22 @@ const ProductDetails = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h2 className="text-sm font-semibold mb-2 truncate">
-                      {item.title}
-                    </h2>
-                    <div className="flex items-center mb-2">
-                      <div className="flex text-yellow-400 text-sm">
-                        {"★★★★☆"}
-                      </div>
-                      <span className="text-gray-500 text-xs ml-1">(75)</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-red-600 font-bold">
-                        ${item.price}
+                  <div className="flex items-center mb-2">
+                    {[...Array(5)].map((_, index) => (
+                      <span
+                        key={index}
+                        className={`text-sm ${
+                          index < Math.round(item.rating.rate)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        ★
                       </span>
-                      <span className="text-gray-500 line-through text-sm">
-                        ${(item.price * 1.54).toFixed(2)}
-                      </span>
-                    </div>
+                    ))}
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({item.rating.rate}) {item.rating.count} reviews
+                    </span>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 bg-black text-white py-2 px-4 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     Add To Cart

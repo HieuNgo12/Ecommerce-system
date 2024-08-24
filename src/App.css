@@ -4,8 +4,8 @@
   /* max-width: 1280px; */
   /* width: 100%; */
   margin: 0 auto;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  /* padding-left: 2rem;
+  padding-right: 2rem; */
   text-align: center;
   overflow: hidden;
 }
@@ -34,9 +34,9 @@
   padding: 10px;
 }
 
-button:hover {
+/* button:hover {
   background-color: brown;
-}
+} */
 
 /* a:hover {
   background-color: brown;

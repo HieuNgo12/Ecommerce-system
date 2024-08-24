@@ -52,18 +52,18 @@ function Footer() {
             <li>
               <div className="flex flex-col sm:flex-row gap-4">
                 <div>
-                  <img src="./icons/qrcode.png" alt="QR Code" className="w-24 h-24" />
+                  <img src="/icons/qrcode.png" alt="QR Code" className="w-24 h-24" />
                 </div>
                 <div className="flex flex-row sm:flex-col gap-2">
-                  <img src="./icons/googleplay.png" alt="Google Play" className="h-10" />
-                  <img src="./icons/AppStore.png" alt="App Store" className="h-10" />
+                  <img src="/icons/googleplay.png" alt="Google Play" className="h-10" />
+                  <img src="/icons/AppStore.png" alt="App Store" className="h-10" />
                 </div>
               </div>
               <div className="flex gap-4 mt-4">
-                <img src="./icons/social-media/facebook.png" alt="Facebook" className="w-6 h-6" />
-                <img src="./icons/social-media/twitter.png" alt="Twitter" className="w-6 h-6" />
-                <img src="./icons/social-media/instagram.png" alt="Instagram" className="w-6 h-6" />
-                <img src="./icons/social-media/linkedin.png" alt="LinkedIn" className="w-6 h-6" />
+                <img src="/icons/social-media/facebook.png" alt="Facebook" className="w-6 h-6" />
+                <img src="/icons/social-media/twitter.png" alt="Twitter" className="w-6 h-6" />
+                <img src="/icons/social-media/instagram.png" alt="Instagram" className="w-6 h-6" />
+                <img src="/icons/social-media/linkedin.png" alt="LinkedIn" className="w-6 h-6" />
               </div>
             </li>
           </ul>
