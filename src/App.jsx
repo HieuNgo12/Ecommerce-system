@@ -32,7 +32,7 @@ function App() {
 
   const adminRouter = createBrowserRouter([
     {
-      path: "/",
+      path: "/admin",
       element: <AdminUI />,
       errorElement: <ErrorPage />,
       children: [
@@ -48,7 +48,7 @@ function App() {
         {
           path: "promotion",
           element: <Promotion />,
-          children: [[{ path: "addPromotion" }]],
+          children: [{ path: "addPromotion" }],
         },
         { path: "reviews", element: <Reviews /> },
         { path: "analytics", element: <Analytics /> },
