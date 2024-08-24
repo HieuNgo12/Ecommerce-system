@@ -198,21 +198,21 @@ function Dashboard() {
           <table className="w-full mt-4">
             <thead>
               <tr>
-                <th className="text-left">Item</th>
-                <th className="text-left">Date</th>
-                <th className="text-left">User ID</th>
-                <th className="text-left">Total Bill</th>
-                <th className="text-left">Status</th>
+                <th className="text-left text-base">Item</th>
+                <th className="text-left text-base">Date</th>
+                <th className="text-left text-base">User ID</th>
+                <th className="text-left text-base">Total Bill</th>
+                <th className="text-left text-base">Status</th>
               </tr>
             </thead>
             <tbody>
               {arrMonth.map((item, index) => (
                 <tr key={index}>
-                  <td className="text-left">{item.id}</td>
-                  <td className="text-left">{item.date}</td>
-                  <td className="text-left">{item.userId}</td>
-                  <td className="text-left">{item.totalBill}</td>
-                  <td className="text-left">Active</td>
+                  <td className="text-left text-base font-normal ">{item.id}</td>
+                  <td className="text-left text-base font-normal">{item.date}</td>
+                  <td className="text-left text-base font-normal">{item.userId}</td>
+                  <td className="text-left text-base font-normal">{item.totalBill}</td>
+                  <td className="text-left text-base font-normal">Active</td>
                 </tr>
               ))}
             </tbody>

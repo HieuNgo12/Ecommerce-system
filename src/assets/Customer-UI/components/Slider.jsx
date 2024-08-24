@@ -20,15 +20,15 @@ export default function SimpleSlider(
   return (
     <Slider {...settings}>
         {}
-      <div>
-        <Card
+      <div className="container">
+        {/* <Card
           orgPrice={item.price + 99}
           review={Math.ceil(item.rating.count)}
           rating={item.rating.rate}
           img={item.image}
           price={item.price}
           title={item.title}
-        />{" "}
+        />{" "} */}
       </div>
       <div>
         <h3>2</h3>

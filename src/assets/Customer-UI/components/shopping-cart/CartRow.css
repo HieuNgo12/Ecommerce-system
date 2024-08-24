@@ -1,0 +1,5 @@
+.trash-can:hover{
+    cursor:pointer;
+    background-color: brown !important;
+
+}

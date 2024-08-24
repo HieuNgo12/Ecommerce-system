@@ -1,6 +1,6 @@
 const dataPromotion = [
   {
-    id: "1",
+    id: "6",
     title: "test",
     category: "all",
     request: "",

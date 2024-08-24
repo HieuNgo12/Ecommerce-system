@@ -59,7 +59,7 @@ const Products = () => {
         }
       );
       callApi();
-      toast.warn('Delete successful!', {
+      toast.warn("Delete successful!", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: false,
@@ -68,7 +68,7 @@ const Products = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        });
+      });
       console.log(res);
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -127,9 +127,10 @@ const Products = () => {
       key: "id",
       filters: filtersID,
       fixed: "left",
+      width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50}}>{record.id}</div>,
+      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
     },
     {
       title: "Title",
@@ -226,6 +227,42 @@ const Products = () => {
       sorter: (a, b) => a.price - b.price,
       render: (text, record) => <div style={{ width: 80 }}>{record.price}</div>,
     },
+    // {
+    //   title: "Date Start",
+    //   dataIndex: "dateStart",
+    //   key: "dateStart",
+    //   sorter: (a, b) => a.dateStart - b.dateStart,
+    //   render: (text, record) => (
+    //     <div style={{ width: 100 }}>{record.dateStart}</div>
+    //   ),
+    // },
+    // {
+    //   title: "Time Start",
+    //   dataIndex: "timeStart",
+    //   key: "timeStart",
+    //   sorter: (a, b) => a.timeStart - b.timeStart,
+    //   render: (text, record) => (
+    //     <div style={{ width: 100 }}>{record.timeStart}</div>
+    //   ),
+    // },
+    // {
+    //   title: "Date End",
+    //   dataIndex: "dateEnd",
+    //   key: "dateEnd",
+    //   sorter: (a, b) => a.dateEnd - b.dateEnd,
+    //   render: (text, record) => (
+    //     <div style={{ width: 100 }}>{record.dateStart}</div>
+    //   ),
+    // },
+    // {
+    //   title: "TimeEnd",
+    //   dataIndex: "timeEnd",
+    //   key: "timeEnd",
+    //   sorter: (a, b) => a.timeEnd - b.timeEnd,
+    //   render: (text, record) => (
+    //     <div style={{ width: 100 }}>{record.timeEnd}</div>
+    //   ),
+    // },
     {
       title: "Description",
       dataIndex: "description",
@@ -280,7 +317,7 @@ const Products = () => {
         dataSource={newDataProducts}
         rowKey="id"
         scroll={{ x: true, y: 950 }}
-        // style={{ maxWidth: 1072 }}
+        // style={{ maxWidth: 1080 }}
         sticky
       />
       {isModalOpen && (

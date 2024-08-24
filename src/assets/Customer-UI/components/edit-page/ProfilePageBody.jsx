@@ -2,6 +2,7 @@ import React from "react";
 import "./ProfilePageBody.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
@@ -18,7 +19,9 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
   currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string().required("Required"),
-  confirmNewPassword: Yup.string().required("Required")     .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')  ,
+  confirmNewPassword: Yup.string()
+    .required("Required")
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
 });
 
 function ProfilePageBody() {
@@ -36,8 +39,18 @@ function ProfilePageBody() {
     onSubmit: (values) => {
       const userList = JSON.parse(localStorage.getItem("userList")) || [];
       userList.push(values);
-      alert(JSON.stringify(values, null, 2));
       localStorage.setItem("userList", JSON.stringify(userList));
+      axios
+        .put("https://66b0ab0f6a693a95b539b080.mockapi.io/users", {
+          ...values,
+          id: 1,
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
   });
   return (
@@ -45,7 +58,7 @@ function ProfilePageBody() {
       <div className="flex">
         <ul className="breadcrumb text-left">
           <li>Home</li>
-          <li>Cart</li>
+          <li className="bold">Cart</li>
         </ul>
         <div className="flex welcome">
           <p>Welcome!</p>
@@ -68,13 +81,13 @@ function ProfilePageBody() {
           <div className="head-link mt-5">My Wishlist</div>
         </div>
         <form onSubmit={formik.handleSubmit}>
-          <div className="ml-32">
-            <div className="edit-your-profile">Edit Your Profile</div>
+          <div className="ml-64">
+            <div className="edit-your-profile ml-4 ">Edit Your Profile</div>
             <div>
               <div>
                 <div className="flex">
-                  <div className="text-very-left ">First Name</div>
-                  <div className="text-very-left">Last Name</div>
+                  <div className="text-very-left ml-4">First Name</div>
+                  <div className="text-very-left ml-4">Last Name</div>
                 </div>
                 <div className="flex">
                   <input
@@ -113,7 +126,7 @@ function ProfilePageBody() {
               </div>
               <div>
                 <div className="flex">
-                  <div className="text-very-left ">Email</div>
+                  <div className="text-very-left ml-4">Email</div>
                   <div className="text-very-left">Address</div>
                 </div>
                 <div className="flex">
@@ -151,7 +164,7 @@ function ProfilePageBody() {
               </div>
               <div>
                 <div>
-                  <div className="password">Password Changes</div>
+                  <div className="password ml-4">Password Changes</div>
                 </div>
                 <div className="flex">
                   <input
@@ -188,7 +201,9 @@ function ProfilePageBody() {
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
-                    {formik.errors.newPassword && <div>{formik.errors.newPassword}</div>}
+                    {formik.errors.newPassword && (
+                      <div>{formik.errors.newPassword}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -214,8 +229,10 @@ function ProfilePageBody() {
                 </div>
               </div>
             </div>
-            <div className="buttons">
-              <button className="cancel-button ">Cancel</button>
+
+            <div className="buttons flex">
+            <button className="cancel-button mr-auto">Cancel</button>
+
               <button type="submit" className="save-changes">
                 Save Changes
               </button>
