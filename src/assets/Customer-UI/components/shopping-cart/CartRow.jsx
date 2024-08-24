@@ -124,7 +124,7 @@ function CartRow({
           <img
             style={{ width: "25px", height: "25px" }}
             className="trash-can"
-            src={"./public/icons/social-media/trash-can.png"}
+            src={"./icons/social-media/trash-can.png"}
             onClick={() => {
               setOpen(true);
             }}

@@ -57,7 +57,7 @@ function ExploreOurProducts({ products, ...props }) {
         onClickViewAllProducts={onClickViewAllProducts}
       />
 
-      <img className="mt-28 mb-20" src="./public/icons/line.png" />
+      <img className="mt-28 mb-20" src="./icons/line.png" />
     </div>
   );
 }
