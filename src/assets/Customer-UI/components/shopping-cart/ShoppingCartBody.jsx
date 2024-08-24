@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ShoppingCartBody.css";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import CartRow from "./CartRow";
 import Loading from "../utils/Loading";
 import { faSlidersH } from "@fortawesome/free-solid-svg-icons";
@@ -60,136 +60,159 @@ function ShoppingCartBody() {
   }, [loading]);
 
   return (
-    <div className="shopping-cart">
+    <div className="shopping-cart container mx-auto px-6 py-1">
       {loading ? <Loading /> : null}
-      <ul className="breadcrumb text-left">
-        <li>Home</li>
-        <li>Cart</li>
+      <ul className="flex flex-wrap items-center mt-8">
+        <li>
+          <Link to="/" className="text-gray-500  hover:text-blue-700">
+            Home
+          </Link>
+        </li>
+        <li>
+          <span>/</span>
+        </li>
+        <li>
+          <NavLink
+            to="/shopping-cart"
+            className={({ isActive }) =>
+              isActive ? " font-semibold text-black" : "text-black"
+            }
+          >
+            Cart
+          </NavLink>
+        </li>
       </ul>
-      <div className="relative overflow-x-auto">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="table-head">
-            <tr>
-              <th scope="col" className="px-6 py-3">
-                Product
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Price
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Quantity
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Subtotal
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {itemList.length ? (
-              itemList.map((cartItem) => (
-                <CartRow
-                  updateCart={updateCart}
-                  key={cartItem[0]}
-                  cartItem={cartItem}
-                  itemList={itemList}
-                  setSubTotal={setSubTotal}
-                />
-              ))
-            ) : (
+
+      <div className="container mx-auto px-28 my-12">
+        <div className="relative overflow-x-auto ">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+            <thead className="table-head">
               <tr>
-                <td colSpan="4" className="text-center py-4">
-                  Your cart is empty
-                </td>
+                <th scope="col" className="px-6 py-3">
+                  Product
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Price
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Quantity
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Subtotal
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div>
-        <Link className="button-return-update mr-96" to={"/"}>
-          Return to shop
-        </Link>
-        <button
-          className="button-return-update ml-96 m-12"
-          onClick={() => {
-            setLoading(true);
-            setUpdateCart((updateCart) => !updateCart);
-          }}
-        >
-          Update Cart
-        </button>
-      </div>
-      {couponMessage ? (
-        coupons.filter((coupon) => {
-          console.log(coupon.title?.toString(), couponCode);
-          return coupon.title?.toString() === couponCode;
-        }).length ? (
-          <div className="text-left text-green-300">Successfully applied coupon message</div>
-        ) : (
-          <div className="text-left text-red-300">Failed to apply coupon message</div>
-        )
-      ) : null}
-      <div className="coupon-code flex mb-80">
-        <div className="mr-28">
-          <input
-            className="pl-4"
-            onChange={(e) => {
-              setCouponMessage(faSlidersH);
-              setCouponCode(e.target.value);
-            }}
-            placeholder={"Coupon Code"}
-          />
+            </thead>
+            <tbody>
+              {itemList.length ? (
+                itemList.map((cartItem) => (
+                  <CartRow
+                    updateCart={updateCart}
+                    key={cartItem[0]}
+                    cartItem={cartItem}
+                    itemList={itemList}
+                    setSubTotal={setSubTotal}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center py-4">
+                    Your cart is empty
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
         <div>
+          <Link className="button-return-update mr-96" to={"/"}>
+            Return to shop
+          </Link>
           <button
-            className="apply-coupon"
+            className="button-return-update ml-96 m-12"
             onClick={() => {
-              setCouponMessage(true);
               setLoading(true);
+              setUpdateCart((updateCart) => !updateCart);
             }}
           >
-            Apply Coupon
+            Update Cart
           </button>
         </div>
-        <div className="cart-card">
-          <div className="cart-total text-very-left">Cart total</div>
-          <div className="flex card-box">
-            <div className="text-left text-very-left">Subtotal</div>
-            <div className="text-right flex">
-              <div>{Math.round(subTotal * 100) / 100}</div>
-              <div>$</div>
+        {couponMessage ? (
+          coupons.filter((coupon) => {
+            console.log(coupon.title?.toString(), couponCode);
+            return coupon.title?.toString() === couponCode;
+          }).length ? (
+            <div className="text-left text-green-300">
+              Successfully applied coupon message
             </div>
-          </div>
-          <div>
-            <img src="./icons/long-line.png" alt="line" />
-          </div>
-          <div className="flex card-box">
-            <div className="text-left text-very-left">Shipping</div>
-            <div className="text-right">Free</div>
-          </div>
-          <div>
-            <img src="./icons/long-line.png" alt="line" />
-          </div>
-          <div className="flex total-card">
-            <div className="text-left">Total</div>
-            <div className="total-right flex">
-              <div>{Math.round(subTotal * 100) / 100}</div>
-              <div>$</div>
+          ) : (
+            <div className="text-left text-red-300">
+              Failed to apply coupon message
             </div>
+          )
+        ) : null}
+        <div className="coupon-code flex mb-80">
+          <div className="mr-28">
+            <input
+              className="pl-4"
+              onChange={(e) => {
+                setCouponMessage(faSlidersH);
+                setCouponCode(e.target.value);
+              }}
+              placeholder={"Coupon Code"}
+            />
           </div>
           <div>
-            <img src="./icons/long-line.png" alt="line" />
-          </div>
-          <div className="mt-8">
-            <Link
-              to={itemList.length ? "/billingpage" : "/shopping-cart"}
-              className="proceed "
+            <button
+              className="apply-coupon"
               onClick={() => {
-                localStorage.setItem("billingList", JSON.stringify(itemList));
+                setCouponMessage(true);
+                setLoading(true);
               }}
             >
-              Proceed to checkout
-            </Link>
+              Apply Coupon
+            </button>
+          </div>
+          <div className="cart-card">
+            <div className="cart-total text-very-left">Cart total</div>
+            <div className="flex card-box">
+              <div className="text-left text-very-left">Subtotal</div>
+              <div className="text-right flex">
+                <div>{Math.round(subTotal * 100) / 100}</div>
+                <div>$</div>
+              </div>
+            </div>
+            <div>
+              <img src="./icons/long-line.png" alt="line" />
+            </div>
+            <div className="flex card-box">
+              <div className="text-left text-very-left">Shipping</div>
+              <div className="text-right">Free</div>
+            </div>
+            <div>
+              <img src="./icons/long-line.png" alt="line" />
+            </div>
+            <div className="flex total-card">
+              <div className="text-left">Total</div>
+              <div className="total-right flex">
+                <div>{Math.round(subTotal * 100) / 100}</div>
+                <div>$</div>
+              </div>
+            </div>
+            <div>
+              <img src="./icons/long-line.png" alt="line" />
+            </div>
+            <div className="mt-8">
+              <Link
+                to={itemList.length ? "/billingpage" : "/shopping-cart"}
+                className="proceed "
+                onClick={() => {
+                  localStorage.setItem("billingList", JSON.stringify(itemList));
+                }}
+              >
+                Proceed to checkout
+              </Link>
+            </div>
           </div>
         </div>
       </div>

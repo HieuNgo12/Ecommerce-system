@@ -73,7 +73,7 @@ const ProductWishlist = () => {
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-28 my-12">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-semibold">
             Wishlist ({favoriteItems.length})
@@ -162,8 +162,21 @@ const ProductWishlist = () => {
                     ${item.price}
                   </h6>
                   <div className="flex items-center mb-2">
-                    <div className="flex text-yellow-400">{"★".repeat(5)}</div>
-                    <span className="text-gray-500 ml-1">(65)</span>
+                    {[...Array(5)].map((_, index) => (
+                      <span
+                        key={index}
+                        className={`text-sm ${
+                          index < Math.round(item.rating.rate)
+                            ? "text-yellow-400"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                    <span className="ml-2 text-sm text-gray-600">
+                      ({item.rating.rate}) {item.rating.count} reviews
+                    </span>
                   </div>
                 </div>
               ))}
