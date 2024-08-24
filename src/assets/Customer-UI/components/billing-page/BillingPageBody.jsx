@@ -100,17 +100,18 @@ function ShoppingCartBody() {
     <div className=" shopping-cart">
       <form onSubmit={formik.handleSubmit}>
         {loading && <Loading />}
-        <ul className="breadcrumb text-left">
+        <ul className="breadcrumb flex flex-wrap items-center ml-16 mt-10 mx-auto px-6 py-1">
           <li>Account</li>
           <li>My Account</li>
           <li>Product</li>
           <li>View Cart</li>
           <li className="bold">Checkout</li>
         </ul>
-        <div className="flex ml-auto">
+        <h1 className="flex billing-details pl-28 pt-6">Billing Details</h1>
+        <div className="flex ml-auto container mx-auto px-28 my-12">
           <div className="flex words-left">
             <div>
-              <h1 className="billing-details">Billing Details</h1>
+              
               <div>
                 <div>First Name</div>
                 <input

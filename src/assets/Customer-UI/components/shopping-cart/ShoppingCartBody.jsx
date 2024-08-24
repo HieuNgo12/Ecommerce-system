@@ -60,9 +60,9 @@ function ShoppingCartBody() {
   }, [loading]);
 
   return (
-    <div className="shopping-cart container mx-auto px-6 py-1">
+    <div className="shopping-cart container mx-auto px-28 my-12">
       {loading ? <Loading /> : null}
-      <ul className="flex flex-wrap items-center mt-8">
+      <ul className="flex flex-wrap items-center my-6 -ml-16">
         <li>
           <Link to="/" className="text-gray-500  hover:text-blue-700">
             Home
@@ -83,9 +83,9 @@ function ShoppingCartBody() {
         </li>
       </ul>
 
-      <div className="container mx-auto px-28 my-12">
+      <div className="">
         <div className="relative overflow-x-auto ">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500">
             <thead className="table-head">
               <tr>
                 <th scope="col" className="px-6 py-3">
