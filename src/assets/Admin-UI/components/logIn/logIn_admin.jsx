@@ -5,9 +5,9 @@ import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
-import Navbar from "../../../Customer-UI/components/Navbar";
+import Navbar from "../../../Customer-UI/components/Navbar"
 
-function LogIn({ setUser, ...props }) {
+function LogIn() {
   const { dataUserName } = useAdminContext();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -35,8 +35,6 @@ function LogIn({ setUser, ...props }) {
           user.password === password
       );
       if (user) {
-        setUser("customer");
-
         sessionStorage.setItem("customer", username);
         toast.success("Đăng nhập thành công", {
           position: "top-center",
@@ -57,8 +55,6 @@ function LogIn({ setUser, ...props }) {
       );
       if (admin) {
         const getLicense = admin.license;
-        setUser("admin");
-
         sessionStorage.setItem("admin", getLicense);
         toast.success("Đăng nhập ADMIN thành công", {
           position: "top-center",
@@ -171,9 +167,9 @@ function LogIn({ setUser, ...props }) {
   );
 }
 
-const App = ({ setUser, ...props }) => (
+const App = () => (
   <AdminProvider>
-    <LogIn setUser={setUser} />
+    <LogIn />
   </AdminProvider>
 );
 

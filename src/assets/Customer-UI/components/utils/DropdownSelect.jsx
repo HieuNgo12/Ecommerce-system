@@ -56,7 +56,7 @@ export default function BasicMenu() {
           <Link to={""}> My Reviews</Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to={""}> Logout</Link>
+          <Link to={"/login"}> Logout</Link>
         </MenuItem>
       </Menu>
     </div>

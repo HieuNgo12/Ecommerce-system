@@ -11,7 +11,7 @@ const AdminContext = createContext();
 
 const AdminProvider = ({ children }) => {
   const [dataReview, setDataReview] = useState([]);
-  const [dataCart, setDataCart] = useState([]);
+  // const [dataCart, setDataCart] = useState([]);
   const [dataUserName, setDataUserName] = useState([]);
   const [dataProduct, setDataProduct] = useState([]);
   const [dataQuotes, setDataQuotes] = useState([]);
@@ -25,8 +25,8 @@ const AdminProvider = ({ children }) => {
       const response2 = await fetch("https://dummyjson.com/quotes");
       const result2 = await response2.json();
       const getQuotes = result2.quotes;
-      const response3 = await fetch("https://fakestoreapi.com/carts");
-      const result3 = await response3.json();
+      // const response3 = await fetch("https://fakestoreapi.com/carts");
+      // const result3 = await response3.json();
       const response4 = await fetch(
         "https://66b0ab0f6a693a95b539b080.mockapi.io/users"
       );
@@ -37,7 +37,7 @@ const AdminProvider = ({ children }) => {
       const result5 = await response5.json();
       setDataReview(result1);
       setDataQuotes(getQuotes);
-      setDataCart(result3);
+      // setDataCart(result3);
       setDataUserName(result4);
       setDataProduct(result5);
     } catch (error) {
@@ -57,7 +57,7 @@ const AdminProvider = ({ children }) => {
     <AdminContext.Provider
       value={{
         callApi,
-        dataCart,
+        // dataCart,
         dataUserName,
         dataProduct,
         dataReview,
