@@ -34,7 +34,7 @@ import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPa
 import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
 function App() {
   // eslint-disable-next-line no-unused-vars
-  const [user, setUser] = useState("customer");
+  const [user, setUser] = useState("admin");
 
   const adminRouter = createBrowserRouter([
     {
@@ -87,9 +87,7 @@ function App() {
       path: "/forgot-password",
       element: <ForgotPassword />,
     },
-  ]);
 
-  const customerRouter = createBrowserRouter([
     {
       path: "/",
       element: <HomePage />,
@@ -130,10 +128,55 @@ function App() {
     },
   ]);
 
+  // const customerRouter = createBrowserRouter([
+  //   {
+  //     path: "/",
+  //     element: <HomePage />,
+  //     errorElement: <ErrorPage />,
+  //     children: [],
+  //   },
+  //   {
+  //     path: "/shopping-cart",
+  //     element: <ShoppingCart />,
+  //   },
+  //   {
+  //     path: "/edit-page",
+  //     element: <ProfilePage />,
+  //   },
+  //   {
+  //     path: "/productlist",
+  //     element: <ProductList />,
+  //   },
+  //   {
+  //     path: "/product/:id",
+  //     element: <ProductDetails />,
+  //   },
+  //   {
+  //     path: "/productwishlist",
+  //     element: <ProductWishlist />, // Define route for ProductWishlist
+  //   },
+  //   {
+  //     path: "/contactpage",
+  //     element: <ContactPage />,
+  //   },
+  //   {
+  //     path: "/aboutpage",
+  //     element: <AboutPage />,
+  //   },
+  //   {
+  //     path: "/billingpage",
+  //     element: <BillingPage />,
+  //   },
+  // ]);
+
   return (
     <>
-      {user === "admin" && <RouterProvider router={adminRouter} />}
-      {user === "customer" && <RouterProvider router={customerRouter} />}
+      {user === "admin" && 
+      <RouterProvider router={adminRouter} />
+       }
+      {user === "customer" &&
+       <RouterProvider router={customerRouter} />
+       }
       <ToastContainer />
     </>
   );

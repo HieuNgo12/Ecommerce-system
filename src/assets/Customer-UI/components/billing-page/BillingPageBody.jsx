@@ -5,20 +5,24 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Loading from "../utils/Loading";
+import { ToastContainer, toast } from "react-toastify";
+
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
     .max(50, "Required maximum 50 letters")
     .required("First Name Is Required"),
   companyName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .min(2, "Company must be at least 2 letters")
+    .max(50, "Company name must be maximum 50 letters")
+    .required("Company name is Required"),
   //   streetAddress: Yup.string().required("Required"),
   apartment: Yup.string(),
-  townCity: Yup.string().required("Required"),
-  phoneNumber: Yup.number().required("Required"),
-  emailAddress: Yup.string().required("Required").email("Invalid email"),
+  townCity: Yup.string().required("Town City is Required"),
+  phoneNumber: Yup.number().required("Phone Number is Required"),
+  emailAddress: Yup.string()
+    .required("Email is Required")
+    .email("Invalid email"),
 });
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
@@ -229,9 +233,7 @@ function ShoppingCartBody() {
                   id="emailAddress"
                   name="emailAddress"
                   type="emailAddress"
-                  onChange={
-                    formik.handleChange
-                  }
+                  onChange={formik.handleChange}
                   value={formik.values.emailAddress}
                 />
                 <div className="flex">
@@ -308,11 +310,13 @@ function ShoppingCartBody() {
                 console.log(coupon.title?.toString(), couponCode);
                 return coupon.title?.toString() === couponCode;
               }).length ? (
-                <div className="text-left text-green-300">
-                  Successfully applied coupon message
+                <div className="text-left text-green-500">
+                  Succeeded to apply coupon message
                 </div>
               ) : (
-                <div className="text-left text-red-300">Failed to apply coupon message</div>
+                <div className="text-left text-red-500">
+                  Failed to apply coupon message
+                </div>
               )
             ) : null}
             <div className="flex">
@@ -332,6 +336,7 @@ function ShoppingCartBody() {
                     // const data = await axios.get(
                     //   "https://66b0ab0f6a693a95b539b080.mockapi.io/delivery"
                     // );
+
                     setCouponMessage(true);
                   } catch (e) {
                     console.log(e);
