@@ -1,21 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProfilePageBody.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import Loading from "../utils/Loading";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
     .max(50, "Required maximum 50 letters")
     .required("First Name Is Required"),
   lastName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
+    .min(2, "Last name is at least 2 letters")
+    .max(50, "Last name is too long!")
     .required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   address: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
+    .min(2, "Address must be at least 2 letters")
+    .max(50, "Address is too Long!")
     .required("Required"),
   currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string().required("Required"),
@@ -25,6 +26,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 function ProfilePageBody() {
+  const [loading,setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -37,6 +39,7 @@ function ProfilePageBody() {
     },
     validationSchema: SignupSchema,
     onSubmit: (values) => {
+      setLoading(true);
       const userList = JSON.parse(localStorage.getItem("userList")) || [];
       userList.push(values);
       localStorage.setItem("userList", JSON.stringify(userList));
@@ -53,7 +56,16 @@ function ProfilePageBody() {
         });
     },
   });
-  return (
+
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
+  return loading ? <Loading /> : (
     <div className="container">
       <div className="flex">
         <ul className="breadcrumb text-left">
@@ -113,13 +125,13 @@ function ProfilePageBody() {
                   <div className="error-field ">
                     {" "}
                     {formik.errors.firstName && (
-                      <div>{formik.errors.firstName}</div>
+                      <div>{formik.errors.lastName}</div>
                     )}
                   </div>
                   <div className="error-field ">
                     {" "}
                     {formik.errors.firstName && (
-                      <div>{formik.errors.firstName}</div>
+                      <div>{formik.errors.lastName}</div>
                     )}
                   </div>
                 </div>
