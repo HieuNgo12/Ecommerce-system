@@ -55,10 +55,6 @@ function Header() {
     navigate("/admin/customers/addcustomers");
   };
 
-  const refresh = () => {
-    callApi();
-  };
-
   return (
     <div className="w-full p-6 bg-gray-100">
       <div className="w-full flex items-center justify-between pb-3">
@@ -137,12 +133,6 @@ function Header() {
               ADD CUSTOMERS
             </button>
           )}
-          <img
-            src={refreshImg}
-            alt=""
-            className="cursor-pointer w-5"
-            onClick={() => refresh()}
-          />
           <input
             type="text"
             className="rounded-md p-2 hidden sm:block"

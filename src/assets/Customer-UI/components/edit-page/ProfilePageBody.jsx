@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProfilePageBody.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { AdminProvider, useAdminContext } from "../../../Admin-UI/AdminContext";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
@@ -18,10 +19,36 @@ const SignupSchema = Yup.object().shape({
     .required("Required"),
   currentPassword: Yup.string().required("Required"),
   newPassword: Yup.string().required("Required"),
-  confirmNewPassword: Yup.string().required("Required")     .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')  ,
+  confirmNewPassword: Yup.string()
+    .required("Required")
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
 });
 
 function ProfilePageBody() {
+  const { dataUserName } = useAdminContext();
+  const [licenseCustomer, setlicenseCustomer] = useState();
+  useEffect(() => {
+    const getLicenseFromSS = sessionStorage.getItem("customer");
+    if (getLicenseFromSS) {
+      setlicenseCustomer(getLicenseFromSS);
+    }
+    setUsername(getLicenseFromSS);
+  }, [licenseCustomer]);
+
+  const newData = dataUserName.find((item) => {
+    const test = item.email === licenseCustomer;
+    if (test) {
+      return item;
+    }
+  });
+
+  const [username, setUsername] = useState("");
+  // const [firstName, setFirstName] = useState(newData.firstname);
+
+  console.log(licenseCustomer);
+  console.log(dataUserName);
+
+  console.log(newData);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -49,7 +76,7 @@ function ProfilePageBody() {
         </ul>
         <div className="flex welcome">
           <p>Welcome!</p>
-          <p className="mcl-rimmel "> Mcl Rimel</p>
+          <p className="mcl-rimmel ">{username}</p>
         </div>
       </div>
       <div className="flex">
@@ -90,7 +117,7 @@ function ProfilePageBody() {
                     id="lastName"
                     name="lastName"
                     type="lastName"
-                    className="short-input"
+                    className="short-input input-right"
                     placeholder="Rimel"
                     onChange={formik.handleChange}
                     value={formik.values.lastName}
@@ -127,7 +154,7 @@ function ProfilePageBody() {
                     value={formik.values.email}
                   />
                   <input
-                    className="short-input"
+                    className="short-input input-right"
                     id="address"
                     name="address"
                     type="address"
@@ -188,7 +215,9 @@ function ProfilePageBody() {
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
-                    {formik.errors.newPassword && <div>{formik.errors.newPassword}</div>}
+                    {formik.errors.newPassword && (
+                      <div>{formik.errors.newPassword}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -227,4 +256,10 @@ function ProfilePageBody() {
   );
 }
 
-export default ProfilePageBody;
+const ProfilePageBodyUI = () => (
+  <AdminProvider>
+    <ProfilePageBody />
+  </AdminProvider>
+);
+
+export default ProfilePageBodyUI;

@@ -45,7 +45,7 @@ function LogIn() {
           draggable: true,
           progress: undefined,
           theme: "light",
-          onClose: () => navigate("/test"),
+          onClose: () => navigate("/"),
         });
         return;
       }

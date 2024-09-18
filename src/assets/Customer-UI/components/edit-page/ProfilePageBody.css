@@ -28,9 +28,12 @@
   background-color: #f5f5f5;
   height: 50px;
   border-radius: 4px;
-  margin-left: 12px;
   margin-bottom: 12px;
   padding-left: 12px;
+}
+
+.input-right{
+  margin-left: 12px;
 }
 
 .long-input {
@@ -38,7 +41,7 @@
   background-color: #f5f5f5;
   height: 50px;
   border-radius: 4px;
-  margin-left: 12px;
+  /* margin-left: 12px; */
   margin-bottom: 12px;
   margin-top: 12px;
   padding-left: 12px;
@@ -54,8 +57,12 @@
 }
 
 .cancel-button {
-    min-width: 57px;
-    height: 24px;
+  background-color: #DB4444;
+  min-width: 214px !important;
+  height: 56px;
+  padding: 16px 48px 16px 48px;
+  border-radius: 4px;
+  color: white;
 
 }
 
@@ -69,8 +76,9 @@
 }
 
 .buttons{
-    margin-left: 60%;
+    margin-left: 40%;
     margin-top: 12px;
+    display: flex;
 }
 
 .edit-your-profile{

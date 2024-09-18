@@ -26,6 +26,9 @@ import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
 import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
 import ProfilePage from "./assets/Customer-UI/pages/ProfilePage"
+import HomePage from "./assets/Customer-UI/pages/HomePage"
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage"
+
 
 function App() {
   const [count, setCount] = useState(0);
@@ -78,15 +81,20 @@ function App() {
       path: "/forgot-password",
       element: <ForgotPassword />,
     },
+    {
+      path: "/edit-page",
+      element: <ProfilePage />,
+    },
+    {
+      path: "/",
+      element: <HomePage />,
+      errorElement: <ErrorPage />,
+      children: [],
+    },
   ]);
 
   const customerRouter = createBrowserRouter([
-    // {
-    //   path: "/",
-    //   element: <HomePage />,
-    //   errorElement: <ErrorPage />,
-    //   children: [],
-    // },
+
     // {
     //   path: "/shopping-cart",
     //   element: <ShoppingCart />,
