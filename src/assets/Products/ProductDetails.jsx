@@ -5,6 +5,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Navbar from "../Customer-UI/components/Navbar";
 import Footer from "../Customer-UI/components/Footer";
 import { WishlistContext } from "./Context/WishlistContext";
+import ReviewSection from "./components/reviewSection"; // Import the new ReviewSection component
+
 
 const ProductDetails = () => {
 
@@ -254,6 +256,8 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
+
+        <ReviewSection productId={id} />
 
         <div className="mt-16">
           <h2 className="text-2xl font-bold mb-8">Related Items</h2>
