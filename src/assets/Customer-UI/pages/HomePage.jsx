@@ -15,9 +15,10 @@ function HomePage() {
   const [data, setData] = useState([]);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products");
+      const res = await fetch(`http://localhost:8080/api/v1/product`);
       const data = await res.json();
-      setData(data);
+      console.log(data);
+      setData(data.data);
     };
     getData();
     return () => {};

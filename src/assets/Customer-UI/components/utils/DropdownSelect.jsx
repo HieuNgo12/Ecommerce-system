@@ -44,7 +44,7 @@ export default function BasicMenu() {
           </div>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Link to={"/shopping-cart"}>My Order</Link>
+          <Link to={"/order-page"}>My Order</Link>
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Link to={""}> My Collections</Link>

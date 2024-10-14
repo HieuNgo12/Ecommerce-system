@@ -42,24 +42,35 @@ function ShoppingCartBody() {
       couponCode: "",
       paymentMethod: "",
       saveThisInformation: "",
+      cardNumber: "",
     },
     validationSchema: SignupSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       setLoading(true);
-      axios
-        .post("https://66b0ab0f6a693a95b539b080.mockapi.io/delivery", {
-          ...values,
-          isBank: true,
-          isCashOnDelivery: false,
-          subTotal: subTotal,
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      localStorage.setItem("orders", JSON.stringify(values));
+      const billingList =
+        JSON?.parse(localStorage?.getItem("billingList")) || [];
+      for (let i = 0; i < billingList.length; i++) {
+        const response = await axios
+          .post("http://localhost:8080/api/v1/order", {
+            headers: { Authorization: `Bearer abc` },
+            body: {
+              ...values,
+
+              isPaidByCard: true,
+              isCashOnDelivery: false,
+              subTotal: subTotal,
+              quantity: billingList[i][2],
+              productName: billingList[i][0]
+            },
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+
       setSuccess(true);
     },
   });
@@ -244,7 +255,24 @@ function ShoppingCartBody() {
                   </div>
                 </div>
               </div>
-
+              <div>
+                <div>Card Number</div>
+                <input
+                  id="cardNumber"
+                  name="cardNumber"
+                  type="cardNumber"
+                  onChange={formik.handleChange}
+                  value={formik.values.cardNumber}
+                />
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.cardNumber && (
+                      <div>{formik.errors.cardNumber}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
               <div className="flex">
                 <input className="save-this-info" type="checkbox" />
 
@@ -270,7 +298,7 @@ function ShoppingCartBody() {
             <div className="flex item-card border-grey">
               <div>Subtotal:</div>
               <div className="price">
-                {Number(Math.round(subTotal * 100) / 100) + " $"}
+                {(Number(Math.round(subTotal * 100) / 100) || 0 + " $") }
               </div>
             </div>
             <div className="flex item-card border-grey">
@@ -280,7 +308,7 @@ function ShoppingCartBody() {
             <div className="flex item-card">
               <div>Total:</div>
               <div className="price">
-                {Number(Math.round(subTotal * 100) / 100) + " $"}
+                {(Number(Math.round(subTotal * 100) / 100)) || 0 + " $"}
               </div>
             </div>
 

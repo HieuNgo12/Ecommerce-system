@@ -32,6 +32,8 @@ import Setting from "./assets/Admin-UI/components/setting/setting";
 import Help from "./assets/Admin-UI/components/help/help";
 import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
 import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
+import DeliveryPage from "./assets/Customer-UI/pages/DeliveryPage";
+import OrderPage from "./assets/Customer-UI/pages/OrderPage";
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("admin");
@@ -125,6 +127,22 @@ function App() {
     {
       path: "/billingpage",
       element: <BillingPage />,
+    },
+    {
+      path: "/order-page",
+      element: <OrderPage />,
+    },
+
+    {
+      path: "/delivery-page",
+      element: <DeliveryPage />,
+    },
+    {
+      path: "/order-page",
+      element: <OrderPage />,
+    },  {
+      path: "/payment-page",
+      // element: < />,
     },
   ]);
 

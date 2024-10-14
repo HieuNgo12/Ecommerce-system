@@ -38,9 +38,9 @@ function CustomArrows({ Products, products, ...props }) {
             return (
               <div className="container">
                 <Card
-                  orgPrice={item?.price}
-                  review={Math.ceil(item?.rating?.count)}
-                  rating={item?.rating?.rate}
+                  orgPrice={item?.originalPrice}
+                  review={Math.ceil(item?.review)}
+                  rating={item?.rating}
                   img={item?.image}
                   price={item?.price}
                   title={item?.title}

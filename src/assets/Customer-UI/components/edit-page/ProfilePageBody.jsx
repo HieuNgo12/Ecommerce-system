@@ -44,9 +44,8 @@ function ProfilePageBody() {
       userList.push(values);
       localStorage.setItem("userList", JSON.stringify(userList));
       axios
-        .put("https://66b0ab0f6a693a95b539b080.mockapi.io/users", {
+        .put("http://localhost:8080/user", {
           ...values,
-          id: 1,
         })
         .then(function (response) {
           console.log(response);
