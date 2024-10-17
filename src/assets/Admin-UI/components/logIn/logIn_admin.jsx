@@ -5,70 +5,72 @@ import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
-import Navbar from "../../../Customer-UI/components/Navbar"
+import Navbar from "../../../Customer-UI/components/Navbar";
 
 function LogIn() {
-  const { dataUserName } = useAdminContext();
-  const [username, setUsername] = useState("");
+  // const { dataUserName } = useAdminContext();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
-  console.log(dataUserName);
-  const logIn = (e) => {
+  const logIn = async (e) => {
     e.preventDefault();
-    if (username === "" || password === "") {
-      toast.warn("Vui lòng nhập đầy đủ thông tin", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    try {
+      const req = await fetch("http://localhost:8080/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+        // "Authorization": `Bearer ${token}`,
+        // credentials: "include",
       });
-    } else {
-      const user = dataUserName.find(
-        (user) =>
-          (user.email === username || user.username === username) &&
-          user.password === password
-      );
-      if (user) {
-        sessionStorage.setItem("customer", username);
-        toast.success("Đăng nhập thành công", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => navigate("/"),
-        });
-        return;
-      }
 
-      const admin = userAdmin.find(
-        (admin) => admin.email === username && admin.password === password
-      );
-      if (admin) {
-        const getLicense = admin.license;
-        sessionStorage.setItem("admin", getLicense);
-        toast.success("Đăng nhập ADMIN thành công", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => navigate("/admin"),
-        });
+      const res = await req.json();
+      console.log(res.data);
+      const token = res.data;
+
+      localStorage.setItem("accessToken", token);
+
+      const decodeToken = (token) => {
+        const payloadBase64 = token.split(".")[1];
+        return JSON.parse(atob(payloadBase64)); // Giải mã payload
+      };
+      const userData = decodeToken(token);
+      console.log(userData);
+
+      if (req.status === 200) {
+        if (userData.role === "admin")
+          toast.success(res.message, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => {
+              navigate("/admin");
+            },
+          });
+
+        if (userData.role === "user")
+          toast.success(res.message, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => {
+              navigate("/");
+            },
+          });
       } else {
-        toast.error("Đăng nhập thất bại", {
+        toast.warn(res.message, {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: false,
@@ -79,6 +81,18 @@ function LogIn() {
           theme: "light",
         });
       }
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -105,9 +119,9 @@ function LogIn() {
                 type="text"
                 id="username"
                 className="block w-full p-2 border rounded-md mb-4"
-                placeholder="Email or Phone Number"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <label htmlFor="password" className="block mb-1 font-medium">
                 Password:

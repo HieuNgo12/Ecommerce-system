@@ -28,6 +28,7 @@ import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotP
 import ProfilePage from "./assets/Customer-UI/pages/ProfilePage"
 import HomePage from "./assets/Customer-UI/pages/HomePage"
 import ErrorPage from "./assets/Customer-UI/pages/ErrorPage"
+import ResetPassword from "./assets/Admin-UI/components/resetPassword/resetPassword";
 
 
 function App() {
@@ -84,6 +85,10 @@ function App() {
     {
       path: "/edit-page",
       element: <ProfilePage />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
     },
     {
       path: "/",

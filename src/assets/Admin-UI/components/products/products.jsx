@@ -11,46 +11,44 @@ import {
   Outlet,
 } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+// import { v2 as cloudinary } from "cloudinary";
 import { ToastContainer, toast } from "react-toastify";
 
 const Products = () => {
-  const { dataProduct, callApi } = useAdminContext();
+  // const { dataProduct, callApi } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState();
-  const [newDataProducts, setNewDataProducts] = useState([]);
-
-  useEffect(() => {
-    if (dataProduct && dataProduct.length > 0) {
-      const dataChanged = dataProduct.map((item) => ({
-        ...item,
-        status: "Active",
-        count: "10",
-        types: [
-          {
-            color: "black",
-            size: "XL",
-            quantity: "10",
-          },
-          {
-            color: "white",
-            size: "L",
-            quantity: "20",
-          },
-        ],
-      }));
-      setNewDataProducts(dataChanged);
-    }
-  }, [dataProduct]);
+  const [dataProduct, setDataProduct] = useState([]);
 
   const openModal = (product) => {
     setIsModalOpen(true);
     setSelectedProduct(product);
   };
 
+  const callApi = async () => {
+    try {
+      const req = await fetch("http://localhost:8080/api/v1/products");
+      const res = await req.json();
+      const result = res.data;
+      setDataProduct(result)
+    }
+    catch (error) {
+      console.error("error", error);
+    }
+  };
+
+  useEffect(() => {
+    callApi();
+  }, []);
+
+  if (!dataProduct || dataProduct.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   const delProduct = async (xxx) => {
     try {
-      const res = await fetch(
-        `https://66b0ab0f6a693a95b539b080.mockapi.io/products/${xxx.id}`,
+      const req = await fetch(
+        `http://localhost:8080/api/v1/products/delete-product/${xxx._id}`,
         {
           method: "DELETE",
           headers: {
@@ -58,8 +56,23 @@ const Products = () => {
           },
         }
       );
-      callApi();
-      toast.warn("Delete successful!", {
+
+      if (req.status === 200) {
+        callApi();
+        toast.success("Delete successful!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.warn("Error deleting product!", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: false,
@@ -69,19 +82,15 @@ const Products = () => {
         progress: undefined,
         theme: "light",
       });
-      console.log(res);
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      toast("Error deleting product!");
     }
   };
 
-  const filtersID = newDataProducts.map((item) => ({
-    text: item.id.toString(),
-    value: item.id.toString(),
+  const filtersID = dataProduct.map((item) => ({
+    text: item._id.toString(),
+    value: item._id.toString(),
   }));
 
-  const filtersTitle = newDataProducts.map((item) => ({
+  const filtersTitle = dataProduct.map((item) => ({
     text: item.title.toString(),
     value: item.title.toString(),
   }));
@@ -94,8 +103,10 @@ const Products = () => {
   ];
 
   const filtersStatus = [
-    { text: "Active", value: "Active" },
-    { text: "Block", value: "Block" },
+    { text: "Available", value: "available" },
+    { text: "Out of stock", value: "out_of_stock" },
+    { text: "Discontinued", value: "discontinued" },
+    { text: "Pre order", value: "pre_order" },
   ];
 
   const truncateStyle = {
@@ -127,10 +138,10 @@ const Products = () => {
       key: "id",
       filters: filtersID,
       fixed: "left",
-      width: 100,
+      // width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text, record) => <div>{record._id}</div>,
     },
     {
       title: "Title",
@@ -156,12 +167,73 @@ const Products = () => {
       ),
     },
     {
+      title: "Color",
+      dataIndex: "color",
+      key: "color",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.color.indexOf(value) === 0,
+      sorter: (a, b) => a.color.localeCompare(b.color),
+      render: (text, record) => (
+        <div style={{ width: 100 }}>{record.color}</div>
+      ),
+    },
+    {
+      title: "Brand",
+      dataIndex: "brand",
+      key: "brand",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.brand.indexOf(value) === 0,
+      sorter: (a, b) => a.brand.localeCompare(b.brand),
+      render: (text, record) => (
+        <div style={{ width: 100 }}>{record.brand}</div>
+      ),
+    },
+    {
+      title: "Quantity",
+      dataIndex: "Quantity",
+      key: "Quantity",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.quantity.indexOf(value) === 0,
+      sorter: (a, b) => a.quantity.localeCompare(b.quantity),
+      render: (text, record) => (
+        <div style={{ width: 100 }}>{record.quantity}</div>
+      ),
+    },
+    {
+      title: "Slug",
+      dataIndex: "slug",
+      key: "slug",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.slug.indexOf(value) === 0,
+      sorter: (a, b) => a.slug.localeCompare(b.slug),
+      render: (text, record) => <div>{record.slug}</div>,
+    },
+    {
+      title: "Sku",
+      dataIndex: "sku",
+      key: "sku",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.sku.indexOf(value) === 0,
+      sorter: (a, b) => a.sku.localeCompare(b.sku),
+      render: (text, record) => <div>{`/${record.sku}`}</div>,
+    },
+    {
+      title: "Featured",
+      dataIndex: "isFeatured",
+      key: "isFeatured",
+      // filters: filtersCategory,
+      onFilter: (value, record) => record.isFeatured.indexOf(value) === 0,
+      sorter: (a, b) => a.isFeatured.localeCompare(b.isFeatured),
+      render: (text, record) => <div>{record.isFeatured.toString()}</div>,
+    },
+    {
       title: "Image",
       dataIndex: "image",
       key: "image",
       render: (text, record) => (
         <div style={{ width: 100 }}>
           <img
+            // src={`https://res.cloudinary.com/dsxlqhn53/image/upload/${record.image}`}
             src={record.image}
             alt={record.title}
             style={{ width: "100px", height: "100px" }}
@@ -169,57 +241,7 @@ const Products = () => {
         </div>
       ),
     },
-    {
-      title: "Types",
-      dataIndex: "type",
-      key: "type",
-      sorter: (a, b) => a.color - b.color,
-      render: (text, record) => (
-        <div style={{ width: 80 }}>
-          {record.types.map((item, index) => (
-            <div key={index} className="py-1">
-              {item.color}
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: "Size",
-      dataIndex: "size",
-      key: "size",
-      sorter: (a, b) => a.size - b.size,
-      render: (text, record) => (
-        <div style={{ width: 80 }}>
-          {record.types.map((item, index) => (
-            <div key={index} className="py-1">
-              {item.size}
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-      render: (text, record) => (
-        <div style={{ width: 80 }}>
-          {record.types.map((item, index) => (
-            <div key={index} className="py-1">
-              {item.quantity}
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: "Count",
-      dataIndex: "count",
-      key: "count",
-      sorter: (a, b) => a.count - b.count,
-      render: (text, record) => <div style={{ width: 80 }}>{record.count}</div>,
-    },
+
     {
       title: "Price ( $ )",
       dataIndex: "price",
@@ -227,42 +249,15 @@ const Products = () => {
       sorter: (a, b) => a.price - b.price,
       render: (text, record) => <div style={{ width: 80 }}>{record.price}</div>,
     },
-    // {
-    //   title: "Date Start",
-    //   dataIndex: "dateStart",
-    //   key: "dateStart",
-    //   sorter: (a, b) => a.dateStart - b.dateStart,
-    //   render: (text, record) => (
-    //     <div style={{ width: 100 }}>{record.dateStart}</div>
-    //   ),
-    // },
-    // {
-    //   title: "Time Start",
-    //   dataIndex: "timeStart",
-    //   key: "timeStart",
-    //   sorter: (a, b) => a.timeStart - b.timeStart,
-    //   render: (text, record) => (
-    //     <div style={{ width: 100 }}>{record.timeStart}</div>
-    //   ),
-    // },
-    // {
-    //   title: "Date End",
-    //   dataIndex: "dateEnd",
-    //   key: "dateEnd",
-    //   sorter: (a, b) => a.dateEnd - b.dateEnd,
-    //   render: (text, record) => (
-    //     <div style={{ width: 100 }}>{record.dateStart}</div>
-    //   ),
-    // },
-    // {
-    //   title: "TimeEnd",
-    //   dataIndex: "timeEnd",
-    //   key: "timeEnd",
-    //   sorter: (a, b) => a.timeEnd - b.timeEnd,
-    //   render: (text, record) => (
-    //     <div style={{ width: 100 }}>{record.timeEnd}</div>
-    //   ),
-    // },
+    {
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
+      sorter: (a, b) => a.discount - b.discount,
+      render: (text, record) => (
+        <div style={{ width: 80 }}>{record.discount}</div>
+      ),
+    },
     {
       title: "Description",
       dataIndex: "description",
@@ -289,7 +284,7 @@ const Products = () => {
       filters: filtersStatus,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       render: (text, record) => (
-        <div style={{ width: 50 }}>{record.status}</div>
+        <div style={{ width: 100 }}>{record.status}</div>
       ),
     },
     {
@@ -314,7 +309,7 @@ const Products = () => {
     <div>
       <Table
         columns={columns}
-        dataSource={newDataProducts}
+        dataSource={dataProduct}
         rowKey="id"
         scroll={{ x: true, y: 950 }}
         // style={{ maxWidth: 1080 }}
@@ -324,6 +319,7 @@ const Products = () => {
         <ModalProduct
           openModal={setIsModalOpen}
           selectedProduct={selectedProduct}
+          callApi={callApi}
         />
       )}
       <ToastContainer />

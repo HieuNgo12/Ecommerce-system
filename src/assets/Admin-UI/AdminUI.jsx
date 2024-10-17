@@ -19,9 +19,8 @@ import Help from "./components/help/help";
 import Analytics from "./components/analytics/analytics";
 import AddCustomers from "./components/addCustomers/addCustomers";
 
-const AdminUI = () => {
-  // const { dataUserName, dataProducts, dataCart } = useAdminContext();
 
+const AdminUI = () => {
   return (
     <div className="h-screen flex w-full">
       <Sidebar />

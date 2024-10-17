@@ -34,13 +34,8 @@ const AddCustomers = () => {
   };
 
   const createNewProduct = async () => {
-    if (
-      email === null ||
-      username === null ||
-      password === null ||
-      confirmPass === null
-    ) {
-      toast.error("vui lòng nhập đầy đủ email, password, username", {
+    if (email === "") {
+      toast.error("email is required.", {
         position: "top-center",
         autoClose: 3000,
         hideProgressBar: false,
@@ -49,64 +44,89 @@ const AddCustomers = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        // transition: Bounce,
+      });
+    }
+
+    if (username === "") {
+      toast.error("username is required.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (password === "") {
+      toast.error("password is required.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (password !== confirmPass) {
+      toast.error("Password và confirm không trùng khớp!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
     } else {
-      if (password !== confirmPass) {
-        toast.error("Password và confirm không trùng khớp!", {
+      try {
+        const res = await fetch(
+          "https://66b0ab0f6a693a95b539b080.mockapi.io/users",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email,
+              username: username,
+              password: password,
+              phone: phone,
+              birthDate: birthDate,
+              gender: gender,
+              image: newImage,
+              firstname: firstname,
+              lastname: lastname,
+              zipcode: zipcode,
+              number: number,
+              street: street,
+              city: city,
+              status: "active",
+            }),
+          }
+        );
+        const json = await res.json();
+        console.log(json);
+        callApi();
+        toast.success("Create Account successful!", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
-          closeOnClick: true,
+          closeOnClick: false,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
           theme: "light",
+          onClose: () => navigate("/customers"),
         });
-      } else {
-        try {
-          const res = await fetch(
-            "https://66b0ab0f6a693a95b539b080.mockapi.io/users",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                email: email,
-                username: username,
-                password: password,
-                phone: phone,
-                birthDate: birthDate,
-                gender: gender,
-                image: newImage,
-                firstname: firstname,
-                lastname: lastname,
-                zipcode: zipcode,
-                number: number,
-                street: street,
-                city: city,
-                status: "active",
-              }),
-            }
-          );
-          const json = await res.json();
-          console.log(json);
-          callApi();
-          toast.success("Create Account successful!", {
-            position: "top-center",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => navigate("/customers"),
-          });
-        } catch (error) {
-          console.error("loading", error);
-        }
+      } catch (error) {
+        console.error("loading", error);
       }
     }
   };

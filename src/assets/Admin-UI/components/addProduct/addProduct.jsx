@@ -7,30 +7,44 @@ import { ToastContainer, toast } from "react-toastify";
 const AddProduct = () => {
   const { callApi } = useAdminContext();
   const [newCategory, setNewCategory] = useState("");
-  const [newID, setNewID] = useState("");
   const [newTitle, setNewTitle] = useState("");
-  const [newStatus, setNewStatus] = useState("");
+  const [newStatus, setNewStatus] = useState("available");
   const [newPrice, setNewPrice] = useState("");
   const [newImage, setNewImage] = useState("");
   const [sku, setSku] = useState("");
   const [slug, setSlug] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [color, setColor] = useState("");
+  const [brand, setNewBrand] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [tags, setTags] = useState("");
   const [classify, setClassify] = useState("");
   const [size, setSize] = useState("");
   const [arrMoreColor, setArrMoreColor] = useState([]);
-  const [quantitySizeXS, setQuantitySizeXS] = useState(0);
-  const [quantitySizeS, setQuantitySizeS] = useState(0);
-  const [quantitySizeM, setQuantitySizeM] = useState(0);
-  const [quantitySizeL, setQuantitySizeL] = useState(0);
-  const [quantitySizeXL, setQuantitySizeXL] = useState(0);
-  const [quantitySizeXLL, setQuantitySizeXLL] = useState(0);
-  const [quantitySizeXLLL, setQuantitySizeXLLL] = useState(0);
+  const [selectedColor, setSelectedColor] = useState(null);
   const navigate = useNavigate();
 
+  const colors = [
+    "yellow-500",
+    "orange-500",
+    "white",
+    "blue-500",
+    "black",
+    "red-500",
+    "gray-500",
+    "sky-500",
+    "rose-500",
+    "cyan-500",
+    "violet-500",
+  ];
+
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
   const choiceCategory = (e) => {
     setNewCategory(e.target.value);
+  };
+
+  const handleColorClick = (color) => {
+    setSelectedColor(color);
   };
 
   const addMoreColor = () => {
@@ -54,26 +68,195 @@ const AddProduct = () => {
 
   const createNewProduct = async () => {
     try {
-      const res = await fetch(
-        "https://66b0ab0f6a693a95b539b080.mockapi.io/products/",
+      if (!newCategory) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      if (!newTitle) {
+        toast.warn("Title is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+
+      if (!selectedColor) {
+        toast.warn("Color is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+
+      if (!newDescription) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      if (!newPrice) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      if (!sku) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      if (!slug) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+      if (!size) {
+        toast.warn("Email is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+
+      if (!newImage) {
+        toast.warn("Image is required", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
+
+      //B1 tạo sp mới
+      const res1 = await fetch(
+        "http://localhost:8080/api/v1/products/add-product",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            id: newID,
             title: newTitle,
-            price: newPrice,
-            description: newDescription,
-            category: newCategory,
-            image: newImage,
             status: newStatus,
+            price: newPrice,
+            slug: slug,
+            category: newCategory,
+            description: newDescription,
+            brand: brand,
+            tags: tags,
+            sku: sku,
+            color: selectedColor,
+            // image: imageUrl,
+            quantity: quantity,
           }),
         }
       );
-      const json = await res.json();
-      console.log(json);
+      const json1 = await res1.json();
+      const productId = json1.data._id;
+ 
+
+
+      //B2 tạo hình mới
+      const formData = new FormData();
+      formData.append("file", newImage); // Thêm tệp vào FormData
+      formData.append("productId", productId);
+
+      const res2 = await fetch(
+        "http://localhost:8080/api/v1/products/single-upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const json2 = await res2.json();
+
+      
+      if (!json2.public_id) {
+        throw new Error("Image upload failed");
+      }
+      
+      // const imagePublicId = json2.public_id;
+      const imageUrl = json2.secure_url;
+      console.log(imageUrl)
+
+
+      //B3 cập nhật lại hình vào sản phẩm
+      const res3 = await fetch(`http://localhost:8080/api/v1/products/update-product/${productId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          image : imageUrl
+        })
+      })
+
+      const jon3 = res3.json();
+      console.log(jon3)
+
       callApi();
       toast.success("Added product successful!", {
         position: "top-center",
@@ -84,7 +267,7 @@ const AddProduct = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        onClose: () => navigate("/products"),
+        // onClose: () => navigate("/products"),
       });
     } catch (error) {
       console.error("loading", error);
@@ -101,6 +284,7 @@ const AddProduct = () => {
         <option value="women's clothing">Women's clothing</option>
         <option value="electronics">Electronics</option>
         <option value="jewelery">Jewelery</option>
+        <option value="toy">Toy</option>
       </select>
       <div className="grid grid-cols-12 gap-4">
         <div className="col-span-12 md:col-span-6">
@@ -113,24 +297,26 @@ const AddProduct = () => {
           />
         </div>
         <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Stock status</label>
+          <label className="block mb-2">Status</label>
           <select
             className="w-full p-2 border rounded"
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
           >
-            <option value="active">Active</option>
-            <option value="sold out">Sold Out</option>
-            <option value="block">Block</option>
+            <option value="available">Available</option>
+            <option value="out_of_stock">Out of Stock</option>
+            <option value="discontinued">Discontinued</option>
+            <option value="pre_order">Pre Order</option>
           </select>
         </div>
         <div className="col-span-12 md:col-span-6">
           <label className="block mb-2">Price</label>
           <input
             className="w-full p-2 border rounded"
-            type="text"
-            value={newPrice}
+            type="number"
+            value={newPrice < 0 ? 0 : newPrice}
             onChange={(e) => setNewPrice(e.target.value)}
+            min={0}
           />
         </div>
         <div className="col-span-12 md:col-span-6">
@@ -140,7 +326,6 @@ const AddProduct = () => {
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            disabled
           />
         </div>
         <div className="col-span-12 md:col-span-6">
@@ -166,7 +351,7 @@ const AddProduct = () => {
           </select>
         </div>
 
-        <div className="col-span-12">
+        <div className="col-span-12 md:col-span-6">
           <label className="block mb-2">Description</label>
           <textarea
             className="w-full p-2 border rounded"
@@ -175,14 +360,24 @@ const AddProduct = () => {
           ></textarea>
         </div>
         <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">ID</label>
+          <label className="block mb-2">Brand</label>
           <div>
             <input
               className="w-full p-2 border rounded"
               type="text"
-              value={newID}
-              onChange={(e) => setNewID(e.target.value)}
-              disabled
+              value={brand}
+              onChange={(e) => setNewBrand(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-span-12 md:col-span-6">
+          <label className="block mb-2">Tags</label>
+          <div>
+            <input
+              className="w-full p-2 border rounded"
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
             />
           </div>
         </div>
@@ -193,112 +388,32 @@ const AddProduct = () => {
             type="text"
             value={`/${sku}`}
             onChange={(e) => setSku(e.target.value.slice(1))}
-            disabled
           />
         </div>
         <div className="col-span-12 md:col-span-6">
           <label className="block mb-2">Colors</label>
           <div className="flex">
-            <div
-              className="w-8 h-8 mr-2 bg-yellow-500 rounded-full cursor-pointer"
-              onClick={() => setColor("yellow")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-orange-500 rounded-full cursor-pointer"
-              onClick={() => setColor("orange")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-white rounded-full cursor-pointer border"
-              onClick={() => setColor("white")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-blue-500 rounded-full cursor-pointer"
-              onClick={() => setColor("blue")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-black rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-red-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-gray-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-sky-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-rose-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-cyan-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-amber-900 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-indigo-950 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-violet-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
+            {colors.map((color) => (
+              <div
+                key={color}
+                className={`w-8 h-8 mr-2 bg-${color} rounded-full cursor-pointer ${
+                  selectedColor === color
+                    ? "transform scale-110 border-4 border-black"
+                    : ""
+                }`}
+                onClick={() => handleColorClick(color)}
+              ></div>
+            ))}
           </div>
         </div>
         <div className="col-span-12 md:col-span-6">
           <label className="block mb-2">Size</label>
-          <div className="flex justify-between">
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XS")}
-            >
-              XS
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("S")}
-            >
-              S
-            </button>
-            <button
-              className="w-16 h-8 mr-2 border rounded"
-              onClick={() => setSize("M")}
-            >
-              M
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("L")}
-            >
-              L
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XL")}
-            >
-              XL
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XXL")}
-            >
-              XXL
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XXXL")}
-            >
-              XXXL
-            </button>
-          </div>
+          <input
+            className="w-full p-2 border rounded"
+            type="text"
+            value={size}
+            onChange={(e) => setSize(e.target.value)}
+          />
         </div>
         <div className="col-span-12 md:col-span-6">
           <label className="block mb-2">Images</label>
@@ -318,76 +433,14 @@ const AddProduct = () => {
           </div>
         </div>
         <div className="col-span-12 md:col-span-6">
-          <div className="flex justify-between">
+          <div className="col-span-12 md:col-span-6">
+            <label className="block mb-2">Quantity</label>
             <input
+              className="w-full p-2 border rounded"
               type="number"
-              value={quantitySizeXS}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXS(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeS}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeS(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeM}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeM(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXLL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXLL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXLLL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXLLL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              min={0}
             />
           </div>
           <div className="col-span-12 ">
@@ -402,16 +455,6 @@ const AddProduct = () => {
         {arrMoreColor.map((item, index) => (
           <React.Fragment key={index}>
             <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">ID</label>
-              <input
-                className="w-full p-2 border rounded"
-                type="text"
-                value={newID}
-                onChange={(e) => setNewID(e.target.value)}
-                disabled
-              />
-            </div>
-            <div className="col-span-12 md:col-span-6">
               <label className="block mb-2">SKU</label>
               <input
                 className="w-full p-2 border rounded"
@@ -424,107 +467,28 @@ const AddProduct = () => {
             <div className="col-span-12 md:col-span-6">
               <label className="block mb-2">Colors</label>
               <div className="flex">
-                <div
-                  className="w-8 h-8 mr-2 bg-yellow-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("yellow")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-orange-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("orange")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-white rounded-full cursor-pointer border"
-                  onClick={() => setColor("white")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-blue-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("blue")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-black rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-red-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-gray-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-sky-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-rose-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-cyan-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-amber-900 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-indigo-950 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-violet-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
+                {colors.map((color) => (
+                  <div
+                    key={color}
+                    className={`w-8 h-8 mr-2 bg-${color}-500 rounded-full cursor-pointer`}
+                    onClick={() => setColor(color)}
+                  ></div>
+                ))}
               </div>
             </div>
             <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Sizes</label>
+              <label className="block mb-2">Size</label>
               <div className="flex justify-between">
                 <button
+                  key={size}
                   className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XS")}
+                  onClick={() => setSize(size)}
                 >
-                  XS
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("S")}
-                >
-                  S
-                </button>
-                <button
-                  className="w-16 h-8 mr-2 border rounded"
-                  onClick={() => setSize("M")}
-                >
-                  M
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("L")}
-                >
-                  L
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XL")}
-                >
-                  XL
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XXL")}
-                >
-                  XXL
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XXXL")}
-                >
-                  XXXL
+                  {size}
                 </button>
               </div>
             </div>
+
             <div className="col-span-12 md:col-span-6">
               <label className="block mb-2">Images</label>
               <div className="flex gap-3">
@@ -543,78 +507,7 @@ const AddProduct = () => {
               </div>
             </div>
             <div className="col-span-12 md:col-span-6">
-              <div className="flex justify-between">
-                <input
-                  type="number"
-                  value={quantitySizeXS}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXS(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeS}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeS(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeM}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeM(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXLL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXLL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXLLL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXLLL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-              </div>
+              <div className="flex justify-between"></div>
               <button
                 className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-400"
                 onClick={() => deleteColor(index)}

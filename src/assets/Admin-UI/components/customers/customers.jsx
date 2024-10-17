@@ -11,50 +11,69 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const Customers = () => {
-  const { dataUserName, callApi } = useAdminContext();
+  // const { dataUserName, callApi } = useAdminContext();
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [newData, setNewData] = useState(dataUserName);
+  const [dataUserName, setDataUserName] = useState([]);
 
-  const dataWithChanged = dataUserName.map((item) => ({
-    ...item,
-    status: "Active",
-    fullAddress: `${item.city}, ${item.street}, ${item.number}`,
-    fullName: `${item.firstname} ${item.lastname}`,
-    birthdate: item.birthdate.slice(0, 10),
+  const callApi = async () => {
+    try {
+      const req = await fetch("http://localhost:8080/api/v1/admin/get-users");
+      const res = await req.json();
+      const result = res.data;
+      setDataUserName(result);
+      console.log(dataUserName)
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  useEffect(()=>{
+    callApi()
+  },[])
+
+  if (!dataUserName || dataUserName.length === 0) {
+    return <div>Loading...</div>;
+  }
+
+  console.log(dataUserName)
+
+  const filtersID = dataUserName.map((item) => ({
+    text: item._id.toString(),
+    value: item._id.toString(),
   }));
 
-  useEffect(() => setNewData(dataWithChanged), [dataUserName]);
-
-  const filtersID = dataWithChanged.map((item) => ({
-    text: item.id.toString(),
-    value: item.id.toString(),
-  }));
-
-  const filtersEmail = dataWithChanged.map((item) => ({
+  const filtersEmail = dataUserName.map((item) => ({
     text: item.email.toString(),
     value: item.email.toString(),
   }));
 
-  const filtersUsername = dataWithChanged.map((item) => ({
+  const filtersUsername = dataUserName.map((item) => ({
     text: item.username.toString(),
     value: item.username.toString(),
   }));
 
-  const filtersPhone = dataWithChanged.map((item) => ({
-    text: item.phone.toString(),
-    value: item.phone.toString(),
+  const filtersPhone = dataUserName.map((item) => ({
+    text: item.phone,
+    value: item.phone,
   }));
 
-  const filtersFullName = dataWithChanged.map((item) => ({
-    text: item.fullName,
-    value: item.fullName,
+  const filtersFirstName = dataUserName.map((item) => ({
+    text: item.firstName,
+    value: item.firstName,
+  }));
+
+  const filtersLastName = dataUserName.map((item) => ({
+    text: item.lastName,
+    value: item.lastName,
   }));
 
   const filtersStatus = [
-    { text: "Active", value: "Active" },
-    { text: "Block", value: "Block" },
+    { text: "Active", value: "active" },
+    { text: "Inactive", value: "inactive" },
+    { text: "Pending", value: "pending" },
+    { text: "Suspended", value: "suspended" },
   ];
 
   const filtersGender = [
@@ -114,10 +133,10 @@ const Customers = () => {
       dataIndex: "id",
       filters: filtersID,
       fixed: "left",
-      width: 100,
+      // width: 100,
       onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
       sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text, record) => <div>{record._id}</div>,
     },
     {
       title: "Email",
@@ -125,12 +144,12 @@ const Customers = () => {
       showSorterTooltip: {
         target: "full-header",
       },
-      // fixed: "left",
+      fixed: "left",
       filters: filtersEmail,
       onFilter: (value, record) => record.email.indexOf(value) === 0,
       sorter: (a, b) => a.email.localeCompare(b.email),
       render: (text, record) => (
-        <div style={{ width: 250 }}>{record.email}</div>
+        <div>{record.email}</div>
       ),
     },
     {
@@ -143,7 +162,7 @@ const Customers = () => {
       onFilter: (value, record) => record.username.indexOf(value) === 0,
       sorter: (a, b) => a.username.localeCompare(b.username),
       render: (text, record) => (
-        <div style={{ width: 165 }}>{record.username}</div>
+        <div>{record.username}</div>
       ),
     },
     {
@@ -159,22 +178,35 @@ const Customers = () => {
       ),
       dataIndex: "password",
       render: (text) => (
-        <div style={{ width: 165 }}>
+        <div style={{ width: 200 }}>
           {showPassword ? text : "***************"}
         </div>
       ),
     },
     {
-      title: "Name",
-      dataIndex: "fullName",
+      title: "First Name",
+      dataIndex: "firstName",
       showSorterTooltip: {
         target: "full-header",
       },
-      filters: filtersFullName,
-      onFilter: (value, record) => record.fullName.indexOf(value) === 0,
-      sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+      filters: filtersFirstName,
+      onFilter: (value, record) => record.firstName.indexOf(value) === 0,
+      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       render: (text, record) => (
-        <div style={{ width: 170 }}>{record.fullName}</div>
+        <div style={{ width: 100 }}>{record.firstName}</div>
+      ),
+    },
+    {
+      title: "Last Name",
+      dataIndex: "lastName",
+      showSorterTooltip: {
+        target: "full-header",
+      },
+      filters: filtersLastName,
+      onFilter: (value, record) => record.lastName.indexOf(value) === 0,
+      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      render: (text, record) => (
+        <div style={{ width: 100 }}>{record.lastName}</div>
       ),
     },
     {
@@ -187,14 +219,14 @@ const Customers = () => {
       onFilter: (value, record) => record.phone.indexOf(value) === 0,
       sorter: (a, b) => a.phone.localeCompare(b.phone),
       render: (text, record) => (
-        <div style={{ width: 200 }}>{record.phone}</div>
+        <div style={{ width: 100 }}>{record.phone}</div>
       ),
     },
     {
       title: "Birthday",
-      dataIndex: "birthdate",
+      dataIndex: "dateOfBirth",
       render: (text, record) => (
-        <div style={{ width: 100 }}>{record.birthdate}</div>
+        <div>{record.dateOfBirth}</div>
       ),
     },
     {
@@ -204,7 +236,7 @@ const Customers = () => {
         <div style={{ width: 100 }}>
           <img
             src={record.avatar}
-            alt={record.fullName}
+            alt={record.firstName}
             style={{ width: "100px", height: "100px" }}
           />
         </div>
@@ -216,7 +248,7 @@ const Customers = () => {
       filters: filtersGender,
       onFilter: (value, record) => record.gender.indexOf(value) === 0,
       render: (text, record) => (
-        <div style={{ width: 80 }}>{record.gender}</div>
+        <div style={{ width: 80 }}>{record.gender === true ? "Man" : "Woman"}</div>
       ),
     },
     {
@@ -246,12 +278,26 @@ const Customers = () => {
       ),
     },
     {
+      title: "Phone Verified",
+      dataIndex: "isPhoneVerified",
+      render: (text, record) => (
+        <div style={{ width: 80 }}>{record.isPhoneVerified === true ? "yes" : "no"}</div>
+      ),
+    },
+    {
+      title: "Email Verified",
+      dataIndex: "isEmailVerified",
+      render: (text, record) => (
+        <div style={{ width: 80 }}>{record.isEmailVerified === true ? "yes" : "no"}</div>
+      ),
+    },
+    {
       title: "Status",
       dataIndex: "status",
       filters: filtersStatus,
       onFilter: (value, record) => record.status.indexOf(value) === 0,
       render: (text, record) => (
-        <div style={{ width: 50 }}>{record.status}</div>
+        <div style={{ width: 100 }}>{record.status}</div>
       ),
     },
     {
@@ -272,18 +318,11 @@ const Customers = () => {
     },
   ];
 
-  // const onChange = (pagination, filters, sorter, extra) => {
-  //   console.log("Pagination:", pagination);
-  //   console.log("Filters:", filters);
-  //   console.log("Sorter:", sorter);
-  //   console.log("Extra:", extra);
-  // };
-
   return (
     <div>
       <Table
         columns={columns}
-        dataSource={newData}
+        dataSource={dataUserName}
         // onChange={onChange}
         rowKey="id"
         showSorterTooltip={{
