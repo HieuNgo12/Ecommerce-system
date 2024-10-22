@@ -1,6 +1,6 @@
 import "./App.css";
-import { ToastContainer } from 'react-toastify';
-import { useState } from "react";
+import { ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
@@ -34,9 +34,11 @@ import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPa
 import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
 import DeliveryPage from "./assets/Customer-UI/pages/DeliveryPage";
 import OrderPage from "./assets/Customer-UI/pages/OrderPage";
+import axios from "axios";
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("admin");
+ 
 
   const adminRouter = createBrowserRouter([
     {
@@ -140,7 +142,8 @@ function App() {
     {
       path: "/order-page",
       element: <OrderPage />,
-    },  {
+    },
+    {
       path: "/payment-page",
       // element: < />,
     },
@@ -189,12 +192,8 @@ function App() {
 
   return (
     <>
-      {user === "admin" && 
-      <RouterProvider router={adminRouter} />
-       }
-      {user === "customer" &&
-       <RouterProvider router={customerRouter} />
-       }
+      {user === "admin" && <RouterProvider router={adminRouter} />}
+      {user === "customer" && <RouterProvider router={customerRouter} />}
       <ToastContainer />
     </>
   );

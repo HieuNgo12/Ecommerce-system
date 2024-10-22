@@ -5,6 +5,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Navbar from "../Customer-UI/components/Navbar";
 import Footer from "../Customer-UI/components/Footer";
 import { WishlistContext } from "./Context/WishlistContext";
+import FiveStar from "./FiveStar";
+import CommentCard from "./CommentCard";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -28,13 +30,33 @@ const ProductDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    fetch(`https://66b0ab0f6a693a95b539b080.mockapi.io/products/${id}`)
+    fetch(`http://localhost:8080/api/v1/products/${id}`)
       .then((response) => response.json())
-      .then((data) => {
+      .then((responseData) => {
+        let productData = responseData.data;
+        let data = {
+          createdAt: productData.createdAt,
+          category: productData.category,
+          title: productData.title,
+          image: productData.image,
+          description: productData.description,
+          price: productData.price,
+          rating: {
+            rate: productData.rating?.rate || 3.9,
+            count: 120,
+          },
+          status: productData.status,
+          id: productData._id,
+          startDate: productData.createdAt,
+          startTime: productData.startTime,
+          endDate: productData.endDate,
+          endTime: productData.endtime,
+        };
+        console.log(data);
         setProduct(data);
         setCurrentImage(data.image);
         return fetch(
-          `https://66b0ab0f6a693a95b539b080.mockapi.io/products?category=${data.category}`
+          `http://localhost:8080/api/v1/products?category=${data.category}`
         );
       })
       .then((response) => response.json())
@@ -144,7 +166,7 @@ const ProductDetails = () => {
                 <span
                   key={index}
                   className={`text-sm ${
-                    index < Math.round(product.rating.rate)
+                    index < Math.round(product.rating?.rate)
                       ? "text-yellow-400"
                       : "text-gray-300"
                   }`}
@@ -153,7 +175,7 @@ const ProductDetails = () => {
                 </span>
               ))}
               <span className="ml-2 text-sm text-gray-600">
-                ({product.rating.rate}) {product.rating.count} reviews
+                ({product.rating?.rate}) {product.rating?.count} reviews
               </span>
             </div>
             <h3 className="text-2xl text-left">${product.price}</h3>
@@ -244,6 +266,13 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
+            <div className="flex">
+              <FiveStar />
+
+        
+            </div>
+
+            <CommentCard />
           </div>
         </div>
 
@@ -281,7 +310,7 @@ const ProductDetails = () => {
                       <span
                         key={index}
                         className={`text-sm ${
-                          index < Math.round(item.rating.rate)
+                          index < Math.round(item.rating?.rate)
                             ? "text-yellow-400"
                             : "text-gray-300"
                         }`}
@@ -290,7 +319,7 @@ const ProductDetails = () => {
                       </span>
                     ))}
                     <span className="ml-2 text-sm text-gray-600">
-                      ({item.rating.rate}) {item.rating.count} reviews
+                      ({item.rating?.rate}) {item.rating?.count} reviews
                     </span>
                   </div>
                   <div

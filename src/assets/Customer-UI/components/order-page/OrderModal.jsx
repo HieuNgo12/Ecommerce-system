@@ -11,75 +11,59 @@ import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { redirect } from "react-router-dom";
 import OrderRow from "./OrderRow";
+import Loading from "../utils/Loading";
 
 function OrderModal() {
   const [open, setOpen] = useState(false);
-  const [pageCount, setPageCount] = useState(0);
+  const [pageCount, setPageCount] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [orderList, setOrderList] = useState([
-    {
-      image: "./images/lambo.jpg",
-      quantity: 4,
-      productName: "Super Modal Car",
-      amount: 1000,
-      address: "blk 4 Anderson",
-      phoneNumber: "+84 123456678",
-      paymentMethod: "Cash",
-      payment: {
-        paymentMethod: "Cash",
-        paymentStatus: "",
-        paymentCard: "Cash",
-        amount: 1000,
-      },
-      delivery: {
-        orderPlacedDate: "",
-        orderReceivedDate: "",
-        deliveryStatus: "",
-        estimatedDeliveryDate: "",
-      },
-    },
-  ]);
+  const [orderList, setOrderList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  const [searchProductInput, setSearchProductInput] = useState("");
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const SignupSchema = Yup.object().shape({
     quantity: Yup.string()
       .min(2, "Required at least 2 letters")
-      .max(50, "Required maximum 50 letters")
-      .required("First Name Is Required"),
+      .max(50, "Required maximum 50 letters"),
+    //   .required("First Name Is Required"),
     name: Yup.string()
       .min(2, "Product Name must be at least 2 letters")
-      .max(50, "Product Name name must be maximum 50 letters")
-      .required("Product Name is Required"),
+      .max(50, "Product Name name must be maximum 50 letters"),
+    //   .required("Product Name is Required"),
     //   streetAddress: Yup.string().required("Required"),
     totalAmount: Yup.string(),
-    address: Yup.string().required("Address is Required"),
+    address: Yup.string(),
+    // .required("Address is Required"),
     phone: Yup.number()
-      .required("Phone Number is Required")
+      //   .required("Phone Number is Required")
       .min(9, "Required at least 9 numbers"),
-    paymentMethod: Yup.string().required("Payment Method is Required"),
+    paymentMethod: Yup.string(),
+    // .required("Payment Method is Required"),
   });
   useEffect(() => {
     async function getOrder() {
       try {
         const itemsPerPage = 10;
-
+        const original = await axios.get(`http://localhost:8080/api/v1/order`);
         const response = await axios.get(
-          `http://localhost:8080/api/v1/order?&limit=${itemsPerPage}`
+          `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}`
         );
-        const data = await response.json();
-        setPageCount(Math.ceil(data.count / itemsPerPage));
-        const detailedOrders = await Promise.all(
-          data.results.map(async (pokemon) => {
-            const res = await fetch(pokemon.url);
-            const data = await res.json();
-            return {
-              name: data.name,
-              image: data.sprites.front_default,
-            };
-          })
-        );
-        setOrderList(detailedOrders);
+        console.log(original);
+        const data = original.data.content;
+        const itemInPage = response.data.content;
+        setPageCount(Math.ceil(data.length / itemsPerPage));
+        console.log(itemInPage);
+        setOrderList(itemInPage);
       } catch (error) {
         console.error(error);
       } finally {
@@ -87,6 +71,18 @@ function OrderModal() {
     }
     getOrder();
   }, [currentPage]);
+  //   useEffect(() => {
+  //     async function getOrder() {
+  //       try {
+  //         setOrderList(itemInPage);
+  //         // setOrderList(detailedOrders);
+  //       } catch (error) {
+  //         console.error(error);
+  //       } finally {
+  //       }
+  //     }
+  //     getOrder();
+  //   }, [searchProductInput]);
   const style = {
     position: "absolute",
     top: "50%",
@@ -113,15 +109,21 @@ function OrderModal() {
       console.log(values);
       setOpen(false);
       await axios.patch("http://localhost:8080/api/v1/order", {
-        body: { values, id: "123" },
+        body: {
+          id: "123",
+          ...values,
+        },
       });
       window.location.reload();
     },
   });
   const handlePageClick = ({ selected }) => {
+    // setLoading(true);
     setCurrentPage(selected);
   };
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div>
       <Modal
         open={open}
@@ -207,7 +209,7 @@ function OrderModal() {
                 </div>
               </div>
             </div>{" "}
-            <label
+            {/* <label
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               for="file_input"
             >
@@ -217,7 +219,33 @@ function OrderModal() {
               class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
               id="file_input"
               type="file"
-            ></input>
+            ></input> */}
+            {/* <div className="flex mt-10">
+              <input
+                className="coupon-input "
+                placeholder="Coupon Code"
+                id="couponCode"
+                name="couponCode"
+                type="couponCode"
+                onChange={formik.handleChange}
+                value={formik.values.couponCode}
+              />
+              <button
+                className="button-style apply"
+                onClick={async () => {
+                  try {
+                    const data = await axios.get(
+                      "http://localhost:8080/api/v1/coupon",
+                      { couponCodeName: "mindX" }
+                    );
+                  } catch (e) {
+                    console.log(e);
+                  }
+                }}
+              >
+                Apply Coupon
+              </button>
+            </div> */}
             <div className="mt-10">
               <button
                 class="bg-blue-500 mb-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -240,10 +268,23 @@ function OrderModal() {
       <input
         className="search-order-input"
         placeholder="Search Order Product Name ..."
+        onChange={(e) => {
+          setSearchProductInput(e.target.value);
+        }}
       />
       <button
-        className="bg-blue-500 mb-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => {}}
+        className="bg-blue-500 mb-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-6"
+        onClick={() => {
+          setLoading(true);
+
+          const regex = /[A-Z]/g;
+          let newOrderList = orderList.filter((order) => {
+            console.log(order);
+            return order?.productId?.title.match(regex);
+          });
+          setOrderList(newOrderList);
+          //   console.log(newOrderList);
+        }}
       >
         Search
       </button>
@@ -269,15 +310,13 @@ function OrderModal() {
               <th scope="col" class="px-6 py-3">
                 Phone Number
               </th>
-              <th scope="col" class="px-6 py-3">
-                Payment Method
-              </th>
             </tr>
           </thead>
           <tbody>
             {orderList.length
               ? orderList.map((order) => {
-                  return <OrderRow order={order} setOpen={setOpen} />;
+                  console.log(order);
+                  return <OrderRow setLoading={setLoading}order={order} setOpen={setOpen} />;
                 })
               : null}
           </tbody>

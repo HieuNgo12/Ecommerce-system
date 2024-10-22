@@ -137,48 +137,14 @@ function ShoppingCartBody() {
             Update Cart
           </button>
         </div>
-        {couponMessage ? (
-          coupons.filter((coupon) => {
-            console.log(coupon.title?.toString(), couponCode);
-            return coupon.title?.toString() === couponCode;
-          }).length ? (
-            <div className="text-left text-green-300">
-              Successfully applied coupon message
-            </div>
-          ) : (
-            <div className="text-left text-red-300">
-              Failed to apply coupon message
-            </div>
-          )
-        ) : null}
-        <div className="coupon-code flex mb-80">
-          <div className="mr-28">
-            <input
-              className="pl-4"
-              onChange={(e) => {
-                setCouponMessage(faSlidersH);
-                setCouponCode(e.target.value);
-              }}
-              placeholder={"Coupon Code"}
-            />
-          </div>
-          <div>
-            <button
-              className="apply-coupon"
-              onClick={() => {
-                setCouponMessage(true);
-                setLoading(true);
-              }}
-            >
-              Apply Coupon
-            </button>
-          </div>
+
+        <div className=" flex mb-80">
           <div className="cart-card">
             <div className="cart-total text-very-left">Cart total</div>
             <div className="flex card-box">
               <div className="text-left text-very-left">Subtotal</div>
               <div className="text-right flex">
-                <div>{Math.round(subTotal * 100) / 100}</div>
+                <div>{Math.round(subTotal ) || 0 / 100}</div>
                 <div>$</div>
               </div>
             </div>
@@ -195,7 +161,7 @@ function ShoppingCartBody() {
             <div className="flex total-card">
               <div className="text-left">Total</div>
               <div className="total-right flex">
-                <div>{Math.round(subTotal * 100) / 100}</div>
+                <div>{Math.round(subTotal ) || 0 / 100}</div>
                 <div>$</div>
               </div>
             </div>

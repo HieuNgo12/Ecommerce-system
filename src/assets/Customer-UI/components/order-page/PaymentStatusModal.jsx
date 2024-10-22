@@ -10,7 +10,7 @@ import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { redirect } from "react-router-dom";
 import OrderRow from "./OrderRow";
-function PaymentStatusModal({ open, setOpen, ...props }) {
+function PaymentStatusModal({ order, open, setOpen, ...props }) {
   const style = {
     position: "absolute",
     top: "50%",
@@ -39,16 +39,20 @@ function PaymentStatusModal({ open, setOpen, ...props }) {
             Payment Status
           </Typography>
           <div className="flex">
-            <div>Payment Card:</div>
-            <div></div>
+            <div><b>Payment Card:</b></div>
+            <div>{order?.paymentId?.paymentCard}</div>
           </div>
           <div className="flex">
-            <div>Payment Method:</div>
-            <div></div>
+            <div><b>Payment Method:</b></div>
+            <div>{order?.paymentMethod}</div>
           </div>
           <div className="flex">
-            <div>Payment Due:</div>
-            <div></div>
+            <div><b>Payment Due:</b></div>
+            <div>{order?.paymentId?.paymentDue.slice(0,10) + "|" + order?.paymentId?.paymentDue.slice(11,16)}</div>
+          </div>
+          <div className="flex">
+            <div><b>Payment Created At:</b></div>
+            <div>{order?.paymentId?.createdAt.slice(0,10) + "|" +order?.paymentId?.paymentDue.slice(11,16)}</div>
           </div>
         </Box>
       </Modal>

@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,7 +11,7 @@ import ReactPaginate from "react-paginate";
 import { redirect } from "react-router-dom";
 import OrderRow from "./OrderRow";
 
-function DeliveryStatusModal({ open, setOpen, ...props }) {
+function DeliveryStatusModal({ order, open, setOpen, ...props }) {
   const style = {
     position: "absolute",
     top: "50%",
@@ -23,6 +23,10 @@ function DeliveryStatusModal({ open, setOpen, ...props }) {
     boxShadow: 24,
     p: 4,
   };
+
+  useEffect(() => {
+    console.log(order);
+  });
 
   const handleClose = () => {
     setOpen(false);
@@ -41,29 +45,46 @@ function DeliveryStatusModal({ open, setOpen, ...props }) {
           </Typography>
           <div>
             <div className="flex grid grid-cols-4 gap-4">
-           
-              <div>Order Placed</div>
-              <div>Order Delivering </div>
-              <div>Order Received </div>
+              <div className="font-bold">Order Placed</div>
+              <div className="font-bold">Estimated Order Delivering </div>
+              <div className="font-bold">Estimated Order Received </div>
             </div>
             <div className="flex grid grid-cols-4 gap-4">
-              <div>11/11/2024</div>
-              <div>16/11/2024</div>
-              <div>20/11/2024</div>
+              <div>
+                {order?.deliveryId?.orderPlacedDate.slice(0, 10) + "|" +
+                  order?.deliveryId?.orderPlacedDate.slice(11, 16)}
+              </div>
+              <div>
+                {order?.deliveryId?.orderReceivedDate.slice(0, 10) + "|" +
+                  order?.deliveryId?.orderPlacedDate.slice(11, 16)}
+              </div>
+              <div>
+                {order?.deliveryId?.deliveryDate.slice(0, 10) + "|" +
+                  order?.deliveryId?.orderPlacedDate.slice(11, 16)}
+              </div>
             </div>
           </div>
           <div className="flex">
-            <div>Delivery Status: </div>
+            <div>
+              <b>Delivery Status:</b>{" "}
+              {order.deliveryId?.deliveryStatus || "Checking"}
+            </div>
             <div></div>
           </div>
           <div className="flex">
-            <div>Estimated Delivery Date: </div>
+            <div>
+              <b>Estimated Delivery Date:</b>{" "}
+              {
+                order?.deliveryId?.orderReceivedDate.slice(0, 10)
+                // new Date(+new Date() + 2 * 24 * 60 * 60 * 1000)
+              }
+            </div>
             <div></div>
           </div>
-          <div className="flex">
-            <div>Payment Due:</div>
+          {/* <div className="flex">
+            <div>Payment Due: {order.deliveryId?.orderReceivedDate || new Date(+new Date() + 2 * 24 * 60 * 60 * 1000)}</div>
             <div></div>
-          </div>
+          </div> */}
         </Box>
       </Modal>{" "}
     </div>

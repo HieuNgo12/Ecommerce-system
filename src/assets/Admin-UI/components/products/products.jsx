@@ -217,8 +217,8 @@ const Products = () => {
       title: "Count",
       dataIndex: "count",
       key: "count",
-      sorter: (a, b) => a.count - b.count,
-      render: (text, record) => <div style={{ width: 80 }}>{record.count}</div>,
+      sorter: (a, b) => a?.count - b?.count,
+      render: (text, record) => <div style={{ width: 80 }}>{record?.count}</div>,
     },
     {
       title: "Price ( $ )",

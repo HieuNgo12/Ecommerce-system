@@ -166,7 +166,7 @@ const ProductWishlist = () => {
                       <span
                         key={index}
                         className={`text-sm ${
-                          index < Math.round(item.rating.rate)
+                          index < Math.round(item.rating?.rate)
                             ? "text-yellow-400"
                             : "text-gray-300"
                         }`}
@@ -175,7 +175,7 @@ const ProductWishlist = () => {
                       </span>
                     ))}
                     <span className="ml-2 text-sm text-gray-600">
-                      ({item.rating.rate}) {item.rating.count} reviews
+                      ({item.rating?.rate}) {item.rating?.count} reviews
                     </span>
                   </div>
                 </div>

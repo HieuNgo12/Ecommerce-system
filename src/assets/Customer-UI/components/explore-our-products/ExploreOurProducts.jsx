@@ -15,7 +15,7 @@ function ExploreOurProducts({ products, ...props }) {
   // Get the list of products to display based on viewAllProducts state
   const displayedProducts = viewAllProducts
     ? products
-    : products.filter((item) => item.id > 0 && item.id < 5);
+    : products?.filter((item) => item.id > 0 && item.id < 5);
 
   return (
     <div className="w-full container mx-auto px-4 sm:px-8 lg:px-28 my-12">
@@ -33,8 +33,8 @@ function ExploreOurProducts({ products, ...props }) {
                   <div className="container">
                     <Card
                       orgPrice={item.price + 99}
-                      review={Math.ceil(item.rating.count)}
-                      rating={item.rating.rate}
+                      review={Math.ceil(item.rating?.count)}
+                      rating={item.rating?.rate}
                       img={item.image}
                       price={item.price}
                       title={item.title}
@@ -48,8 +48,8 @@ function ExploreOurProducts({ products, ...props }) {
                 <div className="container">
                   <Card
                     orgPrice={item.price + 99}
-                    review={Math.ceil(item.rating.count)}
-                    rating={item.rating.rate}
+                    review={Math.ceil(item.rating?.count)}
+                    rating={item.rating?.rate}
                     img={item.image}
                     price={item.price}
                     title={item.title}

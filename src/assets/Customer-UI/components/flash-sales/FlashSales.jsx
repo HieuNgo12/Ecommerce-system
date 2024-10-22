@@ -18,8 +18,8 @@ function FlashSales({ products, ...props }) {
     //     img: product.image,
     //     price: product.price,
     //     orgPrice: product.price + 99,
-    //     rating: product.rating.rate,
-    //     review: product.rating.count,
+    //     rating: product.rating?.rate,
+    //     review: product.rating?.count,
     //   };
     // });
     // setItemList(productsList);

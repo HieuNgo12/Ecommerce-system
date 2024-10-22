@@ -25,9 +25,31 @@ const ProductList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products")
+    fetch("http://localhost:8080/api/v1/products")
+      // fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products")
       .then((response) => response.json())
-      .then((data) => {
+      .then((productData) => {
+        // console.log(data);
+        let data = productData.data.map((productData) => {
+          return {
+            createdAt: productData.createdAt,
+            category: productData.category,
+            title: productData.title,
+            image: productData.image,
+            description: productData.description,
+            price: productData.price,
+            rating: {
+              rate: productData.rating?.rate || 3.9,
+              count: 120,
+            },
+            status: productData.status,
+            id: productData._id,
+            startDate: productData.createdAt,
+            startTime: productData.startTime,
+            endDate: productData.endDate,
+            endTime: productData.endtime,
+          };
+        });
         const clothingItems = data.filter((product) => product.category);
 
         let expandedItems = [];
@@ -101,7 +123,7 @@ const ProductList = () => {
                           <span
                             key={index}
                             className={`text-sm ${
-                              index < Math.round(product.rating.rate)
+                              index < Math.round(product.rating?.rate)
                                 ? "text-yellow-400"
                                 : "text-gray-300"
                             }`}
@@ -110,7 +132,7 @@ const ProductList = () => {
                           </span>
                         ))}
                         <span className="ml-2 text-sm text-gray-600">
-                          ({product.rating.rate}) {product.rating.count} reviews
+                          ({product.rating?.rate}) {product.rating?.count} reviews
                         </span>
                       </div>
                       <div></div>

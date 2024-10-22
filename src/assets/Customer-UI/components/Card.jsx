@@ -71,7 +71,7 @@ function Card({
         <a class="flex sales-card block max-w-sm p-6 ">
           <div className="discount">
             {Math.round(
-              ((price - (orgPrice)) / (Number(price) + 99)) * 100
+              ((Number(price) - Number(orgPrice)) / (Number(price) + 99) || 0) * 100
             ) + "%"}
           </div>
           <div>

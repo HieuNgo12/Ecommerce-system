@@ -99,8 +99,8 @@ function CartRow({
               if (Number(e.target.value) > Number(oldValue)) {
                 return (
                   Math.round(
-                    (Number(subtotal) + Number(cartItem[1][0].price)) * 100
-                  ) / 100
+                    (Number(subtotal) + Number(cartItem[1][0].price)) * 100 
+                  ) / 100 
                 );
               } else {
                 return (
@@ -116,7 +116,7 @@ function CartRow({
       </td>
       <td className="px-6 py-4">
         {subTotalRow
-          ? `${Math.round(cartItem[1][0].price * quantity * 100) / 100} $`
+          ? `${Math.round(cartItem[1][0].price * quantity) || 0 / 100} $`
           : null}
       </td>
       {!updateCart ? (

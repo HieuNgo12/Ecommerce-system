@@ -10,15 +10,48 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import SimpleSlider from "../components/Slider";
 import CustomArrows from "../components/ArrowSlider";
+import axios from "axios";
 
 function HomePage() {
   const [data, setData] = useState([]);
+
+  useEffect(() => {
+    async function getUser() {
+      const token = localStorage.getItem("token");
+
+      const user = await axios.post(
+        "http://localhost:8080/api/v1/auth/getUserByToken",
+        {
+          token: token,
+        }
+      );
+      console.log(user);
+      localStorage.setItem("user", JSON.stringify(user.data.data));
+    }
+    getUser();
+  }, []);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch(`http://localhost:8080/api/v1/product`);
-      const data = await res.json();
+      const res = await fetch(`http://localhost:8080/api/v1/products`);
+      const responseJson = await res.json();
+      const data = responseJson.data.map((productData) => {
+        console.log(productData);
+        return {
+          category: productData.category,
+          title: productData.title,
+          image: productData.image,
+          description: productData.description,
+          price: productData.price,
+          rating: {
+            rate: productData.rating?.rate || 3.9,
+            count: 120,
+          },
+          status: productData.status,
+          id: productData._id,
+        };
+      });
       console.log(data);
-      setData(data.data);
+      setData(data);
     };
     getData();
     return () => {};

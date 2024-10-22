@@ -124,7 +124,7 @@ const Rating = () => {
       key: "rating",
       render: (rating) => (
         <div style={{ width: 70 }}>
-          <div>{rating.rate}</div>
+          <div>{rating?.rate}</div>
         </div>
       ),
     },
@@ -134,7 +134,7 @@ const Rating = () => {
       key: "rating",
       render: (rating) => (
         <div style={{ width: 90 }}>
-          <div>{rating.count}</div>
+          <div>{rating?.count}</div>
         </div>
       ),
     },

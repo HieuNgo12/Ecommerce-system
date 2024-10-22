@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./BillingPageBody.css";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import Loading from "../utils/Loading";
 import { ToastContainer, toast } from "react-toastify";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
@@ -16,10 +17,10 @@ const SignupSchema = Yup.object().shape({
     .min(2, "Company must be at least 2 letters")
     .max(50, "Company name must be maximum 50 letters")
     .required("Company name is Required"),
-  //   streetAddress: Yup.string().required("Required"),
+  streetAddress: Yup.string().required("Required"),
   apartment: Yup.string(),
   townCity: Yup.string().required("Town City is Required"),
-  phoneNumber: Yup.number().required("Phone Number is Required"),
+  phoneNumber: Yup.number(),
   emailAddress: Yup.string()
     .required("Email is Required")
     .email("Invalid email"),
@@ -29,7 +30,10 @@ function ShoppingCartBody() {
   const [itemList, setItemList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [couponMessage, setCouponMessage] = useState(false);
+  const [phoneNumberInput, setPhoneNumberInput] = useState("");
+  const [showPaymentMethod, setShowPaymentMethod] = useState(true);
 
+  const token = localStorage.getItem("token");
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -40,38 +44,67 @@ function ShoppingCartBody() {
       phoneNumber: "",
       emailAddress: "",
       couponCode: "",
-      paymentMethod: "",
+      paymentMethod: "Credit",
       saveThisInformation: "",
       cardNumber: "",
     },
     validationSchema: SignupSchema,
     onSubmit: async (values) => {
+      console.log(values);
+
       setLoading(true);
       const billingList =
         JSON?.parse(localStorage?.getItem("billingList")) || [];
       for (let i = 0; i < billingList.length; i++) {
+        console.log(billingList[i]);
+        let price = 0;
+        billingList[i][1].forEach((billing) => {
+          price += Number(billing.price);
+        });
         const response = await axios
           .post("http://localhost:8080/api/v1/order", {
-            headers: { Authorization: `Bearer abc` },
-            body: {
-              ...values,
+            headers: { Authorization: `Bearer ${token}` },
 
-              isPaidByCard: true,
-              isCashOnDelivery: false,
-              subTotal: subTotal,
+            body: {
+              firstName: values.firstName,
+              companyName: values.companyName,
+              streetAddress: values.streetAddress,
+              apartment: values.apartment,
+              townCity: values.townCity,
+              paymentMethod: values.paymentMethod,
+              emailAddress: values.emailAddress,
+              phoneNumber: phoneNumberInput,
+              paymentCard: values.cardNumber,
+              productName: billingList[i][0],
               quantity: billingList[i][2],
-              productName: billingList[i][0]
+
+              amount: price || 0,
             },
           })
           .then(function (response) {
-            console.log(response);
+            // window.location="/";
+            toast.success("Order Created Successfully", {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              onClose: () => navigate("/"),
+            });
+          }).then(()=> {
+            window.location.href = "/"
+
           })
           .catch(function (error) {
             console.log(error);
           });
       }
+      // return redirect("");
 
-      setSuccess(true);
+      // setSuccess(true);
     },
   });
   const coupons = [
@@ -164,16 +197,14 @@ function ShoppingCartBody() {
                 </div>
               </div>
               <div>
-                <div
+                <div>Street Address</div>
+                <input
                   id="streetAddress"
                   name="streetAddress"
                   type="streetAddress"
                   onChange={formik.handleChange}
                   value={formik.values.streetAddress}
-                >
-                  Street Address
-                </div>
-                <input />
+                />
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
@@ -221,12 +252,14 @@ function ShoppingCartBody() {
               </div>
               <div>
                 <div>Phone Number</div>
-                <input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  type="number"
-                  onChange={formik.handleChange}
-                  value={formik.values.phoneNumber}
+                <PhoneInput
+                  className="number"
+                  country={"us"}
+                  value={phoneNumberInput}
+                  onChange={(e) => {
+                    console.log(e);
+                    setPhoneNumberInput(e);
+                  }}
                 />
                 <div className="flex">
                   <div className="error-field ">
@@ -256,14 +289,18 @@ function ShoppingCartBody() {
                 </div>
               </div>
               <div>
-                <div>Card Number</div>
-                <input
-                  id="cardNumber"
-                  name="cardNumber"
-                  type="cardNumber"
-                  onChange={formik.handleChange}
-                  value={formik.values.cardNumber}
-                />
+                {showPaymentMethod ? (
+                  <>
+                    <div>Card Number</div>
+                    <input
+                      id="cardNumber"
+                      name="cardNumber"
+                      type="cardNumber"
+                      onChange={formik.handleChange}
+                      value={formik.values.cardNumber}
+                    />
+                  </>
+                ) : null}
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
@@ -273,13 +310,13 @@ function ShoppingCartBody() {
                   </div>
                 </div>
               </div>
-              <div className="flex">
+              {/* <div className="flex">
                 <input className="save-this-info" type="checkbox" />
 
                 <div className="mt-auto">
                   Save this information for faster check-out next time
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="ml-96">
@@ -298,7 +335,7 @@ function ShoppingCartBody() {
             <div className="flex item-card border-grey">
               <div>Subtotal:</div>
               <div className="price">
-                {(Number(Math.round(subTotal * 100) / 100) || 0 + " $") }
+                {Number(Math.round(subTotal * 100) / 100) || 0 + " $"}
               </div>
             </div>
             <div className="flex item-card border-grey">
@@ -308,7 +345,7 @@ function ShoppingCartBody() {
             <div className="flex item-card">
               <div>Total:</div>
               <div className="price">
-                {(Number(Math.round(subTotal * 100) / 100)) || 0 + " $"}
+                {Number(Math.round(subTotal * 100) / 100) || 0 + " $"}
               </div>
             </div>
 
@@ -316,8 +353,14 @@ function ShoppingCartBody() {
               <input
                 type="radio"
                 name="paymentMethod"
-                value="banking"
+                value="Credit"
                 className="mt-auto"
+                defaultChecked={true}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  formik.values.paymentMethod = e.target.value;
+                  setShowPaymentMethod(true);
+                }}
               />
               <div className="ml-2 mt-auto">Bank</div>
               <div className="flex image-box">
@@ -329,12 +372,21 @@ function ShoppingCartBody() {
             </div>
 
             <div className="flex mb-6">
-              <input name="paymentMethod" value="cashOnDelivery" type="radio" />
+              <input
+                name="paymentMethod"
+                value="Cash"
+                type="radio"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  formik.values.paymentMethod = e.target.value;
+                  setShowPaymentMethod(false);
+                }}
+              />
               <div className="ml-2">Cash On Delivery</div>
             </div>
             {couponMessage ? (
               coupons.filter((coupon) => {
-                console.log(coupon.title?.toString(), couponCode);
+                // console.log(coupon.title?.toString(), couponCode);
                 return coupon.title?.toString() === couponCode;
               }).length ? (
                 <div className="text-left text-green-500">
@@ -346,33 +398,7 @@ function ShoppingCartBody() {
                 </div>
               )
             ) : null}
-            <div className="flex">
-              <input
-                className="coupon-input"
-                placeholder="Coupon Code"
-                id="couponCode"
-                name="couponCode"
-                type="couponCode"
-                onChange={formik.handleChange}
-                value={formik.values.couponCode}
-              />
-              <button
-                className="button-style apply"
-                onClick={async () => {
-                  try {
-                    // const data = await axios.get(
-                    //   "https://66b0ab0f6a693a95b539b080.mockapi.io/delivery"
-                    // );
 
-                    setCouponMessage(true);
-                  } catch (e) {
-                    console.log(e);
-                  }
-                }}
-              >
-                Apply Coupon
-              </button>
-            </div>
             <div className="flex">
               <button className="button-style" type="submit">
                 Place Order
