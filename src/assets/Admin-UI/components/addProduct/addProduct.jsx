@@ -68,129 +68,8 @@ const AddProduct = () => {
 
   const createNewProduct = async () => {
     try {
-      if (!newCategory) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-      if (!newTitle) {
-        toast.warn("Title is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (!selectedColor) {
-        toast.warn("Color is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (!newDescription) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-      if (!newPrice) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-      if (!sku) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-      if (!slug) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-      if (!size) {
-        toast.warn("Email is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (!newImage) {
-        toast.warn("Image is required", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
       //B1 tạo sp mới
-      const res1 = await fetch(
+      const req1 = await fetch(
         "http://localhost:8080/api/v1/products/add-product",
         {
           method: "POST",
@@ -208,22 +87,45 @@ const AddProduct = () => {
             tags: tags,
             sku: sku,
             color: selectedColor,
-            // image: imageUrl,
             quantity: quantity,
           }),
         }
       );
-      const json1 = await res1.json();
-      const productId = json1.data._id;
- 
+      const res1 = await req1.json();
+      const productId = res1.data._id;
 
+      if (req1.status === "200") {
+        toast.success(res1.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // onClose: () => navigate("/products"),
+        });
+      } else {
+        toast.warn(res1.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return;
+      }
 
       //B2 tạo hình mới
       const formData = new FormData();
       formData.append("file", newImage); // Thêm tệp vào FormData
       formData.append("productId", productId);
 
-      const res2 = await fetch(
+      const req2 = await fetch(
         "http://localhost:8080/api/v1/products/single-upload",
         {
           method: "POST",
@@ -231,46 +133,46 @@ const AddProduct = () => {
         }
       );
 
-      const json2 = await res2.json();
+      const res2 = await req2.json();
 
-      
-      if (!json2.public_id) {
+      if (!res2.public_id) {
         throw new Error("Image upload failed");
       }
-      
-      // const imagePublicId = json2.public_id;
-      const imageUrl = json2.secure_url;
-      console.log(imageUrl)
 
+      // const imagePublicId = json2.public_id;
+      const imageUrl = res2.secure_url;
+      console.log(imageUrl);
 
       //B3 cập nhật lại hình vào sản phẩm
-      const res3 = await fetch(`http://localhost:8080/api/v1/products/update-product/${productId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          image : imageUrl
-        })
-      })
+      const req3 = await fetch(
+        `http://localhost:8080/api/v1/products/update-product/${productId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            image: imageUrl,
+          }),
+        }
+      );
 
-      const jon3 = res3.json();
-      console.log(jon3)
+      const res3 = req3.json();
+      console.log(res3);
 
       callApi();
-      toast.success("Added product successful!", {
+    } catch (error) {
+      console.error("Error : ", error);
+      toast.error("Something went wrong, please try again.", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: false,
-        closeOnClick: false,
+        closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
-        // onClose: () => navigate("/products"),
       });
-    } catch (error) {
-      console.error("loading", error);
     }
   };
 

@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import Password from "antd/es/input/Password";
 
 const AddCustomers = () => {
-  const { callApi, dataUserName } = useAdminContext();
+  // const { callApi,  } = useAdminContext();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [newImage, setNewImage] = useState("");
@@ -24,8 +24,6 @@ const AddCustomers = () => {
 
   const navigate = useNavigate();
 
-  console.log(dataUserName);
-
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -34,100 +32,78 @@ const AddCustomers = () => {
   };
 
   const createNewProduct = async () => {
-    if (email === "") {
-      toast.error("email is required.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
+    try {
+      const req1 = await fetch("http://localhost:8080/api/v1/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          username: username,
+          password: password,
+          confirm: confirmPass,
+        }),
       });
-    }
+      const res1 = await req1.json();
+      const userId = res1.data._id;
 
-    if (username === "") {
-      toast.error("username is required.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
+      const formData = new FormData();
 
-    if (password === "") {
-      toast.error("password is required.", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-
-    if (password !== confirmPass) {
-      toast.error("Password và confirm không trùng khớp!", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else {
-      try {
-        const res = await fetch(
-          "https://66b0ab0f6a693a95b539b080.mockapi.io/users",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: email,
-              username: username,
-              password: password,
-              phone: phone,
-              birthDate: birthDate,
-              gender: gender,
-              image: newImage,
-              firstname: firstname,
-              lastname: lastname,
-              zipcode: zipcode,
-              number: number,
-              street: street,
-              city: city,
-              status: "active",
-            }),
-          }
-        );
-        const json = await res.json();
-        console.log(json);
-        callApi();
-        toast.success("Create Account successful!", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => navigate("/customers"),
-        });
-      } catch (error) {
-        console.error("loading", error);
+      if (newImage) {
+        formData.append("file", newImage); // Thêm tệp vào FormData
       }
+      formData.append("userId", userId);
+
+      const req2 = await fetch(
+        `http://localhost:8080/api/v1/admin/single-upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const res2 = await req2.json();
+      console.log(res2);
+
+      const req3 = await fetch(
+        `http://localhost:8080/api/v1/admin/update-profile/${userId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            avatar: res2.secure_url,
+          }),
+        }
+      );
+
+      const res3 = await req3.json();
+      console.log(res3);
+      toast.success("Create Account successful!", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => navigate("/admin/customers"),
+      });
+    } catch (error) {
+      console.error("Error : ", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 

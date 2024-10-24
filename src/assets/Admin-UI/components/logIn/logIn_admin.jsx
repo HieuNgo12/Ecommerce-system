@@ -6,6 +6,7 @@ import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
+import { jwtDecode } from "jwt-decode";
 
 function LogIn() {
   // const { dataUserName } = useAdminContext();
@@ -13,6 +14,17 @@ function LogIn() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  }
+
   const logIn = async (e) => {
     e.preventDefault();
     try {
@@ -21,55 +33,18 @@ function LogIn() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
-        // "Authorization": `Bearer ${token}`,
         // credentials: "include",
+        body: JSON.stringify({ email, password }),
       });
 
       const res = await req.json();
-      console.log(res.data);
-      const token = res.data;
+      const accessToken = res.accessToken;
 
-      localStorage.setItem("accessToken", token);
+      setCookie("token", accessToken, 7);
 
-      const decodeToken = (token) => {
-        const payloadBase64 = token.split(".")[1];
-        return JSON.parse(atob(payloadBase64)); // Giải mã payload
-      };
-      const userData = decodeToken(token);
-      console.log(userData);
+      const decoded = jwtDecode(accessToken);
 
-      if (req.status === 200) {
-        if (userData.role === "admin")
-          toast.success(res.message, {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/admin");
-            },
-          });
-
-        if (userData.role === "user")
-          toast.success(res.message, {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/");
-            },
-          });
-      } else {
+      if (!req.status === 200) {
         toast.warn(res.message, {
           position: "top-center",
           autoClose: 1500,
@@ -80,7 +55,56 @@ function LogIn() {
           progress: undefined,
           theme: "light",
         });
+        return;
       }
+
+      if (decoded.isEmailVerified === false) {
+        toast.warn("Your email has not been verified ", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/verification-email");
+          },
+        });
+        return;
+      }
+
+      if (decoded.role === "admin") {
+        toast.success("Login ADMIN successful!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/admin");
+          },
+        });
+      }
+
+      if (decoded.role === "user")
+        toast.success("Login successful!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/profile");
+          },
+        });
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("Something went wrong, please try again.", {

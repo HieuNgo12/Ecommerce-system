@@ -24,17 +24,20 @@ import BackUp from "./assets/Admin-UI/components/backUp/backUp";
 import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
-import ForgotPassword  from "./assets/Admin-UI/components/forgotPassword/forgotPassword"
-import ProfilePage from "./assets/Customer-UI/pages/ProfilePage"
-import HomePage from "./assets/Customer-UI/pages/HomePage"
-import ErrorPage from "./assets/Customer-UI/pages/ErrorPage"
+import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import HomePage from "./assets/Customer-UI/pages/HomePage";
+import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
 import ResetPassword from "./assets/Admin-UI/components/resetPassword/resetPassword";
-
+import VerificationEmail from "./assets/Admin-UI/components/verificationEmail/verificationEmail";
+import ProfilePageBody from "./assets/Customer-UI/components/edit-page/ProfilePageBody";
+import Authorization from "./assets/Customer-UI/components/edit-page/Authorization";
+import ChangePassword from "./assets/Customer-UI/components/edit-page/ChangePassword";
 
 function App() {
   const [count, setCount] = useState(0);
   const [user, setUser] = useState("admin");
-  
+
   const adminRouter = createBrowserRouter([
     {
       path: "/admin",
@@ -83,12 +86,23 @@ function App() {
       element: <ForgotPassword />,
     },
     {
-      path: "/edit-page",
+      path: "/profile",
       element: <ProfilePage />,
+      children: [
+        { path: "my-profile", element: <ProfilePageBody /> },
+        { path: "my-authorization", element: <Authorization /> },
+        { path: "my-password", element: <ChangePassword /> },
+        { path: "change-password", element: <Dashboard /> },
+        { path: "change-password", element: <Dashboard /> },
+      ],
     },
     {
       path: "/reset-password",
       element: <ResetPassword />,
+    },
+    {
+      path: "/verification-email",
+      element: <VerificationEmail />,
     },
     {
       path: "/",
@@ -99,7 +113,6 @@ function App() {
   ]);
 
   const customerRouter = createBrowserRouter([
-
     // {
     //   path: "/shopping-cart",
     //   element: <ShoppingCart />,

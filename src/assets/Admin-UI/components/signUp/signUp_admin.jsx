@@ -59,7 +59,7 @@ function SignUp() {
         });
       }
     } catch (error) {
-      console.error("Signup failed", error);
+      console.error("Error : ", error);
       toast.error("Something went wrong, please try again.", {
         position: "top-center",
         autoClose: 1500,

@@ -5,7 +5,6 @@ import Navbar from "../../../Customer-UI/components/Navbar";
 import img from "../img/signupandlogin.jpg";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
-import validator from "validator";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ function ForgotPassword() {
   const handleOTP = async (e) => {
     e.preventDefault();
     try {
-      const callApi = await fetch(
+      const req = await fetch(
         "http://localhost:8080/api/v1/auth/forgot-password",
         {
           method: "POST",
@@ -24,31 +23,23 @@ function ForgotPassword() {
           }),
         }
       );
-
-      if(callApi.status === 200){
-          toast.success("Sent OTP to email successful.", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/reset-password");
-            },
-          });
-      }
-
-      const res = await callApi.json();
-
-      console.log(res)
-      if (
-        res.message === "Email is required!" &&
-        res.success === false
-      ) {
-        toast.warn("Email is required.", {
+      const res = await req.json();
+      if (req.status === 200) {
+        toast.success("Sent OTP to email successful.", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/reset-password");
+          },
+        });
+      } else {
+        toast.warn(res.message, {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: false,
@@ -60,94 +51,8 @@ function ForgotPassword() {
         });
         return;
       }
-
-      if (
-        res.message === "Invalid Email" &&
-        res.success === false
-      ) {
-        toast.warn("Invalid email.", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (
-        res.message === "Email has not been used!" &&
-        res.success === false
-      ) {
-        toast.warn("Email has not been used!", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (
-        res.message === "Email has not been verified!" &&
-        res.success === false
-      ) {
-        toast.warn("Email has not been verified!", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (
-        res.message === "Error create Otp." &&
-        res.success === false
-      ) {
-        toast.warn("Error create Otp.", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      if (
-        res.message === "error" &&
-        res.success === false
-      ) {
-        toast.warn("Something went wrong, please try again.", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-
     } catch (error) {
+      console.error("Error : ", error);
       toast.error("Something went wrong, please try again.", {
         position: "top-center",
         autoClose: 1500,

@@ -17,27 +17,91 @@ const Customers = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [dataUserName, setDataUserName] = useState([]);
 
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
+
+  const callRefreshToken = async (token) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const res = await req.json();
+      return res.accessToken;
+    } catch (err) {
+      console.log("error", err);
+      return null;
+    }
+  };
+
   const callApi = async () => {
     try {
-      const req = await fetch("http://localhost:8080/api/v1/admin/get-users");
+      let token = getCookieValue("token");
+      let req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (req.status === 403) {
+        const refreshToken = await callRefreshToken(token);
+        if (!refreshToken)
+          throw new Error("Can't find token. Please login again!");
+
+        setCookie("token", refreshToken, 7);
+        token = refreshToken;
+
+        req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!req.ok) {
+          throw new Error(`Error ${req.status}: ${req.statusText}`);
+        }
+      }
+
       const res = await req.json();
-      const result = res.data;
-      setDataUserName(result);
-      console.log(dataUserName)
+      setDataUserName(res.data);
     } catch (err) {
       console.log("error", err);
     }
   };
 
-  useEffect(()=>{
-    callApi()
-  },[])
+  useEffect(() => {
+    callApi();
+  }, []);
 
   if (!dataUserName || dataUserName.length === 0) {
     return <div>Loading...</div>;
   }
 
-  console.log(dataUserName)
+  console.log(dataUserName);
 
   const filtersID = dataUserName.map((item) => ({
     text: item._id.toString(),
@@ -91,28 +155,43 @@ const Customers = () => {
   };
 
   const delUser = async (xxx) => {
-    const res = await fetch(
-      `https://66b0ab0f6a693a95b539b080.mockapi.io/users/${xxx.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
+      const req = await fetch(
+        `http://localhost:8080/api/v1/admin/user-delete/${xxx._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const res = await req.json();
+      if (req.status === 200) {
+        callApi();
+        toast.warn(res.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
-    );
-    const json = await res.json();
-    console.log(json);
-    callApi();
-    toast.warn("Delete successful", {
-      position: "top-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    } catch (error) {
+      console.error("Error : ", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   };
 
   const menu = (record) => (
@@ -148,9 +227,7 @@ const Customers = () => {
       filters: filtersEmail,
       onFilter: (value, record) => record.email.indexOf(value) === 0,
       sorter: (a, b) => a.email.localeCompare(b.email),
-      render: (text, record) => (
-        <div>{record.email}</div>
-      ),
+      render: (text, record) => <div>{record.email}</div>,
     },
     {
       title: "User",
@@ -161,9 +238,7 @@ const Customers = () => {
       filters: filtersUsername,
       onFilter: (value, record) => record.username.indexOf(value) === 0,
       sorter: (a, b) => a.username.localeCompare(b.username),
-      render: (text, record) => (
-        <div>{record.username}</div>
-      ),
+      render: (text, record) => <div>{record.username}</div>,
     },
     {
       title: (
@@ -193,7 +268,7 @@ const Customers = () => {
       onFilter: (value, record) => record.firstName.indexOf(value) === 0,
       sorter: (a, b) => a.firstName.localeCompare(b.firstName),
       render: (text, record) => (
-        <div style={{ width: 100 }}>{record.firstName}</div>
+        <div style={{ width: 150 }}>{record.firstName}</div>
       ),
     },
     {
@@ -206,7 +281,7 @@ const Customers = () => {
       onFilter: (value, record) => record.lastName.indexOf(value) === 0,
       sorter: (a, b) => a.lastName.localeCompare(b.lastName),
       render: (text, record) => (
-        <div style={{ width: 100 }}>{record.lastName}</div>
+        <div style={{ width: 150 }}>{record.lastName}</div>
       ),
     },
     {
@@ -225,9 +300,7 @@ const Customers = () => {
     {
       title: "Birthday",
       dataIndex: "dateOfBirth",
-      render: (text, record) => (
-        <div>{record.dateOfBirth}</div>
-      ),
+      render: (text, record) => <div>{record.dateOfBirth}</div>,
     },
     {
       title: "Image",
@@ -248,7 +321,9 @@ const Customers = () => {
       filters: filtersGender,
       onFilter: (value, record) => record.gender.indexOf(value) === 0,
       render: (text, record) => (
-        <div style={{ width: 80 }}>{record.gender === true ? "Man" : "Woman"}</div>
+        <div style={{ width: 80 }}>
+          {record.gender === true ? "Man" : "Woman"}
+        </div>
       ),
     },
     {
@@ -281,14 +356,18 @@ const Customers = () => {
       title: "Phone Verified",
       dataIndex: "isPhoneVerified",
       render: (text, record) => (
-        <div style={{ width: 80 }}>{record.isPhoneVerified === true ? "yes" : "no"}</div>
+        <div style={{ width: 80 }}>
+          {record.isPhoneVerified === true ? "yes" : "no"}
+        </div>
       ),
     },
     {
       title: "Email Verified",
       dataIndex: "isEmailVerified",
       render: (text, record) => (
-        <div style={{ width: 80 }}>{record.isEmailVerified === true ? "yes" : "no"}</div>
+        <div style={{ width: 80 }}>
+          {record.isEmailVerified === true ? "yes" : "no"}
+        </div>
       ),
     },
     {
@@ -332,7 +411,14 @@ const Customers = () => {
         // style={{ maxWidth: 1080 }}
         sticky
       />
-      {modal && <ModalCustomer setModal={setModal} selected={selected} />}
+      {modal && (
+        <ModalCustomer
+          setModal={setModal}
+          selected={selected}
+          callApi={callApi}
+          callRefreshToken={callRefreshToken}
+        />
+      )}
       <ToastContainer />
     </div>
   );
