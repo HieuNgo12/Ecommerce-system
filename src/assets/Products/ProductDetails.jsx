@@ -269,10 +269,11 @@ const ProductDetails = () => {
             <div className="flex">
               <FiveStar />
 
+              <CommentCard />
+
         
             </div>
 
-            <CommentCard />
           </div>
         </div>
 

@@ -1,7 +1,10 @@
 .comment-card {
-  width: 800px !important;
+  width: 600px !important;
   border: 5px solid red;
-  height: 300px;
+  height: 200px;
   border: 2px solid black;
   border-radius: 6px;
+  padding-right: 6px;
+  font-size: 12px !important;
 }
+
