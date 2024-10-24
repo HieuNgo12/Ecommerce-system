@@ -17,121 +17,123 @@ function LogIn({ setUser, ...props }) {
   console.log(dataUserName);
   const logIn = (e) => {
     e.preventDefault();
-    if (username === "" || password === "") {
-      toast.warn("Vui lòng nhập đầy đủ thông tin", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    } else {
-      const user = dataUserName.find(
-        (user) =>
-          (user.email === username || user.username === username) &&
-          user.password === password
-      );
-      if (user) {
-        setUser("customer");
-
-        sessionStorage.setItem("customer", username);
-        toast.success("Đăng nhập thành công", {
+    try {
+      if (username === "" || password === "") {
+        toast.warn("Vui lòng nhập đầy đủ thông tin", {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: false,
-          closeOnClick: false,
+          closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
           theme: "light",
-          onClose: () => navigate("/test"),
-        });
-        return;
-      }
-
-      const admin = userAdmin.find(
-        (admin) => admin.email === username && admin.password === password
-      );
-      if (admin) {
-        const getLicense = admin.license;
-        setUser("admin");
-
-        sessionStorage.setItem("admin", getLicense);
-        toast.success("Đăng nhập ADMIN thành công", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => navigate("/admin"),
         });
       } else {
-        toast.error("Đăng nhập thất bại", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
+        const user = dataUserName.find(
+          (user) =>
+            (user.email === username || user.username === username) &&
+            user.password === password
+        );
+        if (user) {
+          setUser("customer");
 
-      if (decoded.isEmailVerified === false) {
-        toast.warn("Your email has not been verified ", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => {
-            navigate("/verification-email");
-          },
-        });
-        return;
-      }
+          sessionStorage.setItem("customer", username);
+          toast.success("Đăng nhập thành công", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => navigate("/test"),
+          });
+          return;
+        }
 
-      if (decoded.role === "admin") {
-        toast.success("Login ADMIN successful!", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => {
-            navigate("/admin");
-          },
-        });
-      }
+        const admin = userAdmin.find(
+          (admin) => admin.email === username && admin.password === password
+        );
+        if (admin) {
+          const getLicense = admin.license;
+          setUser("admin");
 
-      if (decoded.role === "user")
-        toast.success("Login successful!", {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          onClose: () => {
-            navigate("/profile");
-          },
-        });
+          sessionStorage.setItem("admin", getLicense);
+          toast.success("Đăng nhập ADMIN thành công", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => navigate("/admin"),
+          });
+        } else {
+          toast.error("Đăng nhập thất bại", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          return;
+        }
+
+        if (decoded.isEmailVerified === false) {
+          toast.warn("Your email has not been verified ", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => {
+              navigate("/verification-email");
+            },
+          });
+          return;
+        }
+
+        if (decoded.role === "admin") {
+          toast.success("Login ADMIN successful!", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => {
+              navigate("/admin");
+            },
+          });
+        }
+
+        if (decoded.role === "user")
+          toast.success("Login successful!", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => {
+              navigate("/profile");
+            },
+          });
+      }
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("Something went wrong, please try again.", {
