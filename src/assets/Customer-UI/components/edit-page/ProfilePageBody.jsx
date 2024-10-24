@@ -64,7 +64,7 @@ function ProfilePageBody() {
       clearTimeout(timeId);
     };
   }, [loading]);
-  return loading ? <Loading /> : (
+  return loading ? <Loading /> : 
     <div className="container">
       <div className="flex">
         <ul className="breadcrumb text-left">
@@ -246,16 +246,17 @@ function ProfilePageBody() {
 
               <button type="submit" className="save-changes">
                 Save Changes
-              </Button>
+              </button>
             </div>
-          </Form>
+            </div>
+          </form>
         </div>
-      ) : (
+       : 
         <div>Loading</div>
-      )}
+      
       {/* <ToastContainer /> Add ToastContainer here */}
     </div>
-  );
+  
 }
 
 export default ProfilePageBody;
