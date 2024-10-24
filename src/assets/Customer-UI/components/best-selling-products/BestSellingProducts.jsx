@@ -13,7 +13,7 @@ function BestSellingProducts({ products, ...props }) {
     setViewAllProducts(!viewAllProducts);
   };
   return (
-    <div>
+    <div className="container mx-auto px-28 my-12">
       <Banter title={"This month"} />
       <div className="flex text-left best-selling-products mb-14">
         <div>Best Selling Products</div>

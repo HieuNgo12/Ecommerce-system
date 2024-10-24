@@ -6,46 +6,73 @@ import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
-import { jwtDecode } from "jwt-decode";
 
-function LogIn() {
-  // const { dataUserName } = useAdminContext();
-  const [email, setEmail] = useState("");
+function LogIn({ setUser, ...props }) {
+  const { dataUserName } = useAdminContext();
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-
-  const logIn = async (e) => {
+  console.log(dataUserName);
+  const logIn = (e) => {
     e.preventDefault();
-    try {
-      const req = await fetch("http://localhost:8080/api/v1/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // credentials: "include",
-        body: JSON.stringify({ email, password }),
+    if (username === "" || password === "") {
+      toast.warn("Vui lòng nhập đầy đủ thông tin", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
       });
+    } else {
+      const user = dataUserName.find(
+        (user) =>
+          (user.email === username || user.username === username) &&
+          user.password === password
+      );
+      if (user) {
+        setUser("customer");
 
-      const res = await req.json();
-      const accessToken = res.accessToken;
+        sessionStorage.setItem("customer", username);
+        toast.success("Đăng nhập thành công", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => navigate("/test"),
+        });
+        return;
+      }
 
-      setCookie("token", accessToken, 7);
+      const admin = userAdmin.find(
+        (admin) => admin.email === username && admin.password === password
+      );
+      if (admin) {
+        const getLicense = admin.license;
+        setUser("admin");
 
-      const decoded = jwtDecode(accessToken);
-
-      if (!req.status === 200) {
-        toast.warn(res.message, {
+        sessionStorage.setItem("admin", getLicense);
+        toast.success("Đăng nhập ADMIN thành công", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => navigate("/admin"),
+        });
+      } else {
+        toast.error("Đăng nhập thất bại", {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: false,
@@ -205,9 +232,9 @@ function LogIn() {
   );
 }
 
-const App = () => (
+const App = ({ setUser, ...props }) => (
   <AdminProvider>
-    <LogIn />
+    <LogIn setUser={setUser} />
   </AdminProvider>
 );
 

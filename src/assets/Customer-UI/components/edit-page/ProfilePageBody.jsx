@@ -1,464 +1,250 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Select, DatePicker, Upload, Avatar } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import moment from "moment";
 import "./ProfilePageBody.css";
-import { AdminProvider } from "../../../Admin-UI/AdminContext";
-import citiesInVietnam from "./listCity"; // Danh sách thành phố, quận/huyện
-import validator from "validator";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer, toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import Loading from "../utils/Loading";
+const SignupSchema = Yup.object().shape({
+  firstName: Yup.string()
+    .min(2, "Required at least 2 letters")
+    .max(50, "Required maximum 50 letters")
+    .required("First Name Is Required"),
+  lastName: Yup.string()
+    .min(2, "Last name is at least 2 letters")
+    .max(50, "Last name is too long!")
+    .required("Required"),
+  email: Yup.string().email("Invalid email").required("Required"),
+  address: Yup.string()
+    .min(2, "Address must be at least 2 letters")
+    .max(50, "Address is too Long!")
+    .required("Required"),
+  currentPassword: Yup.string().required("Required"),
+  newPassword: Yup.string().required("Required"),
+  confirmNewPassword: Yup.string()
+    .required("Required")
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
+});
 
-const { Option } = Select;
-
-function ProfilePageBody({ userData, refreshToken, callApi }) {
-  const [form] = Form.useForm();
-  const [avatar, setAvatar] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [gender, setGender] = useState(null);
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [idCard, setIdCard] = useState("");
-  const [newImage, setNewImage] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [selectedWard, seclectedWard] = useState("");
-  const [selectedDistrict, seclectedDistrict] = useState("");
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-  const [number, setNumber] = useState([]);
-  const [zipcode, setZipcode] = useState([]);
-  const [password, setPassword] = useState("");
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    if (!userData || !userData._id) {
-      return;
-    }
-    form.setFieldsValue({
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      gender: userData.gender !== undefined ? userData.gender : null,
-      dateOfBirth: userData.dateOfBirth ? moment(userData.dateOfBirth) : null,
-      idCard: userData.idCard, 
-      number: userData.address.number,
-      ward: userData.address.ward,
-      district: userData.address.district,
-      city: userData.address.city,
-      zipcode: userData.zipcode,
-      avatar: userData.avatar,
-    });
-    setAvatar(userData.avatar);
-    setFirstName(userData.firstName);
-    setLastName(userData.lastName);
-    setGender(userData.gender);
-    setDateOfBirth(userData.dateOfBirth);
-    setIdCard(userData.idCard);
-    // setSelectedCity(userData.address.city);
-  }, [userData, form]);
-
-  const formData = new FormData();
-  formData.append("userId", userData._id);
-  formData.append("file", newImage);
-  formData.append("firstName", firstName);
-  formData.append("lastName", lastName);
-  formData.append("gender", gender);
-  formData.append("dateOfBirth", dateOfBirth);
-  formData.append("idCard", idCard);
-  formData.append("number", number);
-  formData.append("ward", selectedWard);
-  formData.append("district", selectedDistrict);
-  formData.append("city", selectedCity);
-  formData.append("zipcode", zipcode);
-  formData.append("password", password);
-
-  const getCookieValue = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-    return null;
-  };
-
-  useEffect(() => {
-    const getToken = getCookieValue("token");
-    if (getToken) {
-      setToken(getToken);
-    }
-  }, [token]);
-
-  const onFinish = async (values) => {
-    try {
-      const req1 = await fetch(
-        "http://localhost:8080/api/v1/users/update-profile",
-        {
-          method: "PATCH",
-          headers: {
-            // "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
-      );
-      if (req1.status === 403) {
-        const newToken = await refreshToken(token);
-        if (!newToken) throw new Error("Please log in first!");
-        setToken(newToken);
-        const req2 = await fetch(
-          "http://localhost:8080/api/v1/users/update-profile",
-          {
-            method: "PATCH",
-            headers: {
-              // "Content-Type": "application/json",
-              authorization: `Bearer ${newToken}`,
-            },
-            body: formData,
-          }
-        );
-        const res2 = await req2.json();
-        if (req2.status === 200) {
-          toast.success(res2.message, {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          setPassword("");
-          callApi();
-          form.resetFields(["currentPassword"]);
-        } else {
-          toast.warn(res2.message, {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          return;
-        }
-      }
-      if (req1.status === 200) {
-        toast.success(req1.message, {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
+function ProfilePageBody() {
+  const [loading,setLoading] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      address: "",
+      firstName: "",
+      lastName: "",
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    validationSchema: SignupSchema,
+    onSubmit: (values) => {
+      setLoading(true);
+      const userList = JSON.parse(localStorage.getItem("userList")) || [];
+      userList.push(values);
+      localStorage.setItem("userList", JSON.stringify(userList));
+      axios
+        .put("http://localhost:8080/user", {
+          ...values,
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
         });
-        setPassword("");
-      }
-    } catch (error) {
-      console.log("error", error);
-      toast.error("Something went wrong, please try again.", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  };
+    },
+  });
 
-  const handleImageChange = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setAvatar(e.target.result);
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
     };
-    setNewImage(file);
-    reader.readAsDataURL(file);
-    return false;
-  };
-
-  // const isValidPhone = validator.isMobilePhone(phone, "vi-VN");
-
-  // Xử lý khi chọn thành phố, cập nhật quận/huyện tương ứng
-  const handleCityChange = (value) => {
-    setSelectedCity(value);
-    const selectedCityObj = citiesInVietnam.find(
-      (city) => city.value === value
-    );
-    setDistricts(selectedCityObj ? selectedCityObj.districts : []);
-    form.setFieldsValue({ district: undefined, ward: undefined }); // Reset quận và phường
-    setWards([]); // Reset danh sách phường
-  };
-
-  // Xử lý khi chọn quận, cập nhật danh sách phường/xã
-  const handleDistrictChange = (value) => {
-    seclectedDistrict(value)
-    const selectedDistrict = districts.find(
-      (district) => district.value === value
-    );
-    setWards(selectedDistrict ? selectedDistrict.wards : []);
-    form.setFieldsValue({ ward: undefined }); // Reset phường khi đổi quận
-  };
-
-  return (
-    <div
-      style={{
-        width: "75%",
-        marginLeft: "20px",
-        padding: "20px",
-        backgroundColor: "#fff",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      {userData ? (
+  }, [loading]);
+  return loading ? <Loading /> : (
+    <div className="container">
+      <div className="flex">
+        <ul className="breadcrumb text-left">
+          <li>Home</li>
+          <li className="bold">Cart</li>
+        </ul>
+        <div className="flex welcome">
+          <p>Welcome!</p>
+          <p className="mcl-rimmel "> Mcl Rimel</p>
+        </div>
+      </div>
+      <div className="flex">
         <div>
-          <h2
-            style={{
-              color: "#007BFF",
-              textAlign: "center",
-              marginBottom: "30px",
-              fontWeight: "bold",
-            }}
-          >
-            Edit Your Profile
-          </h2>
-
-          <Form
-            form={form}
-            onFinish={onFinish}
-            layout="vertical"
-            style={{ marginTop: "20px" }}
-          >
-            {/* Avatar */}
-            <div
-              style={{
-                textAlign: "center",
-                marginBottom: "30px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Avatar size={100} src={avatar} />
-              <Upload
-                name="avatar"
-                showUploadList={false}
-                // onChange={handleImageChange}
-                style={{ marginTop: "15px" }}
-                beforeUpload={handleImageChange}
-              >
-                <Button
-                  icon={<UploadOutlined />}
-                  style={{ color: "#007BFF", marginTop: "15px" }}
-                >
-                  Upload New Avatar
-                </Button>
-              </Upload>
+          <div className="head-link">Manage My account</div>
+          <ul className="mt-5">
+            <li className="profile">My Profile</li>
+            <li>Address Book</li>
+            <li>My Payment Option</li>
+          </ul>
+          <div className="head-link mt-5">My Orders</div>
+          <ul className="mt-5">
+            <li>My Returns</li>
+            <li>My Cancellations</li>
+          </ul>
+          <div className="head-link mt-5">My Wishlist</div>
+        </div>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="ml-64 box-shadow">
+            <div className="edit-your-profile ml-4 ">Edit Your Profile</div>
+            <div>
+              <div>
+                <div className="flex">
+                  <div className="text-very-left ml-4">First Name</div>
+                  <div className="text-very-left ml-4">Last Name</div>
+                </div>
+                <div className="flex">
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="firstName"
+                    className="short-input"
+                    placeholder="Md"
+                    onChange={formik.handleChange}
+                    value={formik.values.firstName}
+                  />
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="lastName"
+                    className="short-input"
+                    placeholder="Rimel"
+                    onChange={formik.handleChange}
+                    value={formik.values.lastName}
+                  />
+                </div>
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.firstName && (
+                      <div>{formik.errors.lastName}</div>
+                    )}
+                  </div>
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.firstName && (
+                      <div>{formik.errors.lastName}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex">
+                  <div className="text-very-left ml-4">Email</div>
+                  <div className="text-very-left">Address</div>
+                </div>
+                <div className="flex">
+                  <input
+                    className="short-input"
+                    placeholder="rimel1111@gmail.com"
+                    id="email"
+                    name="email"
+                    type="email"
+                    onChange={formik.handleChange}
+                    value={formik.values.email}
+                  />
+                  <input
+                    className="short-input"
+                    id="address"
+                    name="address"
+                    type="address"
+                    placeholder="Kingston, 5236, United States"
+                    onChange={formik.handleChange}
+                    value={formik.values.address}
+                  />
+                </div>
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.email && <div>{formik.errors.email}</div>}
+                  </div>
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.address && (
+                      <div>{formik.errors.address}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div>
+                  <div className="password ml-4">Password Changes</div>
+                </div>
+                <div className="flex">
+                  <input
+                    id="currentPassword"
+                    name="currentPassword"
+                    type="password"
+                    className="long-input"
+                    placeholder="Current Password"
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                  />
+                </div>
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.currentPassword && (
+                      <div>{formik.errors.currentPassword}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex">
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    className="long-input"
+                    placeholder="New Password"
+                    value={formik.values.newPassword}
+                    onChange={formik.handleChange}
+                  />
+                </div>
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.newPassword && (
+                      <div>{formik.errors.newPassword}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex">
+                  <input
+                    id="confirmNewPassword"
+                    name="confirmNewPassword"
+                    type="password"
+                    className="long-input"
+                    placeholder="Confirm New Password"
+                    onChange={formik.handleChange}
+                    value={formik.values.confirmNewPassword}
+                  />
+                </div>
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.confirmNewPassword && (
+                      <div>{formik.errors.confirmNewPassword}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* First Name and Last Name */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Form.Item
-                name="firstName"
-                label="First Name"
-                rules={[
-                  { required: true, message: "First Name is required" },
-                  { whitespace: true, message: "First Name cannot be empty" },
-                ]}
-                style={{ width: "48%" }}
-              >
-                <Input
-                  placeholder="First Name"
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </Form.Item>
+            <div className="buttons flex">
+              <button className="cancel-button mr-auto">Cancel</button>
 
-              <Form.Item
-                name="lastName"
-                label="Last Name"
-                rules={[
-                  { required: true, message: "Last Name is required" },
-                  { whitespace: true, message: "Last Name cannot be empty" },
-                ]}
-                style={{ width: "48%" }}
-              >
-                <Input
-                  placeholder="Last Name"
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </Form.Item>
-            </div>
-
-            {/* Gender and Birthdate*/}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Form.Item
-                name="gender"
-                label="Gender"
-                rules={[{ required: true, message: "Gender is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Select
-                  placeholder="Gender"
-                  value={gender !== undefined ? gender : null}
-                  onChange={(value) => setGender(value)}
-                >
-                  <Option value={true}>Man</Option>
-                  <Option value={false}>Woman</Option>
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="dateOfBirth"
-                label="Birthdate"
-                rules={[{ required: true, message: "Birthdate is required" }]}
-                style={{ width: "48%" }}
-              >
-                <DatePicker
-                  style={{ width: "100%" }}
-                  onChange={(date, dateString) => setDateOfBirth(dateString)}
-                />
-              </Form.Item>
-            </div>
-
-            {/* Id Card and zipcode*/}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Form.Item
-                name="idCard"
-                label="ID Card"
-                rules={[{ required: true, message: "ID Card is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Input
-                  placeholder="ID Card"
-                  type="number"
-                  onChange={(e) => setIdCard(e.target.value)}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="zipcode"
-                label="Zipcode"
-                // rules={[{ required: true, message: "District is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Input
-                  placeholder="Zipcode"
-                  type="number"
-                  onChange={(e) => setZipcode(e.target.value)}
-                />
-              </Form.Item>
-            </div>
-
-            {/* City and District */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Form.Item
-                name="city"
-                label="City"
-                // rules={[{ required: true, message: "City is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Select placeholder="Select City" onChange={handleCityChange}>
-                  {citiesInVietnam.map((item, index) => (
-                    <Option key={index} value={item.value}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="district"
-                label="District"
-                // rules={[{ required: true, message: "District is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Select
-                  placeholder="Select District"
-                  onChange={handleDistrictChange}
-                  disabled={!selectedCity}
-                >
-                  {districts.map((district, index) => (
-                    <Option key={index} value={district.value}>
-                      {district.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </div>
-
-            {/* Ward and number*/}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Form.Item
-                name="ward"
-                label="Ward"
-                // rules={[{ required: true, message: "Ward is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Select placeholder="Select Ward" disabled={wards.length === 0} onChange={(value)=>seclectedWard(value)}>
-                  {wards.map((ward, index) => (
-                    <Option key={index} value={ward.value}>
-                      {ward.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-
-              <Form.Item
-                name="number"
-                label="Number and Street"
-                // rules={[{ required: true, message: "Number and Street is required" }]}
-                style={{ width: "48%" }}
-              >
-                <Input
-                  placeholder="Number and Street"
-                  onChange={(e) => setNumber(e.target.value)}
-                />
-              </Form.Item>
-            </div>
-
-            {/* Password */}
-            <Form.Item
-              name="currentPassword"
-              label="Password"
-              rules={[
-                { required: true, message: "Current password is required" },
-              ]}
-            >
-              <Input.Password
-                placeholder="Current Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Item>
-
-            {/* Save and Cancel Buttons */}
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Button
-                type="default"
-                style={{
-                  width: "48%",
-                  backgroundColor: "gray",
-                  color: "white",
-                  borderRadius: "4px",
-                }}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{
-                  width: "48%",
-                  backgroundColor: "#4CAF50",
-                  color: "white",
-                  borderRadius: "4px",
-                }}
-              >
+              <button type="submit" className="save-changes">
                 Save Changes
               </Button>
             </div>

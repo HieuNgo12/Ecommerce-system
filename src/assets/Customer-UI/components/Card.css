@@ -1,45 +1,63 @@
-.sales-card{
-    background-color: #F5F5F5;
+.sales-card {
+  background-color: #f5f5f5;
+  max-width: 270px !important;
+  margin-left: 15%;
+  border-radius: 6px;
 }
 
-.discount{
-    background-color: #DB4444;
-    color: #FAFAFA;
-    border-radius: 4px;
-    width: 55px;
-    height: 26px;
-    /* padding: 50px; */
+.discount {
+  background-color: #db4444;
+  color: #fafafa;
+  border-radius: 4px;
+  width: 55px;
+  height: 26px;
+  /* padding: 50px; */
 }
 
 .price {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    color: #DB4444;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #db4444 !important;
 }
 
 .org-price {
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 24px;
-    color: #000000;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #000000;
 }
 
-.rating{
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 21px;
+.rating {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
 }
 
 .add-to-cart {
-    background-color: black;
-    color: white;
-    &hover{
-        background-color: white;
-    }
+  background-color: black;
+  color: white;
+
+  max-width: 270px !important;
+  margin-left: 15%;
+  &hover {
+    background-color: white;
+  }
 }
 
 .add-to-cart:hover {
-    background-color: yellow;
-    color: black;
+  background-color: yellow;
+  color: black;
+}
+
+.card-item {
+  margin-left: 15%;
+}
+
+.card-title{
+    font-size: 16px !important;
+}
+
+.price{
+    color:#db4444 !important;
 }

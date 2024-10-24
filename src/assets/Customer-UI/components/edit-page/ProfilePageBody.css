@@ -57,65 +57,63 @@
 }
 
 .cancel-button {
-  background-color: #DB4444;
+  min-width: 57px;
+  height: 24px;
+  margin-right: 20%;
+}
+
+.save-changes {
+  background-color: #db4444;
   min-width: 214px !important;
   height: 56px;
   padding: 16px 48px 16px 48px;
   border-radius: 4px;
   color: white;
-
 }
 
-.save-changes {
-    background-color: #DB4444;
-    min-width: 214px !important;
-    height: 56px;
-    padding: 16px 48px 16px 48px;
-    border-radius: 4px;
-    color: white;
+.buttons {
+  margin-left: 60%;
+  margin-top: 12px;
+  min-width: 220px;
 }
 
-.buttons{
-    margin-left: 40%;
-    margin-top: 12px;
-    display: flex;
+.edit-your-profile {
+  text-align: left;
+  color: #db4444;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+  margin-bottom: 12px;
 }
 
-.edit-your-profile{
-    text-align: left;
-    color: #DB4444;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 28px;
-    margin-bottom: 12px;
+.box-shadow {
+  box-shadow: 5px 5px 5px 5px grey;
+  border: 1px solid black;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  padding-right: 20px;
 }
 .mcl-rimmel {
-    color: #DB4444;
-
+  color: #db4444;
 }
-.welcome{
-    margin-left: 60%;
+.welcome {
+  margin-left: 60%;
 }
 
 .error-field {
   text-align: left;
   min-width: 350px;
-  color: #DB4444;
+  color: #db4444;
   padding-left: 12px;
   margin-top: 12px;
   margin-bottom: 12px;
 }
 
 .profile {
-  color: #DB4444 !important;
+  color: #db4444 !important;
 }
 
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"] {
-    -moz-appearance: textfield;
+.bold {
+  font-weight: bold !important;
+  font-size: 36px;
 }

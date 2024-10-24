@@ -1,32 +1,39 @@
 import React, { useEffect, useState } from "react";
 import "./BillingPageBody.css";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
+import Loading from "../utils/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string()
     .min(2, "Required at least 2 letters")
     .max(50, "Required maximum 50 letters")
     .required("First Name Is Required"),
   companyName: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  streetAddress: Yup.string().email("Invalid email").required("Required"),
-  apartment: Yup.string()
-    .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
-  townCity: Yup.string().required("Required"),
-  phoneNumber: Yup.string().required("Required"),
+    .min(2, "Company must be at least 2 letters")
+    .max(50, "Company name must be maximum 50 letters")
+    .required("Company name is Required"),
+  streetAddress: Yup.string().required("Required"),
+  apartment: Yup.string(),
+  townCity: Yup.string().required("Town City is Required"),
+  phoneNumber: Yup.number(),
   emailAddress: Yup.string()
-    .required("Required")
-    .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
+    .required("Email is Required")
+    .email("Invalid email"),
 });
 function ShoppingCartBody() {
   const [subTotal, setSubTotal] = useState(0);
   const [itemList, setItemList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [couponMessage, setCouponMessage] = useState(false);
+  const [phoneNumberInput, setPhoneNumberInput] = useState("");
+  const [showPaymentMethod, setShowPaymentMethod] = useState(true);
+
+  const token = localStorage.getItem("token");
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -37,62 +44,118 @@ function ShoppingCartBody() {
       phoneNumber: "",
       emailAddress: "",
       couponCode: "",
-      paymentMethod: "",
+      paymentMethod: "Credit",
+      saveThisInformation: "",
+      cardNumber: "",
     },
     validationSchema: SignupSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      axios
-        .post("https://66b0ab0f6a693a95b539b080.mockapi.io/orders", {
-          ...values,
-          isBank: true,
-          isCashOnDelivery: false,
-          subTotal: subTotal,
-        })
-        .then(function (response) {
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
+    onSubmit: async (values) => {
+      console.log(values);
+
+      setLoading(true);
+      const billingList =
+        JSON?.parse(localStorage?.getItem("billingList")) || [];
+      for (let i = 0; i < billingList.length; i++) {
+        console.log(billingList[i]);
+        let price = 0;
+        billingList[i][1].forEach((billing) => {
+          price += Number(billing.price);
         });
+        const response = await axios
+          .post("http://localhost:8080/api/v1/order", {
+            headers: { Authorization: `Bearer ${token}` },
+
+            body: {
+              firstName: values.firstName,
+              companyName: values.companyName,
+              streetAddress: values.streetAddress,
+              apartment: values.apartment,
+              townCity: values.townCity,
+              paymentMethod: values.paymentMethod,
+              emailAddress: values.emailAddress,
+              phoneNumber: phoneNumberInput,
+              paymentCard: values.cardNumber,
+              productName: billingList[i][0],
+              quantity: billingList[i][2],
+
+              amount: price || 0,
+            },
+          })
+          .then(function (response) {
+            // window.location="/";
+            toast.success("Order Created Successfully", {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              onClose: () => navigate("/"),
+            });
+          }).then(()=> {
+            window.location.href = "/"
+
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+      // return redirect("");
+
+      // setSuccess(true);
     },
   });
+  const coupons = [
+    {
+      id: 1,
+      title: "123456",
+    },
+    {
+      id: 2,
+      title: "123457",
+    },
+  ];
   useEffect(() => {
-    let subTotalOverall = 0;
-
     const processData = () => {
-      const cartList = JSON?.parse(localStorage?.getItem("cartList"));
+      let subTotalOverall = 0;
+
+      const cartList = JSON?.parse(localStorage?.getItem("billingList")) || [];
       let cartItemList = [];
       let quantityCartList = {};
+      cartList.map((item) => {
+        subTotalOverall += Number(item[1][0].price) * Number(item[2]);
 
-      cartList.forEach((product) => {
-        subTotalOverall += Number(product.price);
-        if (quantityCartList[product.title]) {
-          quantityCartList[product.title].push(product);
-        } else {
-          quantityCartList[product.title] = [product];
-        }
+        return item;
       });
-      for (const [key, value] of Object.entries(quantityCartList)) {
-        cartItemList.push([key, value]);
-      }
       setSubTotal(subTotalOverall);
-      setItemList(cartItemList);
+      setItemList(cartList);
     };
     processData();
   }, []);
 
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+    return () => {
+      clearTimeout(timeId);
+    };
+  }, [loading]);
+
   return (
     <div className=" shopping-cart">
       <form onSubmit={formik.handleSubmit}>
+        {loading && <Loading />}
         <ul className="breadcrumb text-left">
           <li>Account</li>
           <li>My Account</li>
           <li>Product</li>
           <li>View Cart</li>
-          <li>Checkout</li>
+          <li className="bold">Checkout</li>
         </ul>
-        <div className="flex">
+        <div className="flex ml-auto">
           <div className="flex words-left">
             <div>
               <h1 className="billing-details">Billing Details</h1>
@@ -134,21 +197,19 @@ function ShoppingCartBody() {
                 </div>
               </div>
               <div>
-                <div
-                  id="companyName"
-                  name="companyName"
-                  type="companyName"
+                <div>Street Address</div>
+                <input
+                  id="streetAddress"
+                  name="streetAddress"
+                  type="streetAddress"
                   onChange={formik.handleChange}
-                  value={formik.values.companyName}
-                >
-                  Street Address
-                </div>
-                <input />
+                  value={formik.values.streetAddress}
+                />
                 <div className="flex">
                   <div className="error-field ">
                     {" "}
-                    {formik.errors.companyName && (
-                      <div>{formik.errors.companyName}</div>
+                    {formik.errors.streetAddress && (
+                      <div>{formik.errors.streetAddress}</div>
                     )}
                   </div>
                 </div>
@@ -191,12 +252,14 @@ function ShoppingCartBody() {
               </div>
               <div>
                 <div>Phone Number</div>
-                <input
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  type="phoneNumber"
-                  onChange={formik.handleChange}
-                  value={formik.values.phoneNumber}
+                <PhoneInput
+                  className="number"
+                  country={"us"}
+                  value={phoneNumberInput}
+                  onChange={(e) => {
+                    console.log(e);
+                    setPhoneNumberInput(e);
+                  }}
                 />
                 <div className="flex">
                   <div className="error-field ">
@@ -225,25 +288,46 @@ function ShoppingCartBody() {
                   </div>
                 </div>
               </div>
-
-              <div className="flex">
+              <div>
+                {showPaymentMethod ? (
+                  <>
+                    <div>Card Number</div>
+                    <input
+                      id="cardNumber"
+                      name="cardNumber"
+                      type="cardNumber"
+                      onChange={formik.handleChange}
+                      value={formik.values.cardNumber}
+                    />
+                  </>
+                ) : null}
+                <div className="flex">
+                  <div className="error-field ">
+                    {" "}
+                    {formik.errors.cardNumber && (
+                      <div>{formik.errors.cardNumber}</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {/* <div className="flex">
                 <input className="save-this-info" type="checkbox" />
 
                 <div className="mt-auto">
                   Save this information for faster check-out next time
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className="ml-64">
+          <div className="ml-96">
             {itemList.length &&
               itemList.map((item) => {
                 return (
                   <div className="flex item-card">
                     <img src={item[1][0].img} className="item-image" />
-                    <div>{item[1][0].title + " x " + item[1].length}</div>
+                    <div>{item[1][0].title + " x " + item[2]}</div>
                     <div className="price">
-                      {Number(item[1][0].price) * item[1].length + " $"}
+                      {(Number(item[1][0].price) || 0) * item[2] + " $"}
                     </div>
                   </div>
                 );
@@ -251,7 +335,7 @@ function ShoppingCartBody() {
             <div className="flex item-card border-grey">
               <div>Subtotal:</div>
               <div className="price">
-                {Number(Math.round(subTotal * 100) / 100) + " $"}
+                {Number(Math.round(subTotal * 100) / 100) || 0 + " $"}
               </div>
             </div>
             <div className="flex item-card border-grey">
@@ -261,7 +345,7 @@ function ShoppingCartBody() {
             <div className="flex item-card">
               <div>Total:</div>
               <div className="price">
-                {Number(Math.round(subTotal * 100) / 100) + " $"}
+                {Number(Math.round(subTotal * 100) / 100) || 0 + " $"}
               </div>
             </div>
 
@@ -269,34 +353,52 @@ function ShoppingCartBody() {
               <input
                 type="radio"
                 name="paymentMethod"
-                value="banking"
+                value="Credit"
                 className="mt-auto"
+                defaultChecked={true}
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  formik.values.paymentMethod = e.target.value;
+                  setShowPaymentMethod(true);
+                }}
               />
               <div className="ml-2 mt-auto">Bank</div>
               <div className="flex image-box">
-                <img src="./public/icons/payment-methods/Bkash.png" />
-                <img src="./public/icons/payment-methods/Visa.png" />
-                <img src="./public/icons/payment-methods/Mastercard.png" />
-                <img src="./public/icons/payment-methods/Nagad.png" />
+                <img src="./icons/payment-methods/Bkash.png" />
+                <img src="./icons/payment-methods/Visa.png" />
+                <img src="./icons/payment-methods/Mastercard.png" />
+                <img src="./icons/payment-methods/Nagad.png" />
               </div>
             </div>
 
             <div className="flex mb-6">
-              <input name="paymentMethod" value="cashOnDelivery" type="radio" />
+              <input
+                name="paymentMethod"
+                value="Cash"
+                type="radio"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  formik.values.paymentMethod = e.target.value;
+                  setShowPaymentMethod(false);
+                }}
+              />
               <div className="ml-2">Cash On Delivery</div>
             </div>
-            <div className="flex">
-              <input
-                className="coupon-input"
-                placeholder="Coupon Code"
-                id="couponCode"
-                name="couponCode"
-                type="couponCode"
-                onChange={formik.handleChange}
-                value={formik.values.couponCode}
-              />
-              <button className="button-style apply">Apply Coupon</button>
-            </div>
+            {couponMessage ? (
+              coupons.filter((coupon) => {
+                // console.log(coupon.title?.toString(), couponCode);
+                return coupon.title?.toString() === couponCode;
+              }).length ? (
+                <div className="text-left text-green-500">
+                  Succeeded to apply coupon message
+                </div>
+              ) : (
+                <div className="text-left text-red-500">
+                  Failed to apply coupon message
+                </div>
+              )
+            ) : null}
+
             <div className="flex">
               <button className="button-style" type="submit">
                 Place Order

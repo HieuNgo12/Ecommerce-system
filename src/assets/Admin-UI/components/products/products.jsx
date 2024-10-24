@@ -241,7 +241,57 @@ const Products = () => {
         </div>
       ),
     },
-
+    {
+      title: "Types",
+      dataIndex: "type",
+      key: "type",
+      sorter: (a, b) => a.color - b.color,
+      render: (text, record) => (
+        <div style={{ width: 80 }}>
+          {record.types.map((item, index) => (
+            <div key={index} className="py-1">
+              {item.color}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Size",
+      dataIndex: "size",
+      key: "size",
+      sorter: (a, b) => a.size - b.size,
+      render: (text, record) => (
+        <div style={{ width: 80 }}>
+          {record.types.map((item, index) => (
+            <div key={index} className="py-1">
+              {item.size}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (text, record) => (
+        <div style={{ width: 80 }}>
+          {record.types.map((item, index) => (
+            <div key={index} className="py-1">
+              {item.quantity}
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    {
+      title: "Count",
+      dataIndex: "count",
+      key: "count",
+      sorter: (a, b) => a?.count - b?.count,
+      render: (text, record) => <div style={{ width: 80 }}>{record?.count}</div>,
+    },
     {
       title: "Price ( $ )",
       dataIndex: "price",
