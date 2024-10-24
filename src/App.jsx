@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
 import ProductList from "./assets/Products/ProductList";
 import ProductDetails from "./assets/Products/ProductDetails";
-import ProductWishlist from "./a ssets/Products/ProductWishlist";
+import ProductWishlist from "./assets/Products/ProductWishlist";
 import ContactPage from "./assets/Customer-UI/pages/ContactPage";
 import AboutPage from "./assets/Customer-UI/pages/AboutPage";
 import BillingPage from "./assets/Customer-UI/pages/BillingPage";
@@ -32,7 +32,7 @@ import VerificationEmail from "./assets/Admin-UI/components/verificationEmail/ve
 import ProfilePageBody from "./assets/Customer-UI/components/edit-page/ProfilePageBody";
 import Authorization from "./assets/Customer-UI/components/edit-page/Authorization";
 import ChangePassword from "./assets/Customer-UI/components/edit-page/ChangePassword";
-
+import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
 import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
 import Setting from "./assets/Admin-UI/components/setting/setting";
 import Help from "./assets/Admin-UI/components/help/help";
@@ -42,7 +42,7 @@ import OrderPage from "./assets/Customer-UI/pages/OrderPage";
 import axios from "axios";
 function App() {
   // eslint-disable-next-line no-unused-vars
-  const [user, setUser] = useState("admin");
+  const [user, setUser] = useState("customer");
 
   const adminRouter = createBrowserRouter([
     {
