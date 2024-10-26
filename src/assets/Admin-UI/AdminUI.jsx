@@ -22,9 +22,9 @@ import AddCustomers from "./components/addCustomers/addCustomers";
 
 const AdminUI = () => {
   return (
-    <div className="h-screen flex w-full">
+    <div className="h-screen flex w-full ">
       <Sidebar />
-      <div className="flex flex-col w-full overflow-hidden">
+      <div className="flex flex-col w-full overflow-hidden ">
         <Header />
         <div>
           <Routes>

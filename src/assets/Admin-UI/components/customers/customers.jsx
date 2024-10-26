@@ -11,9 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const Customers = () => {
-  // const { dataUserName, callApi } = useAdminContext();
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState("");
+  const [token, setToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [dataUserName, setDataUserName] = useState([]);
 
@@ -34,7 +34,31 @@ const Customers = () => {
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
   };
 
-  const callRefreshToken = async (token) => {
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      setToken(getToken);
+    } else {
+      toast.warn("Please log in first!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
+
+  const callRefreshToken = async (xxx) => {
     try {
       const req = await fetch(
         "http://localhost:8080/api/v1/auth/refresh-token",
@@ -42,12 +66,14 @@ const Customers = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${xxx}`,
           },
         }
       );
       const res = await req.json();
-      return res.accessToken;
+      const newToken = res.accessToken;
+      setToken(newToken);
+      return newToken;
     } catch (err) {
       console.log("error", err);
       return null;
@@ -56,7 +82,6 @@ const Customers = () => {
 
   const callApi = async () => {
     try {
-      let token = getCookieValue("token");
       let req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
         method: "POST",
         headers: {
@@ -71,18 +96,18 @@ const Customers = () => {
           throw new Error("Can't find token. Please login again!");
 
         setCookie("token", refreshToken, 7);
-        token = refreshToken;
+        const newtoken = refreshToken;
 
         req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${token}`,
+            authorization: `Bearer ${newtoken}`,
           },
         });
 
         if (!req.ok) {
-          throw new Error(`Error ${req.status}: ${req.statusText}`);
+          throw new Error("Database user is not found!");
         }
       }
 
@@ -93,15 +118,113 @@ const Customers = () => {
     }
   };
 
-  useEffect(() => {
-    callApi();
-  }, []);
+  const delUser = async (xxx) => {
+    try {
+      const req = await fetch(
+        `http://localhost:8080/api/v1/admin/user-delete/${xxx._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (req.status === 403) {
+        const newToken = await callRefreshToken(token);
+        if (!newToken) throw new Error("Can't find token. Please login again!");
+        setCookie("token", newToken, 7);
+        setToken(newToken);
+        const req1 = await fetch(
+          `http://localhost:8080/api/v1/admin/user-delete/${xxx._id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${newToken}`,
+            },
+          }
+        );
+        if (req1.status === 200) {
+          toast.success("Delete successfully!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => setModal(false),
+          });
+          callApi();
+        } else {
+          const res1 = await req1.json();
+          toast.error(res1.message, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      }
+      if (req.status === 200) {
+        const res = await req.json();
+        toast.success(res.message, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => setModal(false),
+        });
+        callApi();
+      } else {
+        toast.error(req.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } catch (error) {
+      console.error("Error : ", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const openModal = (select) => {
+    setSelected(select);
+    setModal(true);
+  };
+
+  const EyeOut = () => {
+    setShowPassword(!showPassword);
+  };
 
   if (!dataUserName || dataUserName.length === 0) {
     return <div>Loading...</div>;
   }
-
-  console.log(dataUserName);
 
   const filtersID = dataUserName.map((item) => ({
     text: item._id.toString(),
@@ -144,55 +267,6 @@ const Customers = () => {
     { text: "Male", value: "Male" },
     { text: "Female", value: "Female" },
   ];
-
-  const openModal = (select) => {
-    setSelected(select);
-    setModal(true);
-  };
-
-  const EyeOut = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const delUser = async (xxx) => {
-    try {
-      const req = await fetch(
-        `http://localhost:8080/api/v1/admin/user-delete/${xxx._id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const res = await req.json();
-      if (req.status === 200) {
-        callApi();
-        toast.warn(res.message, {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      }
-    } catch (error) {
-      console.error("Error : ", error);
-      toast.error("Something went wrong, please try again.", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  };
 
   const menu = (record) => (
     <Menu>
@@ -327,6 +401,11 @@ const Customers = () => {
       ),
     },
     {
+      title: "Rank",
+      dataIndex: "rank",
+      render: (text, record) => <div style={{ width: 100 }}>{record.rank}</div>,
+    },
+    {
       title: "City",
       dataIndex: "city",
       render: (text, record) => <div style={{ width: 100 }}>{record.city}</div>,
@@ -417,9 +496,12 @@ const Customers = () => {
           selected={selected}
           callApi={callApi}
           callRefreshToken={callRefreshToken}
+          token={token}
+          setToken={setToken}
+          setCookie={setCookie}
         />
       )}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
