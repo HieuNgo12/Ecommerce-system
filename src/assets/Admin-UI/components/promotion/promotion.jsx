@@ -2,54 +2,128 @@ import React, { useEffect, useState } from "react";
 import { Table, Dropdown, Menu, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useAdminContext } from "../../AdminContext";
-import dataPromotionJSX from "../data/dataPromotion";
 import ModalPromotion from "./modalPromotion";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Promotion = () => {
-  const { dataPromotion } = useAdminContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState({});
+  const [token, setToken] = useState("");
+  const [selectedPromotion, setSelectedPromotion] = useState([]);
+  const [modal, setModal] = useState(false);
+  const [dataPromotion, setDataPromotion] = useState([]);
 
-  const arrPromotion = [...dataPromotionJSX, dataPromotion];
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const updatedTimeRemaining = {};
-
-      arrPromotion.forEach((record) => {
-        if (record.endDate && record.endTime) {
-          // Tạo chuỗi ngày và giờ kết thúc
-          const endDateTimeStr = `${record.endDate}T${record.endTime}:00Z`;
-          console.log(endDateTimeStr)
-          const endTime = new Date(endDateTimeStr).getTime(); // Lấy thời gian kết thúc dưới dạng mili giây
-          console.log(endTime)
-
-          const now = new Date().getTime(); // Lấy thời gian hiện tại dưới dạng mili giây
-
-          const timeLeft = Math.max(0, endTime - now); // Tính thời gian còn lại
-
-          // Tính số giây, phút, giờ, và ngày
-          const seconds = Math.floor((timeLeft / 1000) % 60);
-          const minutes = Math.floor((timeLeft / 1000 / 60) % 60);
-          const hours = Math.floor((timeLeft / (1000 * 60 * 60)) % 24);
-          const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-
-          updatedTimeRemaining[record.id] = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-        } else {
-          updatedTimeRemaining[record.id] = 'N/A';
-        }
+    if (dataPromotion) {
+      const CurrentDate = new Date();
+      const checkED = dataPromotion.map((item) => {
+        if (new Date(item.endDate) < CurrentDate)
+          return { ...item, status: "expired" };
       });
+      console.log(checkED)
+    }
+  }, [dataPromotion]);
 
-      setTimeRemaining(updatedTimeRemaining);
-    }, 1000);
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (!getToken) {
+      toast.error("Please log in again!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setToken(getToken);
+    }
+  }, []);
 
-    return () => clearInterval(intervalId);
-  }, [arrPromotion]);
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
+
+  const openModal = (xxx) => {
+    setModal(true);
+    setSelectedPromotion(xxx);
+  };
+
+  const callApi = async () => {
+    try {
+      const req1 = await fetch(
+        "http://localhost:8080/api/v1/promotion/get-promotion",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (req1.status === 403) {
+        console.log("first");
+        const req2 = await fetch(
+          "http://localhost:8080/api/v1/auth/refresh-token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!req2) throw new Error("Please log in again");
+        const res2 = await req2.json();
+        const newToken = res2.accessToken;
+        setToken(newToken);
+        setCookie("token", newToken, 7);
+        const req3 = await fetch(
+          "http://localhost:8080/api/v1/promotion/get-promotion",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${newToken}`,
+            },
+          }
+        );
+        const res3 = await req3.json();
+        setDataPromotion(res3.data);
+      }
+      if (req1.status == 200) {
+        const res1 = await req1.json();
+        setDataPromotion(res1.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   const menu = (record) => (
     <Menu>
       <Menu.Item key="0">
-        <button onClick={() => setIsModalOpen(true)}>Edit</button>
+        <button onClick={() => openModal(record)}>Edit</button>
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="2">
@@ -64,73 +138,80 @@ const Promotion = () => {
       dataIndex: "id",
       key: "id",
       fixed: "left",
-      width: 100,
-      render: (text) => <div style={{ width: 50 }}>{text}</div>,
+      // width: 100,
+      render: (text, record) => <div>{record._id}</div>,
     },
     {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      render: (text) => <div style={{ width: 200 }}>{text}</div>,
+      title: "Code",
+      dataIndex: "code",
+      key: "code",
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
-    },
-    {
-      title: "Sales",
-      dataIndex: "promotionalPrice",
-      key: "Sales",
-      // width: 150,
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (text) => (
+        <img src={text} alt="" style={{ width: "100px", height: "100px" }} />
+      ),
     },
     {
       title: "StartDate",
       dataIndex: "startDate",
       key: "startDate",
-      // width: 150,
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
-    },
-    {
-      title: "Start Time",
-      dataIndex: "startTime",
-      key: "startTime",
-      // width: 150,
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "End Date",
       dataIndex: "endDate",
       key: "endDate",
-      // width: 150,
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "End Time",
-      dataIndex: "endTime",
-      key: "endTime",
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      title: "Discount Type",
+      dataIndex: "discountType",
+      key: "discountType",
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "Time",
-      dataIndex: "id",
-      key: "Time",
-      render: (id) => <div style={{ width: 100 }}>{timeRemaining[id]}</div>,
+      title: "Discount Value",
+      dataIndex: "discountValue",
+      key: "discountValue",
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "Request",
-      dataIndex: "request",
-      key: "request",
-      // width: 150,
-      render: (text) => <div style={{ width: 100 }}>{text}</div>,
+      title: "Min Order Value",
+      dataIndex: "minimumOrderValue",
+      key: "minimumOrderValue",
+      width: 150,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: "Max Discount",
+      dataIndex: "maxDiscount",
+      key: "maxDiscount",
+      width: 150,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: "Applicable Products",
+      dataIndex: "applicableProducts",
+      key: "applicableProducts",
+      width: 180,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: "Applicable Categories",
+      dataIndex: "applicableCategories",
+      key: "applicableCategories",
+      width: 200,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Status",
@@ -161,13 +242,21 @@ const Promotion = () => {
     <div>
       <Table
         columns={columns}
-        dataSource={arrPromotion}
+        dataSource={dataPromotion}
         scroll={{ x: true, y: 950 }}
         // style={{ maxWidth: 1080 }}
         rowKey="id"
         sticky
       />
-      {isModalOpen && <ModalPromotion openModal={setIsModalOpen} />}
+      {modal && (
+        <ModalPromotion
+          selected={selectedPromotion}
+          setModal={setModal}
+          token={token}
+          setToken={setToken}
+          callApi={callApi}
+        />
+      )}
     </div>
   );
 };

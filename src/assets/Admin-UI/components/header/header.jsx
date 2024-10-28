@@ -6,20 +6,51 @@ import { useNavigate, useLocation } from "react-router-dom";
 import dataSideBar from "../data/dataSideBar";
 import { ToastContainer, toast } from "react-toastify";
 import refreshImg from "../svg/refresh-cw-alt-svgrepo-com.svg";
+import { jwtDecode } from "jwt-decode";
 
 function Header() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
-  const { callApi } = useAdminContext();
 
-  const [licenseAdmin, setlicenseAdmin] = useState("");
+  // const [token, setToken] = useState("");
   const [search, setSearch] = useState("");
+  const [user, setUser] = useState("");
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
 
   useEffect(() => {
-    const getLicenseFromSS = sessionStorage.getItem("admin");
-    if (getLicenseFromSS) {
-      setlicenseAdmin(getLicenseFromSS);
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      // setToken(getToken);
+      setUser(jwtDecode(getToken));
+    } else {
+      toast.warn("Log in first!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // onClose: () => navigate("/login"),
+      });
     }
   }, []);
 
@@ -27,8 +58,13 @@ function Header() {
     setSearch(e.target.value);
   };
 
+  const deleteCookie = (name) => {
+    document.cookie =
+      name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  };
+
   const logOut = () => {
-    sessionStorage.removeItem("admin");
+    deleteCookie("token");
     toast.warn("Đăng xuất thành công", {
       position: "top-center",
       autoClose: 1500,
@@ -38,7 +74,6 @@ function Header() {
       draggable: true,
       progress: undefined,
       theme: "light",
-      // transition: Bounce,
       onClose: () => navigate("/login"),
     });
   };
@@ -84,7 +119,7 @@ function Header() {
         )}
 
         <div className="flex items-center space-x-4">
-          <span className="font-bold italic">{licenseAdmin}</span>
+          <span className="font-bold italic">{user.username}</span>
           <img src={icon} alt="" className="cursor-pointer" onClick={logOut} />
         </div>
       </div>

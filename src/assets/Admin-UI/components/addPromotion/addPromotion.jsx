@@ -1,804 +1,359 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { AdminProvider, useAdminContext } from "../../AdminContext";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+  InputNumber,
+  Upload,
+} from "antd";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { UploadOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
 
 const AddPromotion = () => {
-  const { callApi, dataProduct, newPromotion } = useAdminContext();
+  const [form] = Form.useForm();
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [token, setToken] = useState("");
+  const [discountType, setDiscountType] = useState("percentage");
+  const [promotionImage, setPromotionImage] = useState(null);
   const navigate = useNavigate();
-  // const [newCategory, setNewCategory] = useState("");
-  const [newID, setNewID] = useState("");
-  // const [newTitle, setNewTitle] = useState("");
-  // const [newStatus, setNewStatus] = useState("");
-  // const [newPrice, setNewPrice] = useState("");
-  // const [newImage, setNewImage] = useState("");
-  const [sku, setSku] = useState("");
-  // const [slug, setSlug] = useState("");
-  // const [newDescription, setNewDescription] = useState("");
-  // const [color, setColor] = useState("");
-  // const [quantity, setQuantity] = useState("");
-  // const [classify, setClassify] = useState("");
-  // const [size, setSize] = useState("");
-  const [quantitySizeXS, setQuantitySizeXS] = useState(0);
-  const [quantitySizeS, setQuantitySizeS] = useState(0);
-  const [quantitySizeM, setQuantitySizeM] = useState(0);
-  const [quantitySizeL, setQuantitySizeL] = useState(0);
-  const [quantitySizeXL, setQuantitySizeXL] = useState(0);
-  const [quantitySizeXLL, setQuantitySizeXLL] = useState(0);
-  const [quantitySizeXLLL, setQuantitySizeXLLL] = useState(0);
-  const [arrMoreColor, setArrMoreColor] = useState([]);
-  const [selectedSKU, setSelectedSKU] = useState();
-  const [getData, setGetData] = useState("");
-  const [promotionalPrice, setPromotionalPrice] = useState(getData.price);
 
-  const [startDate, setStartDate] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
-
-  const startDateTime = new Date(`${startDate}T${startTime}`);
-  const endDateTime = new Date(`${endDate}T${endTime}`);
-
-  const addMoreColor = () => {
-    const newColor = { color: "tam" };
-    const newArrColor = [...arrMoreColor, newColor];
-    setArrMoreColor(newArrColor);
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
   };
 
-  const deleteColor = (index) => {
-    const delArrColor = [...arrMoreColor];
-    delArrColor.splice(index, 1);
-    setArrMoreColor(delArrColor);
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
   };
 
   useEffect(() => {
-    const getInfor = dataProduct.find((item) => {
-      if (item.id === selectedSKU) {
-        return item;
-      }
-    });
-    setGetData(
-      getInfor || {
-        id: "",
-        title: "",
-        price: "",
-        status: "",
-        category: "",
-        description: "",
-      }
-    );
-  }, [selectedSKU]);
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      setToken(getToken);
+    } else {
+      toast.error("Please log in again!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, []);
 
-  const createNewPromotion = () => {
-    const originalPrice = getData.price;
-    const newData = { ...getData, promotionalPrice: promotionalPrice };
-    console.log("Dữ liệu sản phẩm với giá khuyến mãi:", newData);
-    newPromotion(newData);
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
 
-    const now = new Date();
-    console.log("Thời gian hiện tại:", now);
+  const callApi = async () => {
+    try {
+      const req1 = await fetch("http://localhost:8080/api/v1/products/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res1 = await req1.json();
+      setProducts(res1.data);
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
 
-    const updatePrice = async (price) => {
-      try {
-        const res = await fetch(
-          `https://66b0ab0f6a693a95b539b080.mockapi.io/products/${getData.id}`,
+  const createNewPromotion = async (values) => {
+    const toastId = toast.loading("Creating...");
+    try {
+      console.log(values);
+      const formData = new FormData();
+      formData.append("file", promotionImage); // Thêm tệp hình ảnh vào FormData
+      formData.append("code", values.code);
+      formData.append("description", values.description);
+      formData.append("discountType", values.discountType);
+      formData.append("discountValue", values.discountValue);
+      formData.append("minimumOrderValue", values.minimumOrderValue || 0);
+      formData.append("maxDiscount", values.maxDiscount || 0);
+      formData.append("startDate", values.startDate.toISOString());
+      formData.append("endDate", values.endDate.toISOString());
+      formData.append("usageLimit", values.usageLimit || null);
+      formData.append("status", values.status || "active");
+
+      const req1 = await fetch(
+        "http://localhost:8080/api/v1/promotion/add-promotion",
+        {
+          method: "POST",
+          headers: { authorization: `Bearer ${token}` },
+          body: formData,
+        }
+      );
+      if (req1.status === 403) {
+        const req2 = await fetch(
+          "http://localhost:8080/api/v1/auth/refresh-token",
           {
-            method: "PUT",
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
+              authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-              price: price,
-              startDate: startDate,
-              startTime: startTime,
-              endDate: endDate,
-              endTime: endTime,
-            }),
           }
         );
-        const json = await res.json();
-        callApi();
-        console.log("Kết quả từ API:", json);
-        toast.success("Added product successful!", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      } catch (error) {
-        console.error("Lỗi:", error);
-      }
-    };
-
-    if (now < startDateTime) {
-      console.log("Khuyến mãi chưa bắt đầu, bắt đầu đếm ngược.");
-
-      const timeUntilStart = startDateTime - now;
-      console.log("Thời gian đến khi bắt đầu khuyến mãi (ms):", timeUntilStart);
-
-      const countdownToStart = setTimeout(() => {
-        console.log("Khuyến mãi bắt đầu ngay bây giờ.");
-        startPromotion();
-      }, timeUntilStart);
-
-      const countdownInterval = setInterval(() => {
-        const timeLeft = startDateTime - new Date();
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
-        } else {
-          console.log(
-            "Thời gian còn lại cho đến khi khuyến mãi bắt đầu:",
-            Math.floor(timeLeft / 1000),
-            "giây"
-          );
-        }
-      }, 1000);
-
-      return () => {
-        clearTimeout(countdownToStart);
-        clearInterval(countdownInterval);
-        console.log("Countdown tới startDate đã bị hủy.");
-      };
-    } else if (now >= startDateTime && now <= endDateTime) {
-      startPromotion();
-    } else {
-      console.log("Khuyến mãi đã kết thúc.");
-    }
-
-    function startPromotion() {
-      console.log("Khuyến mãi đang diễn ra.");
-
-      console.log(
-        "Cập nhật giá trị price thành giá khuyến mãi:",
-        promotionalPrice
-      );
-      updatePrice(promotionalPrice);
-
-      const timeRemaining = endDateTime - new Date();
-      console.log("Thời gian còn lại cho khuyến mãi (ms):", timeRemaining);
-
-      const timer = setTimeout(() => {
-        console.log("Thời gian khuyến mãi đã kết thúc.");
-
-        console.log("Khôi phục giá trị price về giá ban đầu:", originalPrice);
-        updatePrice(originalPrice);
-        alert(
-          "Thời gian khuyến mãi đã kết thúc, giá sản phẩm trở về giá ban đầu!"
+        if (!req2) throw new Error("Please log in again!");
+        const res2 = await req2.json();
+        const newToken = res2.accessToken;
+        setToken(newToken);
+        setCookie("token", newToken, 7);
+        const req3 = await fetch(
+          "http://localhost:8080/api/v1/promotion/add-promotion",
+          {
+            method: "POST",
+            headers: { authorization: `Bearer ${newToken}` },
+            body: formData,
+          }
         );
-      }, timeRemaining);
-
-      const countdownInterval = setInterval(() => {
-        const timeLeft = endDateTime - new Date();
-        if (timeLeft <= 0) {
-          clearInterval(countdownInterval);
+        if (req3.status === 200) {
+          toast.update(toastId, {
+            render: "Create Account successful!",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+            onClose: () => navigate("/admin/promotion"),
+          });
         } else {
-          console.log(
-            "Thời gian còn lại:",
-            Math.floor(timeLeft / 1000),
-            "giây"
-          );
+          const res3 = await res3.json();
+          toast.update(toastId, {
+            render: res3.message,
+            type: "warning",
+            isLoading: false,
+            autoClose: 3000,
+          });
         }
-      }, 1000);
-
-      return () => {
-        clearTimeout(timer);
-        clearInterval(countdownInterval);
-        console.log("Timer và countdown đã bị hủy.");
-      };
+      }
+      if (req1.status === 200) {
+        toast.update(toastId, {
+          render: "Create Account successful!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+          onClose: () => navigate("/admin/promotion"),
+        });
+      } else {
+        const res1 = await req1.json();
+        toast.update(toastId, {
+          render: res1.message,
+          type: "warning",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.update(toastId, {
+        render: "Something went wrong, please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
+  };
+
+  const handleImageChange = (file) => {
+    setPromotionImage(file);
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Add Promotion</h1>
-      <label>SKU : </label>
-      <select
-        value={selectedSKU}
-        onChange={(e) => setSelectedSKU(e.target.value)}
-        className="w-80"
-      >
-        <option value={{ id: "", title: "" }}>Select SKU </option>
-        {dataProduct.map((item, index) => (
-          <option key={index}>{item.id}</option>
-        ))}
-      </select>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Title</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={getData.title}
-            // onChange={() => setNewTitle(getData.title)}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Stock status</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={getData.status}
-            // onChange={() => setNewTitle(getData.title)}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Price</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={getData.price}
-            // onChange={(e) => setNewPrice(e.target.value)}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Slug</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            // value={slug}
-            // onChange={(e) => setSlug(e.target.value)}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Category</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={getData.category}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Classify</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={getData.category}
-            disabled
-          />
-        </div>
-        <div className="col-span-12">
-          <label className="block mb-2">Description</label>
-          <textarea
-            className="w-full p-2 border rounded"
-            value={getData.description}
-            // onChange={(e) => setNewDescription(e.target.value)}
-            disabled
-          ></textarea>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">ID</label>
-          <div>
-            <input
-              className="w-full p-2 border rounded"
-              type="text"
-              value={getData.id}
-              // onChange={(e) => setNewID(e.target.value)}
-              disabled
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">SKU</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={`/${getData.id}`}
-            // onChange={(e) => setSku(e.target.value.slice(1))}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Promotional Price</label>
-          <div className="flex gap-3">
-            <input
-              type="number"
-              value={promotionalPrice}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setPromotionalPrice(value);
-              }}
-              // disabled
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Request</label>
-          <div className="flex gap-3">
-            <input
-              type="text"
-              // value={getData.image}
-              // disabled
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Start Date</label>
-          <div className="flex gap-3">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Start Time</label>
-          <div className="flex gap-3">
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">End Date</label>
-          <div className="flex gap-3">
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">End Time</label>
-          <div className="flex gap-3">
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Colors</label>
-          <div className="flex">
-            <div
-              className="w-8 h-8 mr-2 bg-yellow-500 rounded-full cursor-pointer"
-              onClick={() => setColor("yellow")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-orange-500 rounded-full cursor-pointer"
-              onClick={() => setColor("orange")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-white rounded-full cursor-pointer border"
-              onClick={() => setColor("white")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-blue-500 rounded-full cursor-pointer"
-              onClick={() => setColor("blue")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-black rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-red-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-gray-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-sky-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-rose-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-cyan-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-amber-900 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-indigo-950 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-            <div
-              className="w-8 h-8 mr-2 bg-violet-500 rounded-full cursor-pointer"
-              onClick={() => setColor("black")}
-            ></div>
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Size</label>
-          <div className="flex justify-between">
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XS")}
+      <Form layout="vertical" onFinish={createNewPromotion}>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Promotion Code"
+              name="code"
+              rules={[
+                { required: true, message: "Please enter the promotion code!" },
+              ]}
             >
-              XS
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("S")}
-            >
-              S
-            </button>
-            <button
-              className="w-16 h-8 mr-2 border rounded"
-              onClick={() => setSize("M")}
-            >
-              M
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("L")}
-            >
-              L
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XL")}
-            >
-              XL
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XXL")}
-            >
-              XXL
-            </button>
-            <button
-              className="w-16 h-8 border rounded"
-              onClick={() => setSize("XXXL")}
-            >
-              XXXL
-            </button>
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Images</label>
-          <div className="flex gap-3">
-            <input
-              type="text"
-              value={getData.image}
-              disabled
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <div className="flex justify-between">
-            <input
-              type="number"
-              value={quantitySizeXS}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXS(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeS}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeS(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeM}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeM(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXLL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXLL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-            <input
-              type="number"
-              value={quantitySizeXLLL}
-              min="0"
-              onChange={(e) => {
-                const value = e.target.value < 0 ? 0 : e.target.value;
-                setQuantitySizeXLLL(value);
-              }}
-              className="w-16 h-8 border rounded mb-1"
-            />
-          </div>
-          <div className="col-span-12 ">
-            <button
-              className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-400"
-              onClick={addMoreColor}
-            >
-              Add more color
-            </button>
-          </div>
-        </div>
-        {arrMoreColor.map((item, index) => (
-          <React.Fragment key={index}>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">ID</label>
-              <input
-                className="w-full p-2 border rounded"
-                type="text"
-                value={newID}
-                onChange={(e) => setNewID(e.target.value)}
-                disabled
+              <Input placeholder="PROMO2024" />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Description" name="description">
+              <Input.TextArea
+                placeholder="Enter promotion description"
+                rows={2}
               />
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">SKU</label>
-              <input
-                className="w-full p-2 border rounded"
-                type="text"
-                value={`/${sku}`}
-                onChange={(e) => setSku(e.target.value.slice(1))}
-                disabled
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Discount Type"
+              name="discountType"
+              rules={[
+                { required: true, message: "Please select a discount type!" },
+              ]}
+            >
+              <Select value={discountType} onChange={setDiscountType}>
+                <Option value="percentage">Percentage</Option>
+                <Option value="fixed">Fixed Amount</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Discount Value"
+              name="discountValue"
+              rules={[
+                { required: true, message: "Please enter the discount value!" },
+              ]}
+            >
+              <InputNumber
+                min={0}
+                style={{ width: "100%" }}
+                placeholder="Enter discount amount or percentage"
               />
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Colors</label>
-              <div className="flex">
-                <div
-                  className="w-8 h-8 mr-2 bg-yellow-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("yellow")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-orange-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("orange")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-white rounded-full cursor-pointer border"
-                  onClick={() => setColor("white")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-blue-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("blue")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-black rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-red-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-gray-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-sky-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-rose-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-cyan-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-amber-900 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-indigo-950 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-                <div
-                  className="w-8 h-8 mr-2 bg-violet-500 rounded-full cursor-pointer"
-                  onClick={() => setColor("black")}
-                ></div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Sizes</label>
-              <div className="flex justify-between">
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XS")}
-                >
-                  XS
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("S")}
-                >
-                  S
-                </button>
-                <button
-                  className="w-16 h-8 mr-2 border rounded"
-                  onClick={() => setSize("M")}
-                >
-                  M
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("L")}
-                >
-                  L
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XL")}
-                >
-                  XL
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XXL")}
-                >
-                  XXL
-                </button>
-                <button
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize("XXXL")}
-                >
-                  XXXL
-                </button>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Images</label>
-              <div className="flex gap-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-28 p-2 border rounded bg-gray-200"
-                />
-                <input
-                  type="text"
-                  value={newImage.name}
-                  disabled
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <div className="flex justify-between">
-                <input
-                  type="number"
-                  value={quantitySizeXS}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXS(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeS}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeS(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeM}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeM(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXLL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXLL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-                <input
-                  type="number"
-                  value={quantitySizeXLLL}
-                  min="0"
-                  onChange={(e) => {
-                    const value = e.target.value < 0 ? 0 : e.target.value;
-                    setQuantitySizeXLLL(value);
-                  }}
-                  className="w-16 h-8 border rounded mb-1"
-                />
-              </div>
-              <button
-                className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-400"
-                onClick={() => deleteColor(index)}
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Minimum Order Value" name="minimumOrderValue">
+              <InputNumber
+                min={0}
+                style={{ width: "100%" }}
+                placeholder="Minimum order to apply promotion"
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Maximum Discount" name="maxDiscount">
+              <InputNumber
+                min={0}
+                style={{ width: "100%" }}
+                placeholder="Maximum discount amount"
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="Start Date"
+              name="startDate"
+              rules={[
+                { required: true, message: "Please select a start date!" },
+              ]}
+            >
+              <DatePicker showTime style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              label="End Date"
+              name="endDate"
+              rules={[
+                { required: true, message: "Please select an end date!" },
+              ]}
+            >
+              <DatePicker showTime style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label="Applicable Products" name="applicableProducts">
+              <Select
+                mode="multiple"
+                placeholder="Select products"
+                onChange={setSelectedProducts}
+                style={{ width: "100%" }}
               >
-                Delete color
-              </button>
-            </div>
-          </React.Fragment>
-        ))}
-        <div className="col-span-12">
-          <button
-            className="w-full p-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-            onClick={createNewPromotion}
-          >
-            Save Promotion
-          </button>
-        </div>
-      </div>
+                {/* Replace the options below with dynamic product data */}
+                <Option value="all">All</Option>
+                {products.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.title}>
+                      {item.title}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Usage Limit" name="usageLimit">
+              <InputNumber
+                min={1}
+                style={{ width: "100%" }}
+                placeholder="Total usage limit for promotion"
+              />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Status" name="status" initialValue="active">
+              <Select>
+                <Option value="active">Active</Option>
+                <Option value="inactive">Inactive</Option>
+                <Option value="expired">Expired</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label="Promotion Image" name="promotionImage">
+              <Upload
+                beforeUpload={() => false}
+                onChange={(info) => handleImageChange(info.file)}
+                accept="image/*"
+              >
+                <Button icon={<UploadOutlined />}>
+                  Upload Promotion Image
+                </Button>
+              </Upload>
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Button type="primary" htmlType="submit" block>
+              Save Promotion
+            </Button>
+          </Col>
+        </Row>
+      </Form>
       <ToastContainer />
     </div>
   );
