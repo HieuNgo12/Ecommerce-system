@@ -11,7 +11,6 @@ const Promotion = () => {
   const [selectedPromotion, setSelectedPromotion] = useState([]);
   const [modal, setModal] = useState(false);
   const [dataPromotion, setDataPromotion] = useState([]);
-
   const getCookieValue = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -28,17 +27,6 @@ const Promotion = () => {
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
   };
-
-  useEffect(() => {
-    if (dataPromotion) {
-      const CurrentDate = new Date();
-      const checkED = dataPromotion.map((item) => {
-        if (new Date(item.endDate) < CurrentDate)
-          return { ...item, status: "expired" };
-      });
-      console.log(checkED)
-    }
-  }, [dataPromotion]);
 
   useEffect(() => {
     const getToken = getCookieValue("token");
@@ -204,7 +192,13 @@ const Promotion = () => {
       dataIndex: "applicableProducts",
       key: "applicableProducts",
       width: 180,
-      render: (text) => <div>{text}</div>,
+      render: (text, record) => (
+        <div>
+          {record.applicableProducts.map((item, index) => (
+            <div key={index}>- {item.title}</div> 
+          ))}
+        </div>
+      ),
     },
     {
       title: "Applicable Categories",

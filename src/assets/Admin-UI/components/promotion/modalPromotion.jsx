@@ -20,9 +20,8 @@ const ModalPromotion = ({
   const [newUploadImage, setNewUploadImage] = useState();
   const [dataProducts, setDataProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(
-    selected.applicableProducts
+    selected.applicableProducts || []
   );
-  const [status, setStatus] = useState();
 
   const handleCancel = () => {
     setModal(false);
@@ -95,10 +94,8 @@ const ModalPromotion = ({
 
   const handleSelectChange = (value) => {
     if (value.includes("ALL")) {
-      // Nếu "All" được chọn, đặt toàn bộ giá trị từ `dataProducts`
       setSelectedProducts(dataProducts.map((item) => item.title));
     } else {
-      // Nếu "All" bị bỏ chọn, cập nhật giá trị dựa trên các lựa chọn khác
       setSelectedProducts(value);
     }
   };
@@ -109,7 +106,7 @@ const ModalPromotion = ({
       const formData = new FormData();
       formData.append("file", newUploadImage); // Thêm tệp vào FormData
       formData.append("status", values.status);
-      formData.append("applicableProducts", selectedProducts);
+      formData.append("applicableProducts", values.applicableProducts);
       formData.append("description", values.description);
       formData.append("discountType", values.discountType);
       formData.append("discountValue", values.discountValue);
@@ -123,7 +120,6 @@ const ModalPromotion = ({
         "endDate",
         values.endDate ? moment(selected.endDate) : null
       );
-
       const req1 = await fetch(
         `http://localhost:8080/api/v1/promotion/update-promotion/${selected._id}`,
         {
@@ -136,6 +132,7 @@ const ModalPromotion = ({
       );
 
       if (req1.status === 403) {
+        console.log("check");
         const req2 = await callRefreshToken(token);
         setToken(req2);
         setCookie("token", req2, 7);
@@ -219,6 +216,11 @@ const ModalPromotion = ({
       });
     }
   };
+
+  const selectedDataPromotion = selectedProducts.map((item) => item.title);
+  const selectedValuePromotion = selectedProducts.map((item) => item._id);
+  console.log(selectedValuePromotion);
+  console.log(selectedProducts);
   return (
     <Modal
       title="Customer Information"
@@ -235,16 +237,16 @@ const ModalPromotion = ({
         initialValues={{
           _id: selected._id,
           code: selected.code,
-          description: selected.description,
+          image: selected.image,
           status: selected.status,
           endDate: selected.endDate ? moment(selected.endDate) : null,
           startDate: selected.startDate ? moment(selected.startDate) : null,
-          minimumOrderValue: selected.minimumOrderValue,
+          description: selected.description,
           maxDiscount: selected.maxDiscount,
           discountType: selected.discountType,
           discountValue: selected.discountValue,
-          image: selected.image,
-          applicableProducts: selected.applicableProducts,
+          minimumOrderValue: selected.minimumOrderValue,
+          applicableProducts: selectedDataPromotion,
         }}
       >
         <Form.Item label="Promotion ID" name="_id">
@@ -302,15 +304,14 @@ const ModalPromotion = ({
             placeholder="Select products"
             onChange={handleSelectChange}
             style={{ width: "100%" }}
+            value={selectedProducts}
           >
             <Select.Option value="ALL">ALL</Select.Option>
-            {dataProducts.map((item, index) => {
-              return (
-                <Select.Option key={index} value={item._id}>
-                  {item.title}
-                </Select.Option>
-              );
-            })}
+            {dataProducts.map((item, index) => (
+              <Select.Option key={index} value={item._id}>
+                {item.title}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
 
@@ -321,14 +322,6 @@ const ModalPromotion = ({
             <Select.Option value="expired">Expired</Select.Option>
           </Select>
         </Form.Item>
-
-        {/* <Form.Item label="Status" name="status">
-          <Select>
-            <Select.Option value="active">Active</Select.Option>
-            <Select.Option value="inactive">Inactive</Select.Option>
-            <Select.Option value="expired">Expired</Select.Option>
-          </Select>
-        </Form.Item> */}
 
         <Form.Item label="Image">
           <Input type="file" accept="image/*" onChange={handleImageUpload} />
