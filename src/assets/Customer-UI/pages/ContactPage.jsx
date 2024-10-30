@@ -5,6 +5,7 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { toast } from "react-toastify";
 import validator from "validator";
+import axios from "axios";
 
 emailjs.init(import.meta.env.VITE_EMAILJS_USER_ID);
 function ContactPage() {
@@ -16,6 +17,7 @@ function ContactPage() {
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log(formData);
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -39,17 +41,13 @@ function ContactPage() {
         progress: undefined,
       });
       return;
-    }
-
-    try {
-      const result = await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        e.target,
-        import.meta.env.VITE_EMAILJS_USER_ID
-      );
-
-      console.log(result.text);
+    } else {
+      const data = await axios.post("http://localhost:8080/api/v1/support", {
+        name: formData?.name,
+        email: formData?.email,
+        phone: formData?.phone,
+        message: formData?.message,
+      });
       toast.success("Message sent successfully!", {
         position: "top-center",
         autoClose: 3000,
@@ -65,10 +63,8 @@ function ContactPage() {
         phone: "",
         message: "",
       });
-    } catch (error) {
-      console.error("Error:", error.text || error);
-      toast.error("Message sending failed!");
     }
+
   };
 
   return (
@@ -89,9 +85,7 @@ function ContactPage() {
               <NavLink
                 to="/contactpage"
                 className={({ isActive }) =>
-                  isActive
-                    ? " font-semibold text-black"
-                    : "text-black"
+                  isActive ? " font-semibold text-black" : "text-black"
                 }
               >
                 Contact
