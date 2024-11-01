@@ -12,18 +12,19 @@ import settingIcon from "../svg/settings-svgrepo-com.svg";
 import helpIcon from "../svg/question-square-svgrepo-com.svg";
 
 const dataSideBar = [
-  { id: "1", img: dashBoardIcon, name: "Dashboard" },
-  { id: "2", img: analyticsIcon, name: "Analytics" },
-  { id: "3", img: productIcon, name: "Products" },
-  { id: "4", img: orderIcon, name: "Orders" },
-  { id: "5", img: customerIcon, name: "Customers" },
-  { id: "6", img: reviewtIcon, name: "Rating" },
-  { id: "7", img: reviewtIcon, name: "Reviews" },
-  { id: "8", img: quotes, name: "Quotes" },
-  { id: "9", img: promotionIcon, name: "Promotion" },
-  { id: "10", img: backUpIcon, name: "Backup" },
-  { id: "11", img: settingIcon, name: "Setting" },
-  { id: "12", img: helpIcon, name: "Help" },
+  { id: "1", img: dashBoardIcon, name: "Dashboard", requiresSuper: false },
+  { id: "2", img: analyticsIcon, name: "Analytics", requiresSuper: false },
+  { id: "3", img: productIcon, name: "Products", requiresSuper: false },
+  { id: "4", img: orderIcon, name: "Orders", requiresSuper: false },
+  { id: "5", img: customerIcon, name: "Customers", requiresSuper: false },
+  { id: "6", img: customerIcon, name: "Admin", requiresSuper: true },
+  { id: "7", img: reviewtIcon, name: "Rating", requiresSuper: false },
+  { id: "8", img: reviewtIcon, name: "Reviews", requiresSuper: false },
+  { id: "9", img: quotes, name: "Quotes", requiresSuper: false },
+  { id: "10", img: promotionIcon, name: "Promotion", requiresSuper: false },
+  { id: "11", img: backUpIcon, name: "Backup", requiresSuper: false },
+  { id: "12", img: settingIcon, name: "Setting", requiresSuper: false },
+  { id: "13", img: helpIcon, name: "Help", requiresSuper: false },
 ];
 
 export default dataSideBar;

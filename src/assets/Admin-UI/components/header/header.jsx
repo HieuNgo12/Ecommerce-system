@@ -24,15 +24,15 @@ function Header() {
     return null;
   };
 
-  const setCookie = (name, value, days) => {
-    let expires = "";
-    if (days) {
-      const date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  };
+  // const setCookie = (name, value, days) => {
+  //   let expires = "";
+  //   if (days) {
+  //     const date = new Date();
+  //     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+  //     expires = "; expires=" + date.toUTCString();
+  //   }
+  //   document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  // };
 
   useEffect(() => {
     const getToken = getCookieValue("token");
@@ -40,17 +40,7 @@ function Header() {
       // setToken(getToken);
       setUser(jwtDecode(getToken));
     } else {
-      toast.warn("Log in first!", {
-        position: "top-center",
-        autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        // onClose: () => navigate("/login"),
-      });
+      navigate("/login");
     }
   }, []);
 
@@ -65,7 +55,7 @@ function Header() {
 
   const logOut = () => {
     deleteCookie("token");
-    toast.warn("Đăng xuất thành công", {
+    toast.warn("Log out successful", {
       position: "top-center",
       autoClose: 1500,
       hideProgressBar: false,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { json, useNavigate } from "react-router-dom";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
@@ -9,6 +9,20 @@ import { ToastContainer, toast } from "react-toastify";
 function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      navigate("/profile");
+    }
+  }, []);
 
   const handleOTP = async (e) => {
     e.preventDefault();

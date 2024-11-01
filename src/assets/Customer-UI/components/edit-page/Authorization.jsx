@@ -37,6 +37,8 @@ function Authorization({ userData, refreshToken, callApi }) {
     setUserName(userData.username);
   }, [userData, form]);
 
+  console.log(userData.username);
+
   useEffect(() => {
     const getToken = getCookieValue("token");
     if (!getToken) {
@@ -224,6 +226,8 @@ function Authorization({ userData, refreshToken, callApi }) {
     }
   };
 
+  console.log(userName);
+
   return (
     <div
       style={{
@@ -246,7 +250,14 @@ function Authorization({ userData, refreshToken, callApi }) {
         Edit Your Authorization
       </h2>
 
-      <Form form={form} onFinish={onFinish} layout="vertical">
+      <Form
+        form={form}
+        onFinish={onFinish}
+        layout="vertical"
+        initialValues={{
+          userName: userName || "", // Đặt giá trị mặc định cho userName ở đây
+        }}
+      >
         {/* UserName Section */}
 
         <Form.Item
@@ -259,11 +270,7 @@ function Authorization({ userData, refreshToken, callApi }) {
             },
           ]}
         >
-          <Input
-            placeholder="UserName"
-            disabled
-            defaultValue={userName || ""}
-          />
+          <Input disabled />
         </Form.Item>
 
         <Form.Item
@@ -331,7 +338,7 @@ function Authorization({ userData, refreshToken, callApi }) {
           label="OTP for phone"
           rules={[{ required: true, message: "OTP is required" }]}
         >
-          <Input
+          <Input.OTP
             placeholder="OTP"
             onChange={(e) => setOtpForPhone(e.target.value)}
           />

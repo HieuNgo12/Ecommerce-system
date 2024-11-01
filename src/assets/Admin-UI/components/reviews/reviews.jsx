@@ -15,225 +15,223 @@ import {
 } from "react-router-dom";
 
 const Review = () => {
-  const { dataReview, dataUserName, dataProduct } = useAdminContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataChanged, setDataChanged] = useState(dataReview);
-  const [selected, setSelected] = useState();
+  // const { dataReview, dataUserName, dataProduct } = useAdminContext();
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [dataChanged, setDataChanged] = useState(dataReview);
+  // const [selected, setSelected] = useState();
 
-  useEffect(() => {
-    const newDataChanged1 = dataReview.map((item) => {
-      const loop1 = dataUserName.find((item1) => {
-        return parseInt(item1.id) === item.user;
-      });
-      if (loop1) {
-        return {
-          ...item,
-          status: "Active",
-          username: loop1.username,
-          avatar: loop1.avatar,
-          // createdAt : item.createdAt.slice(0,10)
-        };
-      }
-      return item;
-    });
+  // useEffect(() => {
+  //   const newDataChanged1 = dataReview.map((item) => {
+  //     const loop1 = dataUserName.find((item1) => {
+  //       return parseInt(item1.id) === item.user;
+  //     });
+  //     if (loop1) {
+  //       return {
+  //         ...item,
+  //         status: "Active",
+  //         username: loop1.username,
+  //         avatar: loop1.avatar,
+  //         // createdAt : item.createdAt.slice(0,10)
+  //       };
+  //     }
+  //     return item;
+  //   });
 
-    const newDataChanged2 = newDataChanged1.map((item) => {
-      const loop1 = dataProduct.find((item2) => {
-        return parseInt(item2.id) === item.postID;
-      });
-      if (loop1) {
-        return {
-          ...item,
-          title: loop1.title,
-          imageProduct: loop1.image,
-          imageCustomer: ReviewImg,
-        };
-      }
-      return item;
-    });
+  //   const newDataChanged2 = newDataChanged1.map((item) => {
+  //     const loop1 = dataProduct.find((item2) => {
+  //       return parseInt(item2.id) === item.postID;
+  //     });
+  //     if (loop1) {
+  //       return {
+  //         ...item,
+  //         title: loop1.title,
+  //         imageProduct: loop1.image,
+  //         imageCustomer: ReviewImg,
+  //       };
+  //     }
+  //     return item;
+  //   });
 
-    setDataChanged(newDataChanged2);
-  }, [dataReview]);
+  //   setDataChanged(newDataChanged2);
+  // }, [dataReview]);
 
-  // console.log(dataUserName)
-  // console.log(dataChanged)
-  const filtersID = dataReview.map((item) => ({
-    text: item.id.toString(),
-    value: item.id.toString(),
-  }));
+  // const filtersID = dataReview.map((item) => ({
+  //   text: item.id.toString(),
+  //   value: item.id.toString(),
+  // }));
 
-  const filtersStatus = [
-    { text: "active", value: "active" },
-    { text: "block", value: "block" },
-  ];
+  // const filtersStatus = [
+  //   { text: "active", value: "active" },
+  //   { text: "block", value: "block" },
+  // ];
 
-  const openModal = (xxx) => {
-    setIsModalOpen(true);
-    setSelected(xxx);
-  };
+  // const openModal = (xxx) => {
+  //   setIsModalOpen(true);
+  //   setSelected(xxx);
+  // };
 
-  const setModal = (xxx) => {
-    setIsModalOpen(xxx);
-  };
+  // const setModal = (xxx) => {
+  //   setIsModalOpen(xxx);
+  // };
 
-  const menu = (record) => (
-    <Menu>
-      <Menu.Item key="0">
-        <button onClick={() => openModal(record)}>Edit</button>
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="1">
-        <button>Delete</button>
-      </Menu.Item>
-    </Menu>
-  );
+  // const menu = (record) => (
+  //   <Menu>
+  //     <Menu.Item key="0">
+  //       <button onClick={() => openModal(record)}>Edit</button>
+  //     </Menu.Item>
+  //     <Menu.Divider />
+  //     <Menu.Item key="1">
+  //       <button>Delete</button>
+  //     </Menu.Item>
+  //   </Menu>
+  // );
 
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      fixed: "left",
-      width: 100,
-      filters: filtersID,
-      onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
-      sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
-    },
-    {
-      title: "User ID",
-      key: "user",
-      dataIndex: "user",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => <div style={{ width: 70 }}>{record.user}</div>,
-    },
-    {
-      title: "Username",
-      key: "username",
-      dataIndex: "username",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.username.indexOf(value) === 0,
-      render: (text, record) => (
-        <div style={{ width: 170 }}>{record.username}</div>
-      ),
-    },
-    {
-      title: "Like",
-      dataIndex: "like",
-      key: "like",
-      // width: 100,
-      render: (text, record) => <div style={{ width: 50 }}>{record.like}</div>,
-    },
-    {
-      title: "Comment",
-      dataIndex: "comment",
-      key: "comment",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 250 }}>{record.comment}</div>
-      ),
-    },
-    {
-      title: "Created At",
-      dataIndex: "createdAt",
-      key: "createdAt",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 200 }}>{record.createdAt}</div>
-      ),
-    },
-    {
-      title: "Image",
-      dataIndex: "imageCustomer",
-      key: "imageCustomer",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 100 }}>
-          <img
-            src={record.imageCustomer}
-            alt=""
-            style={{ width: 100, height: 100 }}
-          />
-        </div>
-      ),
-    },
-    {
-      title: "PostID",
-      dataIndex: "postID",
-      key: "postID",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 50 }}>{record.postID}</div>
-      ),
-    },
-    {
-      title: "Title",
-      dataIndex: "title",
-      key: "title",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 250 }}>{record.title}</div>
-      ),
-    },
-    {
-      title: "Image Product",
-      dataIndex: "title",
-      key: "title",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 100 }}>
-          <img
-            src={record.imageProduct}
-            alt=""
-            style={{ width: 100, height: 100 }}
-          />
-        </div>
-      ),
-    },
-    {
-      title: "Reply",
-      key: "reply",
-      dataIndex: "reply",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => <div style={{ width: 50 }}>{record.reply}</div>,
-    },
-    {
-      title: "Status",
-      key: "status",
-      dataIndex: "status",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => (
-        <div style={{ width: 50 }}>{record.status}</div>
-      ),
-    },
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-      render: (text, record) => (
-        <Dropdown overlay={menu(record)} trigger={["click"]}>
-          <a href="#">
-            <Space>
-              Action
-              <DownOutlined />
-            </Space>
-          </a>
-        </Dropdown>
-      ),
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: "ID",
+  //     dataIndex: "id",
+  //     key: "id",
+  //     fixed: "left",
+  //     width: 100,
+  //     filters: filtersID,
+  //     onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
+  //     sorter: (a, b) => a.id - b.id,
+  //     render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+  //   },
+  //   {
+  //     title: "User ID",
+  //     key: "user",
+  //     dataIndex: "user",
+  //     // width: 100,
+  //     filters: filtersStatus,
+  //     onFilter: (value, record) => record.status.indexOf(value) === 0,
+  //     render: (text, record) => <div style={{ width: 70 }}>{record.user}</div>,
+  //   },
+  //   {
+  //     title: "Username",
+  //     key: "username",
+  //     dataIndex: "username",
+  //     // width: 100,
+  //     filters: filtersStatus,
+  //     onFilter: (value, record) => record.username.indexOf(value) === 0,
+  //     render: (text, record) => (
+  //       <div style={{ width: 170 }}>{record.username}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Like",
+  //     dataIndex: "like",
+  //     key: "like",
+  //     // width: 100,
+  //     render: (text, record) => <div style={{ width: 50 }}>{record.like}</div>,
+  //   },
+  //   {
+  //     title: "Comment",
+  //     dataIndex: "comment",
+  //     key: "comment",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 250 }}>{record.comment}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Created At",
+  //     dataIndex: "createdAt",
+  //     key: "createdAt",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 200 }}>{record.createdAt}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Image",
+  //     dataIndex: "imageCustomer",
+  //     key: "imageCustomer",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 100 }}>
+  //         <img
+  //           src={record.imageCustomer}
+  //           alt=""
+  //           style={{ width: 100, height: 100 }}
+  //         />
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     title: "PostID",
+  //     dataIndex: "postID",
+  //     key: "postID",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 50 }}>{record.postID}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Title",
+  //     dataIndex: "title",
+  //     key: "title",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 250 }}>{record.title}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Image Product",
+  //     dataIndex: "title",
+  //     key: "title",
+  //     // width: 100,
+  //     render: (text, record) => (
+  //       <div style={{ width: 100 }}>
+  //         <img
+  //           src={record.imageProduct}
+  //           alt=""
+  //           style={{ width: 100, height: 100 }}
+  //         />
+  //       </div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Reply",
+  //     key: "reply",
+  //     dataIndex: "reply",
+  //     // width: 100,
+  //     filters: filtersStatus,
+  //     onFilter: (value, record) => record.status.indexOf(value) === 0,
+  //     render: (text, record) => <div style={{ width: 50 }}>{record.reply}</div>,
+  //   },
+  //   {
+  //     title: "Status",
+  //     key: "status",
+  //     dataIndex: "status",
+  //     // width: 100,
+  //     filters: filtersStatus,
+  //     onFilter: (value, record) => record.status.indexOf(value) === 0,
+  //     render: (text, record) => (
+  //       <div style={{ width: 50 }}>{record.status}</div>
+  //     ),
+  //   },
+  //   {
+  //     title: "Action",
+  //     key: "operation",
+  //     fixed: "right",
+  //     width: 100,
+  //     render: (text, record) => (
+  //       <Dropdown overlay={menu(record)} trigger={["click"]}>
+  //         <a href="#">
+  //           <Space>
+  //             Action
+  //             <DownOutlined />
+  //           </Space>
+  //         </a>
+  //       </Dropdown>
+  //     ),
+  //   },
+  // ];
 
   return (
     <div>
-      <Table
+      {/* <Table
         columns={columns}
         dataSource={dataChanged}
         rowKey="id"
@@ -242,7 +240,7 @@ const Review = () => {
         sticky
       />
       {isModalOpen && <ModalReview setModal={setModal} selected={selected} />}
-      <ToastContainer />
+      <ToastContainer /> */}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { WishlistContext } from "../../Products/Context/WishlistContext";
 import { NavLink } from "react-router-dom";
@@ -7,11 +7,15 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import TestImg from "../../Admin-UI/components/img/464112140_122128355468442990_2366169051644275698_n.jpg";
+import { ToastContainer, toast } from "react-toastify";
 
 const Navbar = () => {
   const { getWishlistCount } = useContext(WishlistContext);
   const wishlistCount = getWishlistCount();
   const [searchQuery, setSearchQuery] = useState("");
+  const [token, setToken] = useState("");
+  const [dropDown, setDropDown] = useState(false);
 
   const navigate = useNavigate();
 
@@ -25,6 +29,48 @@ const Navbar = () => {
     event.preventDefault(); // Prevent default form submission
     navigate(`/productlist?search=${encodeURIComponent(searchQuery)}`);
   };
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
+
+  const deleteCookie = (name) => {
+    document.cookie =
+      name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  };
+
+  const logOut = () => {
+    deleteCookie("token");
+    toast.warn("Log out successful", {
+      position: "top-center",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      onClose: () => navigate("/login"),
+    });
+  };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    setToken(getToken);
+  }, []);
 
   return (
     <nav className="w-full relative top-0 left-0">
@@ -128,12 +174,50 @@ const Navbar = () => {
                 )}
               </div>
             </NavLink>
-            <NavLink to="/login">
-              <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
-            </NavLink>
+            {token ? (
+              <div
+                className="relative"
+                onMouseEnter={() => setDropDown(true)} // Hiển thị dropdown khi hover vào container
+                onMouseLeave={() => setDropDown(false)} // Ẩn dropdown khi chuột rời khỏi container
+              >
+                <NavLink to="/profile">
+                  <img
+                    src={TestImg}
+                    alt="Account Icon"
+                    className="h-6 w-6 cursor-pointer"
+                  />
+                </NavLink>
+
+                {dropDown && (
+                  <div className="absolute right-0 mt-2 w-28 bg-slate-100 text-white border border-gray-200 rounded shadow-lg z-10 p-2">
+                    {/* Khoảng cách trống phía trên dropdown */}
+                    <div className="h-[30px] w-full absolute top-0 left-0 -translate-y-[70%] bg-transparent"></div>
+
+                    {/* Các liên kết trong dropdown */}
+                    <NavLink
+                      to="/profile"
+                      className="block px-4 py-2 text-left transform -translate-x-[7%] hover:bg-blue-500 text-sm"
+                    >
+                      Profile
+                    </NavLink>
+                    <button
+                      className="w-full text-left px-4 py-2 transform -translate-x-[7%] hover:bg-blue-500 text-sm"
+                      onClick={() => logOut()}
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink to="/login">
+                <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
+              </NavLink>
+            )}
           </div>
         </div>
       </div>
+      {/* <ToastContainer /> */}
     </nav>
   );
 };

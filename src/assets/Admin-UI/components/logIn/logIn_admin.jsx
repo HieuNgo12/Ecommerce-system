@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import userAdmin from "../data/userAdmin.json";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
@@ -7,6 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
 import { jwtDecode } from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 
 function LogIn() {
   // const { dataUserName } = useAdminContext();
@@ -15,7 +16,14 @@ function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  function setCookie(name, value, days) {
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
     let expires = "";
     if (days) {
       const date = new Date();
@@ -23,7 +31,68 @@ function LogIn() {
       expires = "; expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+  };
+
+  const loginGG = async (xxx) => {
+    console.log(xxx);
+    const req1 = await fetch("http://localhost:8080/api/v1/auth/login-by-gg", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${xxx.credential}`,
+      },
+    });
+    const res1 = await req1.json();
+    const accessToken = res1.accessToken;
+    setCookie("token", accessToken, 7);
+
+    const decoded = jwtDecode(accessToken);
+
+    if (req1.status === 400) {
+      toast.warn("Log in failed!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (decoded.role === "admin") {
+      toast.success("Login ADMIN successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => {
+          navigate("/admin");
+        },
+      });
+    }
+
+    if (decoded.role === "user") {
+      toast.success("Login successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => {
+          navigate("/profile");
+        },
+      });
+    }
+  };
 
   const logIn = async (e) => {
     e.preventDefault();
@@ -33,7 +102,6 @@ function LogIn() {
         headers: {
           "Content-Type": "application/json",
         },
-        // credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
@@ -75,7 +143,7 @@ function LogIn() {
         return;
       }
 
-      if (decoded.role === "admin") {
+      if (decoded.role === "admin" || decoded.role === "super") {
         toast.success("Login ADMIN successful!", {
           position: "top-center",
           autoClose: 1500,
@@ -91,7 +159,7 @@ function LogIn() {
         });
       }
 
-      if (decoded.role === "user")
+      if (decoded.role === "user") {
         toast.success("Login successful!", {
           position: "top-center",
           autoClose: 1500,
@@ -105,6 +173,7 @@ function LogIn() {
             navigate("/profile");
           },
         });
+      }
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("Something went wrong, please try again.", {
@@ -123,6 +192,13 @@ function LogIn() {
   const onSwitchToSignUp = () => {
     navigate("/signup");
   };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      navigate("/profile");
+    }
+  }, []);
 
   return (
     <div className="h-screen">
@@ -178,6 +254,16 @@ function LogIn() {
               >
                 Log In
               </button>
+              {/* <button type="button" onClick={() => loginGG()}>
+                Sign in with Google 🚀
+              </button> */}
+              <GoogleLogin
+                onSuccess={(credentialResponse) => loginGG(credentialResponse)}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+                useOneTap
+              />
               <button
                 type="button"
                 className="text-blue-500"

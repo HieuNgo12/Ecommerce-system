@@ -33,6 +33,7 @@ import VerificationEmail from "./assets/Admin-UI/components/verificationEmail/ve
 import ProfilePageBody from "./assets/Customer-UI/components/edit-page/ProfilePageBody";
 import Authorization from "./assets/Customer-UI/components/edit-page/Authorization";
 import ChangePassword from "./assets/Customer-UI/components/edit-page/ChangePassword";
+import Admin from "./assets/Admin-UI/components/admin/admin";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -54,6 +55,11 @@ function App() {
           path: "customers",
           element: <Customers />,
           children: [{ path: "addcustomers", element: <AddCustomers /> }],
+        },
+        {
+          path: "admin",
+          element: <Admin />,
+          children: [{ path: "addAdmin", element: <AddCustomers /> }],
         },
         { path: "rating", element: <Rating /> },
         {

@@ -99,17 +99,22 @@ function ProfilePage() {
               },
             }
           );
-          const res2 = await req3.json();
           if (req3.status === 200) {
+            const res2 = await req3.json();
             setUser(res2);
           }
         }
+      }
+      if(req1.status === 200){
+        const res1 = await req1.json();
+        setUser(res1);
       }
     } catch (error) {
       console.log("error", error);
     }
   };
 
+  console.log(user)
   return (
     <div>
       <Navbar />

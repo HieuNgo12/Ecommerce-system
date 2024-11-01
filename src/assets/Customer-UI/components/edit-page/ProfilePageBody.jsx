@@ -30,6 +30,7 @@ function ProfilePageBody({ userData, refreshToken, callApi }) {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
 
+  console.log(userData)
   useEffect(() => {
     if (!userData || !userData._id) {
       return;
