@@ -54,9 +54,16 @@ function OrderModal() {
     async function getOrder() {
       try {
         const itemsPerPage = 10;
-        const original = await axios.get(`http://localhost:8080/api/v1/order`);
+        const original = await axios.get(
+          `http://localhost:8080/api/v1/order?user=${
+            JSON.parse(localStorage.getItem("user")).email
+          }`
+        );
         const response = await axios.get(
-          `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}`
+          `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}&user=${
+            JSON.parse(localStorage.getItem("user")).email
+          }`,
+          {}
         );
         console.log(original);
         const data = original.data.content;
@@ -265,33 +272,15 @@ function OrderModal() {
           </form>
         </Box>
       </Modal>{" "}
-      <input
-        className="search-order-input"
-        placeholder="Search Order Product Name ..."
-        onChange={(e) => {
-          setSearchProductInput(e.target.value);
-        }}
-      />
-      <button
-        className="bg-blue-500 mb-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-6"
-        onClick={() => {
-          setLoading(true);
-
-          const regex = /[A-Z]/g;
-          let newOrderList = orderList.filter((order) => {
-            console.log(order);
-            return order?.productId?.title.match(regex);
-          });
-          setOrderList(newOrderList);
-          //   console.log(newOrderList);
-        }}
-      >
-        Search
-      </button>
+     
       <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
+              
+            <th scope="col" class="px-6 py-3">
+                Order ID
+              </th>
               <th scope="col" class="px-6 py-3">
                 Image
               </th>
@@ -316,7 +305,13 @@ function OrderModal() {
             {orderList.length
               ? orderList.map((order) => {
                   console.log(order);
-                  return <OrderRow setLoading={setLoading}order={order} setOpen={setOpen} />;
+                  return (
+                    <OrderRow
+                      setLoading={setLoading}
+                      order={order}
+                      setOpen={setOpen}
+                    />
+                  );
                 })
               : null}
           </tbody>

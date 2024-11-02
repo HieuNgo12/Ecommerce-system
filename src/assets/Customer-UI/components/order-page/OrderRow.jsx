@@ -23,6 +23,11 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
           : { backgroundColor: "white" }
       }
     >
+      <td class="px-6 py-4">
+        <div className="update-order" style={{ color: "purple" }}>
+          {order._id}
+        </div>{" "}
+      </td>
       <th
         scope="row"
         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
@@ -89,14 +94,10 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
             className="button-style apply"
             onClick={async () => {
               try {
-
-
                 const data = await axios.get(
                   `http://localhost:8080/api/v1/coupon?couponCodeName=${couponCodeName}&order=${order._id}`
                 );
-                if (data.data) {
-                  setLoading(true);
-                  console.log(data);
+                if (data.data.data.status !== "Used") {
                   toast.success("Apply Coupon Successfully", {
                     position: "top-center",
                     autoClose: 3000,
@@ -107,8 +108,9 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
                     progress: undefined,
                     theme: "light",
                   });
+                  window.location.reload();
                 } else {
-                  toast.error("Fail to Apply Coupon", {
+                  toast.error("Coupon already been used", {
                     position: "top-center",
                     autoClose: 3000,
                     hideProgressBar: false,
@@ -121,6 +123,16 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
                 }
               } catch (e) {
                 console.log(e);
+                toast.error("Fail to Apply Coupon Not Available", {
+                  position: "top-center",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: false,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                });
               }
             }}
           >

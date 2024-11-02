@@ -38,21 +38,21 @@ function PaymentStatusModal({ order, open, setOpen, ...props }) {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Payment Status
           </Typography>
-          <div className="flex">
+         {order?.paymentMethod === "Credit"? <div className="flex">
             <div><b>Payment Card:</b></div>
             <div>{order?.paymentId?.paymentCard}</div>
-          </div>
+          </div>: null}
           <div className="flex">
             <div><b>Payment Method:</b></div>
             <div>{order?.paymentMethod}</div>
           </div>
           <div className="flex">
             <div><b>Payment Due:</b></div>
-            <div>{order?.paymentId?.paymentDue.slice(0,10) + "|" + order?.paymentId?.paymentDue.slice(11,16)}</div>
+            <div>{order?.paymentId?.paymentDue.slice(0,10) + " | " + order?.paymentId?.paymentDue.slice(11,16)}</div>
           </div>
           <div className="flex">
             <div><b>Payment Created At:</b></div>
-            <div>{order?.paymentId?.createdAt.slice(0,10) + "|" +order?.paymentId?.paymentDue.slice(11,16)}</div>
+            <div>{order?.paymentId?.createdAt.slice(0,10) + " | " +order?.paymentId?.paymentDue.slice(11,16)}</div>
           </div>
         </Box>
       </Modal>

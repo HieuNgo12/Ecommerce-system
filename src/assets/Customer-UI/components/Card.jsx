@@ -30,6 +30,7 @@ function Card({
     };
   }, [loading]);
 
+  
   useEffect(() => {
     const timeId = setTimeout(() => {
       setShowSuccessAlert(false);

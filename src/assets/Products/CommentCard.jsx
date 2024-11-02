@@ -29,11 +29,15 @@ function CommentCard() {
   }, []);
   useEffect(() => {
     console.log(reviews);
-    const newReviewList = originalReviewList.filter((review) => {
-      console.log(review);
-      return Number(review.rating) === Number(filterByStar);
-    });
-    setReviews(newReviewList);
+    if (!isNaN(Number(filterByStar))) {
+      const newReviewList = originalReviewList.filter((review) => {
+        return Number(review.rating) === Number(filterByStar);
+      });
+      setReviews(newReviewList);
+    } else {
+      console.log(originalReviewList);
+      setReviews(originalReviewList);
+    }
   }, [filterByStar]);
   return (
     <>
@@ -50,7 +54,7 @@ function CommentCard() {
           <div className=" flex fixed inset-0 z-50 overflow-y-auto overflow-x-hidden ">
             <div className=" relative w-auto my-6  max-w-3xl">
               {/*content*/}
-              <div className="view-comment-box  show-modal border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="view-comment-box  show-modal border-0 rounded-lg shaddow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-blueGray-200 rounded-t ">
                   <h3 className="text-3xl font-semibold ">View comments</h3>
@@ -79,7 +83,9 @@ function CommentCard() {
                       setFilterByStar(Number(e.target.value));
                     }}
                   >
-                    <option selected>Reviews</option>
+                    <option value="all" selected>
+                      Reviews
+                    </option>
                     <option value="1">1 Star</option>
                     <option value="2">2 Star</option>
                     <option value="3">3 Star</option>
@@ -102,7 +108,7 @@ function CommentCard() {
                   >
                     Close
                   </button>
-                  <button
+                  {/* <button
                     className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
                     onClick={async () => {
@@ -110,7 +116,7 @@ function CommentCard() {
                     }}
                   >
                     Save Changes
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

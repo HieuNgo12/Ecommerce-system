@@ -32,7 +32,7 @@ function CommentCardRow({ review, ...props }) {
         <div className="comment-card   ">
           <div className="flex mt-4">
             <div className="ml-6 flex pr-10 ">
-              Annonymous
+              {review?.userId?.firstName || "Annonymous"}
               <Body>
                 <div className="flex">
                   {[...Array(5)].map((star, i) => {

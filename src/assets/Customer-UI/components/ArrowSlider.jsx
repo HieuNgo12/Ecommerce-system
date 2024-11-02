@@ -35,12 +35,13 @@ function CustomArrows({ Products, products, ...props }) {
     
         {products?.length &&
           products.map((item, index) => {
+            console.log(item);
             return (
               <div className="container">
                 <Card
                   orgPrice={item?.originalPrice}
-                  review={Math.ceil(item?.review)}
-                  rating={item?.rating}
+                  review={Math.ceil(item?.rating?.review)}
+                  rating={item?.rating?.rate}
                   img={item?.image}
                   price={item?.price}
                   title={item?.title}

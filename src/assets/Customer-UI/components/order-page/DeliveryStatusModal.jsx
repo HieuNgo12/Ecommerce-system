@@ -55,22 +55,22 @@ function DeliveryStatusModal({ order, open, setOpen, ...props }) {
             <div className="flex grid grid-cols-4 gap-4">
               <div>
                 {order?.deliveryId?.orderPlacedDate.slice(0, 10) +
-                  "|" +
+                  " | " +
                   order?.deliveryId?.orderPlacedDate.slice(11, 16)}
               </div>
               <div>
                 {order?.deliveryId?.orderReceivedDate.slice(0, 10) +
-                  "|" +
+                  " | " +
                   order?.deliveryId?.orderPlacedDate.slice(11, 16)}
               </div>
               <div>
                 {order?.deliveryId?.deliveryDate.slice(0, 10) +
-                  "|" +
+                  " | " +
                   order?.deliveryId?.orderPlacedDate.slice(11, 16)}
               </div>
               <div>
               {order.deliveryId.deliveryStatus === "Cancelled" ? (
-                <div className="font-bold text-yellow-400">Cancelled Date </div>
+                <div className="font-bold text-yellow-400">{order.deliveryId.cancelDate.slice(0,10) + " | " + order.deliveryId.cancelDate.slice(11,16)}</div>
               ) : null}
               </div>
             </div>

@@ -55,7 +55,7 @@ function DeliveryStatusModal({ order, open, setOpen, ...props }) {
               axios.post(`http://localhost:8080/api/v1/order/cancelOrder`, {
                 orderId: order._id,
               });
-              window.location.reload();
+              // window.location.reload();
             }}
           >
             Yes

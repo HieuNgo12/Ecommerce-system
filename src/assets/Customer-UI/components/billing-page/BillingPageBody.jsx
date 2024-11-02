@@ -56,13 +56,13 @@ function ShoppingCartBody() {
       const billingList =
         JSON?.parse(localStorage?.getItem("billingList")) || [];
       for (let i = 0; i < billingList.length; i++) {
-        console.log(billingList[i]);
         let price = 0;
         billingList[i][1].forEach((billing) => {
           price += Number(billing.price);
         });
+        // console.log(JSON.parse(localStorage.getItem("user").email));
         const response = await axios
-          .post("http://localhost:8080/api/v1/order", {
+          .post(`http://localhost:8080/api/v1/order`, {
             headers: { Authorization: `Bearer ${token}` },
 
             body: {
@@ -77,7 +77,7 @@ function ShoppingCartBody() {
               paymentCard: values.cardNumber,
               productName: billingList[i][0],
               quantity: billingList[i][2],
-
+              userEmail: JSON.parse(localStorage.getItem("user")).email,
               amount: price || 0,
             },
           })
@@ -94,9 +94,9 @@ function ShoppingCartBody() {
               theme: "light",
               onClose: () => navigate("/"),
             });
-          }).then(()=> {
-            window.location.href = "/"
-
+          })
+          .then(() => {
+            window.location.href = "/";
           })
           .catch(function (error) {
             console.log(error);
