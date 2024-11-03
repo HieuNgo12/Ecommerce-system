@@ -31,13 +31,7 @@ const AdminProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    callApi();
-  }, []);
 
-  const newPromotion = (xxx) => {
-    setDataPromotion(xxx);
-  };
 
   return (
     <AdminContext.Provider
@@ -46,7 +40,7 @@ const AdminProvider = ({ children }) => {
         dataCart,
         dataReview,
         dataQuotes,
-        newPromotion,
+        // newPromotion,
         dataPromotion,
       }}
     >

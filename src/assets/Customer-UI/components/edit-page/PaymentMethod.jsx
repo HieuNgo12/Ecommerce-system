@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Typography } from "antd";
+import { Form, Input, Button, Typography , Select} from "antd";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { ToastContainer, toast } from "react-toastify";
 
-function Authorization({ userData, refreshToken, callApi }) {
+function PaymentMethod({ userData, refreshToken, callApi }) {
   const [form] = Form.useForm();
   const [token, setToken] = useState("");
   const [phone, setPhone] = useState("");
@@ -239,7 +239,7 @@ function Authorization({ userData, refreshToken, callApi }) {
         level={2}
         style={{ color: "#007BFF", textAlign: "center", marginBottom: "30px" }}
       >
-        My Password
+        Payment Method
       </Typography.Title>
 
       <Form
@@ -247,115 +247,45 @@ function Authorization({ userData, refreshToken, callApi }) {
         onFinish={onFinish}
         layout="vertical"
         initialValues={{
-          userName: userName || "", // Đặt giá trị mặc định cho userName ở đây
+          // paymentMethod: paymentMethod || "", // Đặt giá trị mặc định cho phương thức thanh toán
         }}
       >
-        {/* UserName Section */}
-
+        {/* Payment Method Section */}
         <Form.Item
-          name="userName"
-          label="UserName"
+          name="paymentMethod"
+          label="Select Payment Method"
           rules={[
             {
-              type: "string",
-              message: "UserName is required",
+              required: true,
+              message: "Please select a payment method",
             },
           ]}
         >
-          <Input disabled />
-        </Form.Item>
-
-        <Form.Item
-          name="email"
-          label="Email"
-          rules={[
-            {
-              type: "email",
-              message: "Email is required",
-            },
-          ]}
-        >
-          <Input placeholder="Email" disabled value={email} />
-          {userData?.isEmailVerified ? (
-            <>
-              <small style={{ color: "green" }}>Email verified</small>
-              <p style={{ color: "gray" }}>
-                You cannot change your email once it is verified.
-              </p>
-            </>
-          ) : (
-            <small style={{ color: "red" }}>Email not verified</small>
-          )}
-        </Form.Item>
-
-        {/* Phone Section */}
-        <Form.Item label="Phone Number" required style={{ marginTop: "30px" }}>
-          <PhoneInput
-            country={"vn"}
-            value={phone}
-            onChange={setPhone}
-            inputStyle={{
-              width: "100%",
-              backgroundColor: userData?.isPhoneVerified ? "#f0f0f0" : "white", // Tô xám khi bị khóa
-              color: userData?.isPhoneVerified ? "#888" : "black", // Đổi màu chữ
-            }}
-            disabled={userData?.isPhoneVerified}
-          />
-          {userData?.isPhoneVerified ? (
-            <>
-              <small style={{ color: "green" }}>Phone verified</small>
-              <p style={{ color: "gray" }}>
-                You cannot change your phone number once it is verified.
-              </p>
-            </>
-          ) : (
-            <small style={{ color: "red" }}>Phone not verified</small>
-          )}
+          <Select
+            placeholder="Select a payment method"
+            // onChange={(value) => setPaymentMethod(value)}
+            // value={paymentMethod}
+          >
+            <Select.Option value="Credit Card">Credit Card</Select.Option>
+            <Select.Option value="PayPal">PayPal</Select.Option>
+            <Select.Option value="Bank Transfer">Bank Transfer</Select.Option>
+            <Select.Option value="Cash">Cash</Select.Option>
+          </Select>
         </Form.Item>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button type="primary" style={{ width: "45%" }}>
-            Change phone number
-          </Button>
-          <Button
-            type="primary"
-            style={{ width: "45%", backgroundColor: "#4CAF50" }}
-          >
+          {/* <Button type="primary" style={{ width: "45%" }} onClick={updatePaymentMethod}>
+            Update Payment Method
+          </Button> */}
+          <Button type="default" style={{ width: "45%" }} onClick={() => form.resetFields()}>
             Cancel
           </Button>
         </div>
-
-        <Form.Item
-          name="otp_phone"
-          label="OTP for phone"
-          rules={[{ required: true, message: "OTP is required" }]}
-        >
-          <Input.OTP
-            placeholder="OTP"
-            onChange={(e) => setOtpForPhone(e.target.value)}
-          />
-        </Form.Item>
-
-        {/* Buttons for OTP Phone */}
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Button
-            type="primary"
-            style={{ width: "45%" }}
-            onClick={sentOtpToPhone}
-          >
-            Send OTP
-          </Button>
-          <Button
-            type="primary"
-            style={{ width: "45%", backgroundColor: "#4CAF50" }}
-            onClick={verifyPhone}
-          >
-            Verify Email
-          </Button>
-        </div>
       </Form>
+
+      <ToastContainer />
     </div>
   );
 }
 
-export default Authorization;
+export default PaymentMethod;

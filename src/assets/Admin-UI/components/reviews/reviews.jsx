@@ -1,79 +1,183 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Modal, Dropdown, Menu, Space } from "antd";
 import ModalReview from "./modatalReview";
-import { DownOutlined, EyeOutlined } from "@ant-design/icons";
-import { AdminProvider, useAdminContext } from "../../AdminContext";
-import "react-toastify/dist/ReactToastify.css";
+import { DownOutlined } from "@ant-design/icons";
 import { ToastContainer, toast } from "react-toastify";
-import ReviewImg from "../img/review.png";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 const Review = () => {
-  const { dataReview, dataUserName, dataProduct } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dataChanged, setDataChanged] = useState(dataReview);
-  const [selected, setSelected] = useState();
+  const [selected, setSelected] = useState("");
+  const [token, setToken] = useState("");
+  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    const newDataChanged1 = dataReview.map((item) => {
-      const loop1 = dataUserName.find((item1) => {
-        return parseInt(item1.id) === item.user;
-      });
-      if (loop1) {
-        return {
-          ...item,
-          status: "Active",
-          username: loop1.username,
-          avatar: loop1.avatar,
-          // createdAt : item.createdAt.slice(0,10)
-        };
-      }
-      return item;
-    });
-
-    const newDataChanged2 = newDataChanged1.map((item) => {
-      const loop1 = dataProduct.find((item2) => {
-        return parseInt(item2.id) === item.postID;
-      });
-      if (loop1) {
-        return {
-          ...item,
-          title: loop1.title,
-          imageProduct: loop1.image,
-          imageCustomer: ReviewImg,
-        };
-      }
-      return item;
-    });
-
-    setDataChanged(newDataChanged2);
-  }, [dataReview]);
-
-  // console.log(dataUserName)
-  // console.log(dataChanged)
-  const filtersID = dataReview.map((item) => ({
-    text: item.id.toString(),
-    value: item.id.toString(),
-  }));
-
-  const filtersStatus = [
-    { text: "active", value: "active" },
-    { text: "block", value: "block" },
-  ];
-
-  const openModal = (xxx) => {
-    setIsModalOpen(true);
-    setSelected(xxx);
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
   };
 
-  const setModal = (xxx) => {
-    setIsModalOpen(xxx);
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      setToken(getToken);
+    } else {
+      toast.warn("Please log in first!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
+
+  const callApi = async () => {
+    try {
+      const req = await fetch("http://localhost:8080/api/v1/getReviews", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const res = await req.json();
+      setData(res.data); // Set fetched data to the state
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const callRefreshToken = async (xxx) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${xxx}`,
+          },
+        }
+      );
+      const res = await req.json();
+      const newToken = res.accessToken;
+      return newToken;
+    } catch (err) {
+      console.log("error", err);
+      return null;
+    }
+  };
+
+  const deleteReview = async (xxx) => {
+    try {
+      const req1 = await fetch(`http://localhost:8080/api/v1/reviews/${xxx._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
+      if (req1.status === 403) {
+        const res2 = await callRefreshToken(token);
+        setToken(res2);
+        setCookie("token", res2, 7);
+        const req3 = await fetch(
+          `http://localhost:8080/api/v1/update-reviews/${xxx._id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${res2}`,
+            },
+          }
+        );
+        if (req3.status === 200) {
+          callApi();
+          toast.success("Delete Review successful!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            onClose: () => setModal(false),
+          });
+        } else {
+          const res3 = await req3.json();
+          toast.warn(res3.message, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      }
+      if (req1.status === 200) {
+        toast.success("Delete Review successful!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => setModal(false),
+        });
+        callApi();
+      } else {
+        const res3 = await req1.json();
+        toast.warn(res3.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } catch (error) {
+      toast.error("Failed to delete review.", {
+        autoClose: 1500,
+      });
+    }
+  };
+
+  const openModal = (record) => {
+    setIsModalOpen(true);
+    setSelected(record);
+  };
+
+  const setModal = (value) => {
+    setIsModalOpen(value);
   };
 
   const menu = (record) => (
@@ -83,135 +187,106 @@ const Review = () => {
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="1">
-        <button>Delete</button>
+        <button onClick={() => deleteReview(record)}>Delete</button>
       </Menu.Item>
     </Menu>
   );
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "Reviews ID",
+      dataIndex: "_id",
+      key: "_id",
       fixed: "left",
       width: 100,
-      filters: filtersID,
-      onFilter: (value, record) => record.id.toString().indexOf(value) === 0,
-      sorter: (a, b) => a.id - b.id,
-      render: (text, record) => <div style={{ width: 50 }}>{record.id}</div>,
+      render: (text) => <div>{text}</div>,
     },
     {
-      title: "User ID",
-      key: "user",
-      dataIndex: "user",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => <div style={{ width: 70 }}>{record.user}</div>,
+      title: "User Email",
+      dataIndex: ["userId", "email"],
+      key: "email",
+      // width: 200,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Username",
+      dataIndex: ["userId", "username"],
       key: "username",
-      dataIndex: "username",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.username.indexOf(value) === 0,
-      render: (text, record) => (
-        <div style={{ width: 170 }}>{record.username}</div>
-      ),
-    },
-    {
-      title: "Like",
-      dataIndex: "like",
-      key: "like",
-      // width: 100,
-      render: (text, record) => <div style={{ width: 50 }}>{record.like}</div>,
+      // width: 150,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Comment",
       dataIndex: "comment",
       key: "comment",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 250 }}>{record.comment}</div>
-      ),
+      // width: 250,
+      render: (text) => <div>{text}</div>,
+    },
+    {
+      title: "Rating",
+      dataIndex: "rating",
+      key: "rating",
+      width: 80,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 200 }}>{record.createdAt}</div>
-      ),
+      // width: 200,
+      render: (text) => <div>{new Date(text).toLocaleString()}</div>,
     },
     {
       title: "Image",
-      dataIndex: "imageCustomer",
-      key: "imageCustomer",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 100 }}>
+      dataIndex: "image",
+      key: "image",
+      width: 100,
+      render: (text) => (
+        <div>
           <img
-            src={record.imageCustomer}
-            alt=""
+            src={text}
+            alt="User review"
             style={{ width: 100, height: 100 }}
           />
         </div>
       ),
     },
     {
-      title: "PostID",
-      dataIndex: "postID",
-      key: "postID",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 50 }}>{record.postID}</div>
-      ),
-    },
-    {
-      title: "Title",
+      title: "Product Title",
       dataIndex: "title",
       key: "title",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 250 }}>{record.title}</div>
-      ),
+      // width: 250,
+      render: (text, record) => <div>{record.productId.title}</div>,
     },
     {
-      title: "Image Product",
-      dataIndex: "title",
-      key: "title",
-      // width: 100,
-      render: (text, record) => (
-        <div style={{ width: 100 }}>
-          <img
-            src={record.imageProduct}
-            alt=""
-            style={{ width: 100, height: 100 }}
-          />
-        </div>
-      ),
+      title: "Admin ID",
+      dataIndex: "adminId",
+      key: "adminId",
+      // width: 250,
+      render: (text, record) => <div>{record.reply.adminId}</div>,
     },
     {
-      title: "Reply",
-      key: "reply",
-      dataIndex: "reply",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => <div style={{ width: 50 }}>{record.reply}</div>,
+      title: "Text",
+      dataIndex: "text",
+      key: "text",
+      // width: 250,
+      render: (text, record) => <div>{record.reply.text}</div>,
+    },
+    {
+      title: "Status Reply",
+      dataIndex: "statusReply",
+      key: "statusReply",
+      // width: 250,
+      render: (_, record) => (
+        <div>{record.reply.statusReply === true ? "Yes" : "No"}</div>
+      ),
     },
     {
       title: "Status",
-      key: "status",
       dataIndex: "status",
-      // width: 100,
-      filters: filtersStatus,
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      render: (text, record) => (
-        <div style={{ width: 50 }}>{record.status}</div>
-      ),
+      key: "status",
+      // width: 250,
+      render: (text) => <div>{text}</div>,
     },
     {
       title: "Action",
@@ -235,13 +310,22 @@ const Review = () => {
     <div>
       <Table
         columns={columns}
-        dataSource={dataChanged}
-        rowKey="id"
+        dataSource={data}
+        rowKey="_id"
         scroll={{ x: true, y: 950 }}
-        // style={{ maxWidth: 1080}}
         sticky
       />
-      {isModalOpen && <ModalReview setModal={setModal} selected={selected} />}
+      {isModalOpen && (
+        <ModalReview
+          setModal={setModal}
+          selected={selected}
+          token={token}
+          setToken={setToken}
+          setCookie={setCookie}
+          callRefreshToken={callRefreshToken}
+          callApi={callApi}
+        />
+      )}
       <ToastContainer />
     </div>
   );

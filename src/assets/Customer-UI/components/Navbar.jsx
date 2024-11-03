@@ -7,6 +7,7 @@ import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlin
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import TestImg from "../../Admin-UI/components/img/464112140_122128355468442990_2366169051644275698_n.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
 
@@ -180,7 +181,7 @@ const Navbar = () => {
               >
                 <NavLink to="/profile">
                   <img
-                    src={""}
+                    src={TestImg}
                     alt="Account Icon"
                     className="h-6 w-6 cursor-pointer"
                   />

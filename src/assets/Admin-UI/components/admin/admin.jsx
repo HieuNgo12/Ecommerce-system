@@ -5,12 +5,12 @@ import {
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { Table, Dropdown, Menu, Space } from "antd";
-import ModalCustomer from "./modalCustomer";
+import ModalAdmin from "./modalAdmin.jsx";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
-const Customers = () => {
+const Admin = () => {
   const [modal, setModal] = useState(false);
   const [selected, setSelected] = useState("");
   const [token, setToken] = useState("");
@@ -82,7 +82,7 @@ const Customers = () => {
 
   const callApi = async () => {
     try {
-      let req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
+      let req = await fetch("http://localhost:8080/api/v1/admin/get-admin-users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const Customers = () => {
         setCookie("token", refreshToken, 7);
         const newtoken = refreshToken;
 
-        req = await fetch("http://localhost:8080/api/v1/admin/get-users", {
+        req = await fetch("http://localhost:8080/api/v1/admin/get-admin-users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -491,7 +491,7 @@ const Customers = () => {
         sticky
       />
       {modal && (
-        <ModalCustomer
+        <ModalAdmin
           setModal={setModal}
           selected={selected}
           callApi={callApi}
@@ -506,4 +506,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default Admin;

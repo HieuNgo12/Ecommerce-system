@@ -1,100 +1,40 @@
-import React, { useContext, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { AdminProvider, useAdminContext } from "../../AdminContext";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useState, useEffect } from "react";
+import { Form, Input, Button, Select, DatePicker, Row, Col } from "antd";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import Password from "antd/es/input/Password";
+import "react-toastify/dist/ReactToastify.css";
+import PhoneInput from "react-phone-input-2";
+import moment from "moment";
+
+const { Option } = Select;
 
 const AddCustomers = () => {
-  // const { callApi,  } = useAdminContext();
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [newImage, setNewImage] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [phone, setPhone] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [number, setNumber] = useState("");
-  const [street, setStreet] = useState("");
-  const [city, setCity] = useState("");
-  const [gender, setGender] = useState("");
-
+  const [token, setToken] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [image, setImage] = useState("");
   const navigate = useNavigate();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewImage(file);
-    }
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
   };
 
-  const createNewProduct = async () => {
-    try {
-      const req1 = await fetch("http://localhost:8080/api/v1/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          username: username,
-          password: password,
-          confirm: confirmPass,
-        }),
-      });
-      const res1 = await req1.json();
-      const userId = res1.data._id;
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
 
-      const formData = new FormData();
-
-      if (newImage) {
-        formData.append("file", newImage); // Thêm tệp vào FormData
-      }
-      formData.append("userId", userId);
-
-      const req2 = await fetch(
-        `http://localhost:8080/api/v1/admin/single-upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const res2 = await req2.json();
-      console.log(res2);
-
-      const req3 = await fetch(
-        `http://localhost:8080/api/v1/admin/update-profile/${userId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            avatar: res2.secure_url,
-          }),
-        }
-      );
-
-      const res3 = await req3.json();
-      console.log(res3);
-      toast.success("Create Account successful!", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        onClose: () => navigate("/admin/customers"),
-      });
-    } catch (error) {
-      console.error("Error : ", error);
-      toast.error("Something went wrong, please try again.", {
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (!getToken) {
+      toast.warn("Please log in first!", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: false,
@@ -104,162 +44,262 @@ const AddCustomers = () => {
         progress: undefined,
         theme: "light",
       });
+    } else {
+      setToken(getToken);
+    }
+  }, []);
+
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
+  const currentDate = new Date();
+  const onFinish = async (values) => {
+    const toastId = toast.loading("Creating...");
+    try {
+      const formData = new FormData();
+      formData.append("file", image); // Thêm tệp vào FormData
+      formData.append("email", values.email);
+      formData.append("username", values.username);
+      formData.append("password", values.password);
+      formData.append("confirm", values.confirm);
+      formData.append("phone", values.phone ? values.phone : "");
+      formData.append("firstName", values.firstName ? values.firstName : "");
+      formData.append("lastName", values.lastName ? values.lastName : "");
+      formData.append("zipcode", values.zipcode ? values.zipcode : "");
+      formData.append("idCard", values.idCard ? values.idCard : "");
+      formData.append("city", values.city);
+      formData.append("district", values.district);
+      formData.append("ward", values.ward);
+      formData.append("number", values.number);
+      formData.append("gender", values.gender ? values.gender : true);
+      formData.append("dateOfBirth", dateOfBirth ? dateOfBirth : currentDate);
+
+      const req1 = await fetch("http://localhost:8080/api/v1/admin/signup", {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      if (req1.status === 403) {
+        const req2 = await fetch(
+          "http://localhost:8080/api/v1/auth/refresh-token",
+          {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const res2 = await req2.json();
+        const newToken = res2.accessToken;
+        setCookie("token", newToken, 7);
+        setToken(newToken);
+        const req3 = await fetch("http://localhost:8080/api/v1/admin/signup", {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${newToken}`,
+          },
+          body: formData,
+        });
+        if (req3.status === 201) {
+          toast.update(toastId, {
+            render: "Create Account successful!",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+            onClose: () => navigate("/admin/customers"),
+          });
+        }
+        if (req3.status === 400) {
+          const res3 = await req3.json();
+          toast.update(toastId, {
+            render: res3.message,
+            type: "warning",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        }
+      }
+      if (req1.status === 400) {
+        const res3 = await req1.json();
+        toast.update(toastId, {
+          render: res3.message,
+          type: "warning",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
+      if (req1.status === 201) {
+        toast.update(toastId, {
+          render: "Create Account successful!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+          onClose: () => navigate("/admin/customers"),
+        });
+      }
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Something went wrong, please try again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Add Customers</h1>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Email *</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">User Name *</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Password *</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Confirm Password *</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="password"
-            value={confirmPass}
-            onChange={(e) => setConfirmPass(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Gender</label>
-          <select
-            className="w-full p-2 border rounded"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-          >
-            <option value="Man">Man</option>
-            <option value="Woman">Woman</option>
-          </select>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">BirthDay</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="date"
-            value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Phone</label>
-          <div>
-            <input
-              className="w-full p-2 border rounded"
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Zipcode</label>
-          <div>
-            <input
-              className="w-full p-2 border rounded"
-              type="text"
-              value={zipcode}
-              onChange={(e) => setZipcode(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">First Name</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">First Name</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Address Number</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Address Street</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={street}
-            onChange={(e) => setStreet(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Address City</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Images</label>
-          <div className="flex gap-3">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-28 p-2 border rounded bg-gray-200"
-            />
-            <input
-              type="text"
-              value={newImage.name}
-              disabled
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12">
-          <button
-            className="w-full p-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-            onClick={createNewProduct}
-          >
+      <Form layout="vertical" onFinish={onFinish}>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[{ required: true, message: "Please input your email!" }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Username"
+              name="username"
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Confirm Password"
+              name="confirm"
+              rules={[
+                { required: true, message: "Please confirm your password!" },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Gender" name="gender">
+              <Select>
+                <Option value={true}>Man</Option>
+                <Option value={false}>Woman</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Date Of Birth" name="dateOfBirth">
+              <DatePicker
+                style={{ width: "100%" }}
+                onChange={(date, dateString) => setDateOfBirth(dateString)}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Phone" name="phone">
+              <PhoneInput inputStyle={{ width: "100%" }} country={"vn"} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Zipcode" name="zipcode">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="First Name" name="firstname">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Last Name" name="lastname">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Address Number" name="number">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Address Ward" name="ward">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Address District" name="district">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Address City" name="city">
+              <Input />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="ID Card" name="idCard">
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Images"
+              name="newImage"
+              valuePropName="file"
+              onChange={handleUpload}
+            >
+              <Input type="file" accept="image/*" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
             Save Account
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Form.Item>
+      </Form>
       <ToastContainer />
     </div>
   );

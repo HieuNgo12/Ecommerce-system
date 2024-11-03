@@ -1,27 +1,27 @@
-import React, { useContext, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { AdminProvider, useAdminContext } from "../../AdminContext";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Upload,
+  InputNumber,
+  message,
+  Col,
+  Row,
+} from "antd";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { UploadOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
 
 const AddProduct = () => {
-  const { callApi } = useAdminContext();
-  const [newCategory, setNewCategory] = useState("");
-  const [newTitle, setNewTitle] = useState("");
-  const [newStatus, setNewStatus] = useState("available");
-  const [newPrice, setNewPrice] = useState("");
-  const [newImage, setNewImage] = useState("");
-  const [sku, setSku] = useState("");
-  const [slug, setSlug] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [color, setColor] = useState("");
-  const [brand, setNewBrand] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [tags, setTags] = useState("");
-  const [classify, setClassify] = useState("");
-  const [size, setSize] = useState("");
-  const [arrMoreColor, setArrMoreColor] = useState([]);
+  const [form] = Form.useForm();
   const [selectedColor, setSelectedColor] = useState(null);
+  const [newImage, setNewImage] = useState("");
+  const [token, setToken] = useState("");
   const navigate = useNavigate();
 
   const colors = [
@@ -31,147 +31,148 @@ const AddProduct = () => {
     "blue-500",
     "black",
     "red-500",
-    "gray-500",
-    "sky-500",
-    "rose-500",
-    "cyan-500",
-    "violet-500",
   ];
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
 
-  const sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-  const choiceCategory = (e) => {
-    setNewCategory(e.target.value);
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (!getToken) {
+      toast.error("Please log in again.", {
+        position: "top-center",
+        autoClose: 1500,
+      });
+    } else {
+      setToken(getToken);
+    }
+  }, []);
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
   };
 
   const handleColorClick = (color) => {
     setSelectedColor(color);
   };
 
-  const addMoreColor = () => {
-    const newColor = { color: "tam" };
-    const newArrColor = [...arrMoreColor, newColor];
-    setArrMoreColor(newArrColor);
+  const handleImageChange = ({ file }) => {
+    setNewImage(file);
   };
 
-  const deleteColor = (index) => {
-    const delArrColor = [...arrMoreColor];
-    delArrColor.splice(index, 1);
-    setArrMoreColor(delArrColor);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setNewImage(file);
+  const callRefreshToken = async (xxx) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${xxx}`,
+          },
+        }
+      );
+      const res = await req.json();
+      const newToken = res.accessToken;
+      console.log(newToken);
+      return newToken;
+    } catch (err) {
+      console.log("error", err);
+      return null;
     }
   };
 
-  const createNewProduct = async () => {
+  const onFinish = async (values) => {
+    const toastId = toast.loading("Creating...");
     try {
-      //B1 tạo sp mới
+      const formData = new FormData();
+      formData.append("file", newImage ? newImage : "");
+      formData.append("category", values.category);
+      formData.append("title", values.title);
+      formData.append("status", values.status ? values.status : "available");
+      formData.append("price", values.price ? values.price : 0);
+      formData.append("quantity", values.quantity ? values.quantity : 0);
+      formData.append("slug", values.slug);
+      formData.append("sku", values.sku);
+      formData.append("description", values.description);
+      formData.append("size", values.size);
+      formData.append("tags", values.tags);
+      formData.append("color", selectedColor);
+
       const req1 = await fetch(
         "http://localhost:8080/api/v1/products/add-product",
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: newTitle,
-            status: newStatus,
-            price: newPrice,
-            slug: slug,
-            category: newCategory,
-            description: newDescription,
-            brand: brand,
-            tags: tags,
-            sku: sku,
-            color: selectedColor,
-            quantity: quantity,
-          }),
-        }
-      );
-      const res1 = await req1.json();
-      const productId = res1.data._id;
-
-      if (req1.status === "200") {
-        toast.success(res1.message, {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          // onClose: () => navigate("/products"),
-        });
-      } else {
-        toast.warn(res1.message, {
-          position: "top-center",
-          autoClose: 1500,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        return;
-      }
-
-      //B2 tạo hình mới
-      const formData = new FormData();
-      formData.append("file", newImage); // Thêm tệp vào FormData
-      formData.append("productId", productId);
-
-      const req2 = await fetch(
-        "http://localhost:8080/api/v1/products/single-upload",
-        {
-          method: "POST",
+          headers: { authorization: `Bearer ${token}` },
           body: formData,
         }
       );
-
-      const res2 = await req2.json();
-
-      if (!res2.public_id) {
-        throw new Error("Image upload failed");
-      }
-
-      // const imagePublicId = json2.public_id;
-      const imageUrl = res2.secure_url;
-      console.log(imageUrl);
-
-      //B3 cập nhật lại hình vào sản phẩm
-      const req3 = await fetch(
-        `http://localhost:8080/api/v1/products/update-product/${productId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            image: imageUrl,
-          }),
+      if (req1.status === 403) {
+        const newToken = await callRefreshToken(token);
+        console.log(newToken);
+        if (!newToken) throw new Error("Log in first!");
+        setToken(newToken);
+        setCookie("token", newToken, 7);
+        const req2 = await fetch(
+          "http://localhost:8080/api/v1/products/add-product",
+          {
+            method: "POST",
+            headers: { authorization: `Bearer ${newToken}` },
+            body: formData,
+          }
+        );
+        if (req2.status === 200) {
+          toast.update(toastId, {
+            render: "Updated successful!",
+            type: "success",
+            isLoading: false,
+            autoClose: 3000,
+            onClose: () => navigate("/admin/products"),
+          });
         }
-      );
-
-      const res3 = req3.json();
-      console.log(res3);
-
-      callApi();
+        if (req2.status === 400) {
+          const res2 = await req2.json();
+          toast.update(toastId, {
+            render: res2,
+            type: "warning",
+            isLoading: false,
+            autoClose: 3000,
+          });
+        }
+      }
+      if (req1.status === 200) {
+        toast.update(toastId, {
+          render: "Updated successful!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+          onClose: () => navigate("/admin/products"),
+        });
+      }
+      if (req1.status === 400) {
+        const res2 = await req1.json();
+        toast.update(toastId, {
+          render: res2,
+          type: "warning",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
     } catch (error) {
-      console.error("Error : ", error);
       toast.error("Something went wrong, please try again.", {
         position: "top-center",
         autoClose: 1500,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
       });
     }
   };
@@ -179,255 +180,151 @@ const AddProduct = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Add Product</h1>
-      <label>Category : </label>
-      <select value={newCategory} onChange={choiceCategory}>
-        <option></option>
-        <option value="men's clothing">Men's clothing</option>
-        <option value="women's clothing">Women's clothing</option>
-        <option value="electronics">Electronics</option>
-        <option value="jewelery">Jewelery</option>
-        <option value="toy">Toy</option>
-      </select>
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Title</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Status</label>
-          <select
-            className="w-full p-2 border rounded"
-            value={newStatus}
-            onChange={(e) => setNewStatus(e.target.value)}
-          >
-            <option value="available">Available</option>
-            <option value="out_of_stock">Out of Stock</option>
-            <option value="discontinued">Discontinued</option>
-            <option value="pre_order">Pre Order</option>
-          </select>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Price</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="number"
-            value={newPrice < 0 ? 0 : newPrice}
-            onChange={(e) => setNewPrice(e.target.value)}
-            min={0}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Slug</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Category</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={newCategory}
-            disabled
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Classify</label>
-          <select
-            className="w-full p-2 border rounded"
-            value={classify}
-            onChange={(e) => setClassify(e.target.value)}
-          >
-            <option value="T-Shirt">T-Shirt</option>
-            <option value="trousers">Trousers</option>
-            <option value="jeans">Jeans</option>
-            <option value="Dress">Dress</option>
-          </select>
-        </div>
-
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Description</label>
-          <textarea
-            className="w-full p-2 border rounded"
-            value={newDescription}
-            onChange={(e) => setNewDescription(e.target.value)}
-          ></textarea>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Brand</label>
-          <div>
-            <input
-              className="w-full p-2 border rounded"
-              type="text"
-              value={brand}
-              onChange={(e) => setNewBrand(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Tags</label>
-          <div>
-            <input
-              className="w-full p-2 border rounded"
-              type="text"
-              value={tags}
-              onChange={(e) => setTags(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">SKU</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={`/${sku}`}
-            onChange={(e) => setSku(e.target.value.slice(1))}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Colors</label>
-          <div className="flex">
-            {colors.map((color) => (
-              <div
-                key={color}
-                className={`w-8 h-8 mr-2 bg-${color} rounded-full cursor-pointer ${
-                  selectedColor === color
-                    ? "transform scale-110 border-4 border-black"
-                    : ""
-                }`}
-                onClick={() => handleColorClick(color)}
-              ></div>
-            ))}
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Size</label>
-          <input
-            className="w-full p-2 border rounded"
-            type="text"
-            value={size}
-            onChange={(e) => setSize(e.target.value)}
-          />
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <label className="block mb-2">Images</label>
-          <div className="flex gap-3">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="w-28 p-2 border rounded bg-gray-200"
-            />
-            <input
-              type="text"
-              value={newImage.name}
-              disabled
-              className="w-full p-2 border rounded"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-6">
-          <div className="col-span-12 md:col-span-6">
-            <label className="block mb-2">Quantity</label>
-            <input
-              className="w-full p-2 border rounded"
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              min={0}
-            />
-          </div>
-          <div className="col-span-12 ">
-            <button
-              className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-400"
-              onClick={addMoreColor}
+      <Form layout="vertical" form={form} onFinish={onFinish}>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Category"
+              name="category"
+              rules={[{ required: true, message: "Please select a category!" }]}
             >
-              Add more color
-            </button>
-          </div>
-        </div>
-        {arrMoreColor.map((item, index) => (
-          <React.Fragment key={index}>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">SKU</label>
-              <input
-                className="w-full p-2 border rounded"
-                type="text"
-                value={`/${sku}`}
-                onChange={(e) => setSku(e.target.value.slice(1))}
-                disabled
-              />
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Colors</label>
+              <Select placeholder="Select a category">
+                <Option value="men's clothing">Men's Clothing</Option>
+                <Option value="women's clothing">Women's Clothing</Option>
+                <Option value="electronics">Electronics</Option>
+                <Option value="jewelery">Jewelery</Option>
+                <Option value="toy">Toy</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Title"
+              name="title"
+              rules={[{ required: true, message: "Please enter a title!" }]}
+            >
+              <Input placeholder="Product title" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Status" name="status" initialValue="available">
+              <Select>
+                <Option value="available">Available</Option>
+                <Option value="out_of_stock">Out of Stock</Option>
+                <Option value="discontinued">Discontinued</Option>
+                <Option value="pre_order">Pre Order</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Price"
+              name="price"
+              rules={[{ required: true, message: "Please enter a price!" }]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} type="number" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Slug"
+              name="slug"
+              rules={[{ required: true, message: "Please enter a slug!" }]}
+            >
+              <Input placeholder="Product slug" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Brand" name="brand">
+              <Input placeholder="Brand" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="SKU" name="sku">
+              <Input placeholder="SKU" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Quantity" name="quantity">
+              <InputNumber min={0} style={{ width: "100%" }} />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Color">
               <div className="flex">
                 {colors.map((color) => (
                   <div
                     key={color}
-                    className={`w-8 h-8 mr-2 bg-${color}-500 rounded-full cursor-pointer`}
-                    onClick={() => setColor(color)}
+                    className={`w-8 h-8 mr-2 bg-${color} rounded-full cursor-pointer ${
+                      selectedColor === color ? "border-2 border-black" : ""
+                    }`}
+                    onClick={() => handleColorClick(color)}
                   ></div>
                 ))}
               </div>
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Size</label>
-              <div className="flex justify-between">
-                <button
-                  key={size}
-                  className="w-16 h-8 border rounded"
-                  onClick={() => setSize(size)}
-                >
-                  {size}
-                </button>
-              </div>
-            </div>
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Size" name="size">
+              <Select placeholder="Select a size">
+                {sizes.map((size) => (
+                  <Option key={size} value={size}>
+                    {size}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
 
-            <div className="col-span-12 md:col-span-6">
-              <label className="block mb-2">Images</label>
-              <div className="flex gap-3">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-28 p-2 border rounded bg-gray-200"
-                />
-                <input
-                  type="text"
-                  value={newImage.name}
-                  disabled
-                  className="w-full p-2 border rounded"
-                />
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-6">
-              <div className="flex justify-between"></div>
-              <button
-                className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-400"
-                onClick={() => deleteColor(index)}
-              >
-                Delete color
-              </button>
-            </div>
-          </React.Fragment>
-        ))}
-        <div className="col-span-12">
-          <button
-            className="w-full p-2 bg-gray-800 text-white rounded hover:bg-gray-700"
-            onClick={createNewProduct}
-          >
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="Tags" name="tags">
+              <Input placeholder="Tags" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Images" name="images" valuePropName="file">
+              <Upload beforeUpload={() => false} onChange={handleImageChange}>
+                <Button icon={<UploadOutlined />}>Upload Image</Button>
+              </Upload>
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={16}>
+          <Col span={24}>
+            <Form.Item
+              label="Description"
+              name="description"
+              rules={[
+                { required: true, message: "Please enter a description!" },
+              ]}
+            >
+              <Input.TextArea rows={3} placeholder="Product description" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block>
             Save Product
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Form.Item>
+      </Form>
+
       <ToastContainer />
     </div>
   );

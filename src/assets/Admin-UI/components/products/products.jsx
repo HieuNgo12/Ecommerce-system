@@ -15,14 +15,76 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
 
 const Products = () => {
-  // const { dataProduct, callApi } = useAdminContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState();
   const [dataProduct, setDataProduct] = useState([]);
+  const [token, setToken] = useState("");
 
   const openModal = (product) => {
     setIsModalOpen(true);
     setSelectedProduct(product);
+  };
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (!getToken) {
+      toast.warn("Please log in first!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      setToken(getToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
+
+  const callRefreshToken = async (xxx) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${xxx}`,
+          },
+        }
+      );
+      const res = await req.json();
+      const newToken = res.accessToken;
+      return newToken;
+    } catch (err) {
+      console.log("error", err);
+      return null;
+    }
   };
 
   const callApi = async () => {
@@ -30,16 +92,11 @@ const Products = () => {
       const req = await fetch("http://localhost:8080/api/v1/products");
       const res = await req.json();
       const result = res.data;
-      setDataProduct(result)
-    }
-    catch (error) {
+      setDataProduct(result);
+    } catch (error) {
       console.error("error", error);
     }
   };
-
-  useEffect(() => {
-    callApi();
-  }, []);
 
   if (!dataProduct || dataProduct.length === 0) {
     return <div>Loading...</div>;
@@ -53,12 +110,54 @@ const Products = () => {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
         }
       );
+      if (req.status === 403) {
+        const req2 = callRefreshToken(token);
+        if (!req2) throw new Error("Please log in first");
+        setToken(req2);
+        setCookie("token", req2, 7);
+        const req3 = await fetch(
+          `http://localhost:8080/api/v1/products/delete-product/${xxx._id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${req2}`,
+            },
+          }
+        );
+        if (req3.status === 200) {
+          toast.success("Delete successful!", {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          callApi();
+        }
+        if (req3.status === 403) {
+          const res3 = await req3.status();
+          toast.success(res3.message, {
+            position: "top-center",
+            autoClose: 1500,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      }
 
       if (req.status === 200) {
-        callApi();
         toast.success("Delete successful!", {
           position: "top-center",
           autoClose: 1500,
@@ -69,6 +168,7 @@ const Products = () => {
           progress: undefined,
           theme: "light",
         });
+        callApi();
       }
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -370,6 +470,9 @@ const Products = () => {
           openModal={setIsModalOpen}
           selectedProduct={selectedProduct}
           callApi={callApi}
+          callRefreshToken={callRefreshToken}
+          token={token}
+          setToken={setToken}
         />
       )}
       <ToastContainer />

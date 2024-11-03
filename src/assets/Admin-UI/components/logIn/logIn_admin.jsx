@@ -1,25 +1,119 @@
-import React, { useState } from "react";
-import userAdmin from "../data/userAdmin.json";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
+import { jwtDecode } from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 
-function LogIn({ setUser, ...props }) {
-  const { dataUserName } = useAdminContext();
-  const [username, setUsername] = useState("");
+function LogIn() {
+  // const { dataUserName } = useAdminContext();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  console.log(dataUserName);
-  const logIn = (e) => {
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
+
+  const loginGG = async (xxx) => {
+    console.log(xxx);
+    const req1 = await fetch("http://localhost:8080/api/v1/auth/login-by-gg", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${xxx.credential}`,
+      },
+    });
+    const res1 = await req1.json();
+    const accessToken = res1.accessToken;
+    setCookie("token", accessToken, 7);
+
+    const decoded = jwtDecode(accessToken);
+
+    if (req1.status === 400) {
+      toast.warn("Log in failed!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+
+    if (decoded.role === "admin") {
+      toast.success("Login ADMIN successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => {
+          navigate("/admin");
+        },
+      });
+    }
+
+    if (decoded.role === "user") {
+      toast.success("Login successful!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        onClose: () => {
+          navigate("/profile");
+        },
+      });
+    }
+  };
+
+  const logIn = async (e) => {
     e.preventDefault();
     try {
-      if (username === "" || password === "") {
-        toast.warn("Vui lòng nhập đầy đủ thông tin", {
+      const req = await fetch("http://localhost:8080/api/v1/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const res = await req.json();
+      const accessToken = res.accessToken;
+
+      setCookie("token", accessToken, 7);
+
+      const decoded = jwtDecode(accessToken);
+
+      if (!req.status === 200) {
+        toast.warn(res.message, {
           position: "top-center",
           autoClose: 1500,
           hideProgressBar: false,
@@ -29,110 +123,56 @@ function LogIn({ setUser, ...props }) {
           progress: undefined,
           theme: "light",
         });
-      } else {
-        const user = dataUserName.find(
-          (user) =>
-            (user.email === username || user.username === username) &&
-            user.password === password
-        );
-        if (user) {
-          setUser("customer");
+        return;
+      }
 
-          sessionStorage.setItem("customer", username);
-          toast.success("Đăng nhập thành công", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => navigate("/test"),
-          });
-          return;
-        }
+      if (decoded.isEmailVerified === false) {
+        toast.warn("Your email has not been verified ", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/verification-email");
+          },
+        });
+        return;
+      }
 
-        const admin = userAdmin.find(
-          (admin) => admin.email === username && admin.password === password
-        );
-        if (admin) {
-          const getLicense = admin.license;
-          setUser("admin");
+      if (decoded.role === "admin" || decoded.role === "super") {
+        toast.success("Login ADMIN successful!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/admin");
+          },
+        });
+      }
 
-          sessionStorage.setItem("admin", getLicense);
-          toast.success("Đăng nhập ADMIN thành công", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => navigate("/admin"),
-          });
-        } else {
-          toast.error("Đăng nhập thất bại", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          return;
-        }
-
-        if (decoded.isEmailVerified === false) {
-          toast.warn("Your email has not been verified ", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/verification-email");
-            },
-          });
-          return;
-        }
-
-        if (decoded.role === "admin") {
-          toast.success("Login ADMIN successful!", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/admin");
-            },
-          });
-        }
-
-        if (decoded.role === "user")
-          toast.success("Login successful!", {
-            position: "top-center",
-            autoClose: 1500,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            onClose: () => {
-              navigate("/profile");
-            },
-          });
+      if (decoded.role === "user") {
+        toast.success("Login successful!", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => {
+            navigate("/profile");
+          },
+        });
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -152,6 +192,13 @@ function LogIn({ setUser, ...props }) {
   const onSwitchToSignUp = () => {
     navigate("/signup");
   };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      navigate("/profile");
+    }
+  }, []);
 
   return (
     <div className="h-screen">
@@ -207,6 +254,16 @@ function LogIn({ setUser, ...props }) {
               >
                 Log In
               </button>
+              {/* <button type="button" onClick={() => loginGG()}>
+                Sign in with Google 🚀
+              </button> */}
+              <GoogleLogin
+                onSuccess={(credentialResponse) => loginGG(credentialResponse)}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+                useOneTap
+              />
               <button
                 type="button"
                 className="text-blue-500"
@@ -234,9 +291,9 @@ function LogIn({ setUser, ...props }) {
   );
 }
 
-const App = ({ setUser, ...props }) => (
+const App = () => (
   <AdminProvider>
-    <LogIn setUser={setUser} />
+    <LogIn />
   </AdminProvider>
 );
 

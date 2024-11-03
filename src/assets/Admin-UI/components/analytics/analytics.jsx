@@ -1,202 +1,214 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import Chart from "react-apexcharts";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
 
-const analytics = () => {
-  const { dataUserName, dataCart, dataProduct, dataReview } = useAdminContext();
-  const dataChanged = dataCart.map((item) => {
-    const loop1 = item.products.map((item2) => {
-      const loop2 = dataProduct.find(
-        (item3) => parseInt(item3.id) === item2.productId
-      );
-      if (loop2) {
-        return {
-          ...item2,
-          price: parseInt(loop2.price),
-          totalPrice: loop2.price * item2.quantity,
-        };
-      }
-      return item2;
-    });
-    const getTotalBill = loop1.reduce(
-      (total, product) => total + product.totalPrice,
-      0
-    );
-    return {
-      ...item,
-      products: loop1,
-      totalBill: getTotalBill,
-    };
-  });
+const Analytics = () => {
+  const [dataOrder, setDataOrder] = useState([]);
+  const [token, setToken] = useState("");
 
-  const newDataCart = dataChanged.map((item) => ({
-    ...item,
-    year: item.date.slice(0, 4),
-    month: item.date.slice(5, 7),
-    day: item.date.slice(8, 10),
-  }));
+  const month = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
 
-  const sortedDataCart = newDataCart.sort((a, b) => {
-    const yearComparison = b.year - a.year;
-    if (yearComparison !== 0) return yearComparison;
-
-    const monthComparison = b.month - a.month;
-    if (monthComparison !== 0) return monthComparison;
-
-    return b.day - a.day;
-  });
-
-  const dayAndMonth = sortedDataCart.map((item) => {
-    return `${item.month} / ${item.day}`;
-  });
-
-  const totalBill = sortedDataCart.map((item) => item.totalBill);
-
-  const getMonth = sortedDataCart.map((item) => item.month);
-
-  const dataChart = sortedDataCart.map((item) => ({
-    month: item.month,
-    totalBill: item.totalBill,
-  }));
-
-  const result = Array.from(new Set(dataChart.map((item) => item.month))).map(
-    (month) => {
-      const totalBill = dataChart
-        .filter((item) => item.month === month)
-        .reduce((sum, item) => sum + item.totalBill, 0);
-
-      return { month, totalBill };
+  const setCookie = (name, value, days) => {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
     }
-  );
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  };
 
-  const dataForMonth = result.map((item) => item.totalBill);
-
-  const dataMonthChart = [...new Set(getMonth)];
-
-  const combine = dataProduct
-    .map((item) => {
-      const loop1 = dataCart
-        .map((item1) => {
-          const loop2 = item1.products.filter(
-            (item2) => item2.productId === parseInt(item.id)
-          );
-
-          return loop2.length > 0 ? loop2 : null;
-        })
-        .filter((loop) => loop !== null);
-
-      if (loop1.length > 0) {
-        return {
-          ...item,
-          sales: loop1.flat(), // Dùng flat() để làm phẳng mảng các sản phẩm
-        };
-      }
+  const callRefreshToken = async (xxx) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${xxx}`,
+          },
+        }
+      );
+      const res = await req.json();
+      const newToken = res.accessToken;
+      return newToken;
+    } catch (err) {
+      console.log("error", err);
       return null;
-    })
-    .filter((result) => result !== null);
+    }
+  };
 
-  const bestSales = combine.map((item1) => {
-    const loop1 = item1.sales.reduce((total, cal) => total + cal.quantity, 0);
-    const totoPrice = loop1 * item1.price;
-    return {
-      ...item1,
-      totalSales: loop1,
-      totalPrice: totoPrice,
-    };
-  });
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      setToken(getToken);
+    } else {
+      toast.warn("Please log in first!", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, []);
 
-  const arrProduct = bestSales.map((item) => item.id);
+  useEffect(() => {
+    if (token) {
+      callApi();
+    }
+  }, [token]);
 
-  const totalPrice = bestSales.map((item) => item.totalPrice);
-  const totalSales = bestSales.map((item) => item.totalSales);
+  useEffect(() => {
+    if (dataOrder) {
+      const updatedMonth1 = dataOrder.map((item) => {
+        return { ...item, createdAt: item.createdAt.slice(5, 7) };
+      });
 
-  const [options1] = useState({
-    chart: {
-      id: "apexchart-example",
-    },
-    xaxis: {
-      categories: dataMonthChart,
-    },
-  });
+      const updatedMonth2 = updatedMonth1.filter((item) => {
+        month.map((item2) => {
+          item2 === item.createdAt;
+        });
+      });
+      console.log(updatedMonth2);
+    }
+  }, [dataOrder]);
 
-  const [series1] = useState([
-    {
-      name: "series-1",
-      data: dataForMonth,
-    },
-  ]);
+  const callApi = async () => {
+    try {
+      const req1 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      });
+      if (req1.status == 403) {
+        const req2 = await callRefreshToken(token);
+        if (!req2) throw new Error("Please log in again!");
+        setToken(req2);
+        setCookie("token", req2, 7);
+        const req3 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        });
+        if (req3.status === 200) {
+          const res3 = await req3.json();
+          setDataOrder(res3.data);
+        }
+      }
+      if (req1.status === 200) {
+        const res3 = await req1.json();
+        setDataOrder(res3.data);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
-  const [options2] = useState({
-    chart: {
-      id: "apexchart-example",
-    },
-    xaxis: {
-      categories: dayAndMonth,
-    },
-  });
+  // const [options1] = useState({
+  //   chart: {
+  //     id: "apexchart-example",
+  //   },
+  //   xaxis: {
+  //     categories: dataMonthChart,
+  //   },
+  // });
 
-  const [series2] = useState([
-    {
-      name: "series-1",
-      data: totalBill,
-    },
-  ]);
+  // const [series1] = useState([
+  //   {
+  //     name: "series-1",
+  //     data: dataForMonth,
+  //   },
+  // ]);
 
-  const [options3] = useState({
-    chart: {
-      id: "apexchart-example",
-    },
-    xaxis: {
-      categories: arrProduct,
-    },
-  });
+  // const [options2] = useState({
+  //   chart: {
+  //     id: "apexchart-example",
+  //   },
+  //   xaxis: {
+  //     categories: dayAndMonth,
+  //   },
+  // });
 
-  const [series3] = useState([
-    {
-      name: "series-1",
-      data: totalPrice,
-    },
-  ]);
-  const [options4] = useState({
-    chart: {
-      id: "apexchart-example",
-    },
-    xaxis: {
-      categories: arrProduct,
-    },
-  });
+  // const [series2] = useState([
+  //   {
+  //     name: "series-1",
+  //     data: totalBill,
+  //   },
+  // ]);
 
-  const [series4] = useState([
-    {
-      name: "series-1",
-      data: totalSales,
-    },
-  ]);
+  // const [options3] = useState({
+  //   chart: {
+  //     id: "apexchart-example",
+  //   },
+  //   xaxis: {
+  //     categories: arrProduct,
+  //   },
+  // });
+
+  // const [series3] = useState([
+  //   {
+  //     name: "series-1",
+  //     data: totalPrice,
+  //   },
+  // ]);
+  // const [options4] = useState({
+  //   chart: {
+  //     id: "apexchart-example",
+  //   },
+  //   xaxis: {
+  //     categories: arrProduct,
+  //   },
+  // });
+
+  // const [series4] = useState([
+  //   {
+  //     name: "series-1",
+  //     data: totalSales,
+  //   },
+  // ]);
 
   return (
     <div>
       <div className="flex">
         <div className="w-1/2">
           <div className="font-bold">Doanh Thu Từng Tháng</div>{" "}
-          <Chart options={options1} series={series1} type="bar" height={500} />{" "}
+          {/* <Chart options={options1} series={series1} type="bar" height={500} />{" "} */}
         </div>
         <div className="w-1/2">
           <div className="font-bold">Doanh Thu Từng Ngày</div>{" "}
-          <Chart options={options2} series={series2} type="bar" height={500} />
+          {/* <Chart options={options2} series={series2} type="bar" height={500} /> */}
         </div>
       </div>
       <div className="flex">
         <div className="w-1/2">
           <div className="font-bold">Doanh Thu Của Từng Sản Phẩm</div>{" "}
-          <Chart options={options3} series={series3} type="bar" height={500} />{" "}
+          {/* <Chart options={options3} series={series3} type="bar" height={500} />{" "} */}
         </div>
         <div className="w-1/2">
           <div className="font-bold">Số Lượng Bán Ra Của Sản Phẩm</div>{" "}
-          <Chart options={options4} series={series4} type="bar" height={500} />
+          {/* <Chart options={options4} series={series4} type="bar" height={500} /> */}
         </div>
       </div>
+      {/* <ToastContainer /> */}
     </div>
   );
 };
 
-export default analytics;
+export default Analytics;

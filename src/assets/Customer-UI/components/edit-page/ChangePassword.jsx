@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { ToastContainer, toast } from "react-toastify";
-import { Form, Input, Button, Radio } from "antd";
+import { Form, Input, Button, Radio , Typography} from "antd";
 
 function ChangePassword({ userData, refreshToken, callApi }) {
   const [form] = Form.useForm();
@@ -240,16 +240,12 @@ function ChangePassword({ userData, refreshToken, callApi }) {
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <h2
-        style={{
-          color: "#007BFF",
-          textAlign: "center",
-          marginBottom: "30px",
-          fontWeight: "bold",
-        }}
+      <Typography.Title
+        level={2}
+        style={{ color: "#007BFF", textAlign: "center", marginBottom: "30px" }}
       >
-        Change Password
-      </h2>
+        My Password
+      </Typography.Title>
 
       <Form form={form} onFinish={onFinish} layout="vertical">
         {/* UserName Section */}

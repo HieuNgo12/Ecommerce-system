@@ -61,6 +61,11 @@ function App() {
           element: <Customers />,
           children: [{ path: "addcustomers", element: <AddCustomers /> }],
         },
+        {
+          path: "admin",
+          element: <Admin />,
+          children: [{ path: "addAdmin", element: <AddCustomers /> }],
+        },
         { path: "rating", element: <Rating /> },
         {
           path: "promotion",
@@ -98,8 +103,8 @@ function App() {
         { path: "my-profile", element: <ProfilePageBody /> },
         { path: "my-authorization", element: <Authorization /> },
         { path: "my-password", element: <ChangePassword /> },
-        { path: "change-password", element: <Dashboard /> },
-        { path: "change-password", element: <Dashboard /> },
+        { path: "my-order", element: <MyOrder /> },
+        { path: "my-payment", element: <MyPayment /> },
       ],
     },
     {

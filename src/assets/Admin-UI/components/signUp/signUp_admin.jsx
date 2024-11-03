@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdminProvider, useAdminContext } from "../../AdminContext";
 import img from "../img/signupandlogin.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import Footer from "../../../Customer-UI/components/Footer";
 import Navbar from "../../../Customer-UI/components/Navbar";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 // import adminData from "../data/userAdmin.json";
 // import validator from "validator";
 
@@ -16,6 +18,21 @@ function SignUp() {
   const [confirm, setConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const getCookieValue = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
+  useEffect(() => {
+    const getToken = getCookieValue("token");
+    if (getToken) {
+      navigate("/profile");
+    }
+  }, []);
+
   const signUp = async (e) => {
     try {
       e.preventDefault();
@@ -47,6 +64,59 @@ function SignUp() {
           onClose: () => navigate("/login"),
         });
       } else {
+        toast.warn(res.message, {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    } catch (error) {
+      console.error("Error : ", error);
+      toast.error("Something went wrong, please try again.", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  };
+
+  const SignUpByGG = async (credentialResponse) => {
+    try {
+      const req = await fetch(
+        "http://localhost:8080/api/v1/auth/signup-by-gg",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${credentialResponse.credential}`,
+          },
+        }
+      );
+      if (req.status === 201) {
+        toast.success("Signup is successful", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          onClose: () => navigate("/login"),
+        });
+      }
+      if (req.status === 400) {
+        const res = await req.json();
         toast.warn(res.message, {
           position: "top-center",
           autoClose: 1500,
@@ -107,7 +177,7 @@ function SignUp() {
                 type="text"
                 id="email"
                 className="block w-full p-2 border rounded-md mb-4"
-                placeholder="Email or Phone Number"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -153,12 +223,16 @@ function SignUp() {
             >
               Create Account
             </button>
-            <button
-              type="button"
-              className="block w-full p-2 bg-white text-black border-2 rounded-md mt-2"
-            >
-              Sign up with Google
-            </button>
+
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                SignUpByGG(credentialResponse);
+              }}
+              onError={() => {
+                console.log("Login Failed");
+              }}
+            />
+
             <button
               type="button"
               className="text-blue-500"

@@ -4,20 +4,15 @@ import App from "./App.jsx";
 import "./index.css";
 import { WishlistProvider } from "./assets/Products/Context/WishlistContext";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider } from "react-redux";
-import { configureStore } from '@reduxjs/toolkit';
-// const store = configureStore({
-//   reducer: {
-//     userInfo: userInfoReducer,
-//     // Các reducers khác
-//   },
-// });
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
+    <GoogleOAuthProvider clientId="1031104764261-5kcn6354nd1tai108r56gm38c9hqj0ec.apps.googleusercontent.com">
       <WishlistProvider>
         <App />
       </WishlistProvider>
-    {/* </Provider> */}
+    </GoogleOAuthProvider>
+    ;
   </React.StrictMode>
 );
