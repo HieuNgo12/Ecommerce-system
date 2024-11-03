@@ -1,0 +1,28 @@
+.comment-card {
+  width: 100% !important;
+  border: 5px solid red;
+  height: 200px;
+  border: 2px solid black;
+  border-radius: 6px;
+  padding-right: 6px;
+  font-size: 12px !important;
+}
+
+.view-comment-box {
+  width: 1480px !important;
+  margin-left: 20px
+}
+
+.modal-body{
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.modal{
+  display: block !important; /* I added this to see the modal, you don't need this */
+}
+
+/* Important part */
+.modal-dialog{
+  overflow-y: initial !important
+}

@@ -132,7 +132,7 @@ const ModalCustomer = ({ dataNewProduct, setModal, selected, updateData }) => {
       key: "rating",
       render: () => (
         <div style={{ width: 70 }}>
-          <div>{selected.rating.rate}</div>
+          <div>{selected.rating?.rate}</div>
         </div>
       ),
     },
@@ -142,7 +142,7 @@ const ModalCustomer = ({ dataNewProduct, setModal, selected, updateData }) => {
       key: "rating",
       render: () => (
         <div style={{ width: 90 }}>
-          <div>{selected.rating.count}</div>
+          <div>{selected.rating?.count}</div>
         </div>
       ),
     },

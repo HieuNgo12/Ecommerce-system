@@ -1,11 +1,16 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-// import SellerUI from "./assets/Seller-UI/SellerUI";
-import CustomerUI from "./assets/Customer-UI/CustomerUI";
-import AdminUI from "./assets/Admin-UI/AdminUI";
+import { ToastContainer } from "react-toastify";
+import { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ShoppingCart from "./assets/Customer-UI/pages/ShoppingCart";
+import ProductList from "./assets/Products/ProductList";
+import ProductDetails from "./assets/Products/ProductDetails";
+import ProductWishlist from "./assets/Products/ProductWishlist";
+import ContactPage from "./assets/Customer-UI/pages/ContactPage";
+import AboutPage from "./assets/Customer-UI/pages/AboutPage";
+import BillingPage from "./assets/Customer-UI/pages/BillingPage";
+import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
+import AdminUI from "./assets/Admin-UI/AdminUI";
 import Dashboard from "./assets/Admin-UI/components/dashBoard/dashBoard";
 import Products from "./assets/Admin-UI/components/products/products";
 import Orders from "./assets/Admin-UI/components/orders/orders";
@@ -16,16 +21,10 @@ import LogIn from "./assets/Admin-UI/components/logIn/logIn_admin";
 import SignUp from "./assets/Admin-UI/components/signUp/signUp_admin";
 import Test from "./assets/Admin-UI/test";
 import AddProduct from "./assets/Admin-UI/components/addProduct/addProduct";
-import Setting from "./assets/Admin-UI/components/setting/setting";
-import Quotes from "./assets/Admin-UI/components/quotes/quotes";
-import Rating from "./assets/Admin-UI/components/rating/rating";
-import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
-import BackUp from "./assets/Admin-UI/components/backUp/backUp";
-import Help from "./assets/Admin-UI/components/help/help";
 import Analytics from "./assets/Admin-UI/components/analytics/analytics";
+import Quotes from "./assets/Admin-UI/components/analytics/analytics";
+import Rating from "./assets/Admin-UI/components/rating/rating";
 import AddCustomers from "./assets/Admin-UI/components/addCustomers/addCustomers";
-import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
-import ProfilePage from "./assets/Customer-UI/pages/ProfilePage";
 import HomePage from "./assets/Customer-UI/pages/HomePage";
 import ErrorPage from "./assets/Customer-UI/pages/ErrorPage";
 import ResetPassword from "./assets/Admin-UI/components/resetPassword/resetPassword";
@@ -33,13 +32,17 @@ import VerificationEmail from "./assets/Admin-UI/components/verificationEmail/ve
 import ProfilePageBody from "./assets/Customer-UI/components/edit-page/ProfilePageBody";
 import Authorization from "./assets/Customer-UI/components/edit-page/Authorization";
 import ChangePassword from "./assets/Customer-UI/components/edit-page/ChangePassword";
-import MyOrder from "./assets/Customer-UI/components/edit-page/MyOrder";
-import MyPayment from "./assets/Customer-UI/components/edit-page/PaymentMethod";
-import Admin from "./assets/Admin-UI/components/admin/admin";
-
+import ForgotPassword from "./assets/Admin-UI/components/forgotPassword/forgotPassword";
+import AddPromotion from "./assets/Admin-UI/components/addPromotion/addPromotion";
+import Setting from "./assets/Admin-UI/components/setting/setting";
+import Help from "./assets/Admin-UI/components/help/help";
+import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
+import DeliveryPage from "./assets/Customer-UI/pages/DeliveryPage";
+import OrderPage from "./assets/Customer-UI/pages/OrderPage";
+import axios from "axios";
 function App() {
-  const [count, setCount] = useState(0);
-  const [user, setUser] = useState("admin");
+  // eslint-disable-next-line no-unused-vars
+  const [user, setUser] = useState("customer");
 
   const adminRouter = createBrowserRouter([
     {
@@ -72,7 +75,7 @@ function App() {
         { path: "reviews", element: <Reviews /> },
         { path: "quotes", element: <Quotes /> },
         { path: "setting", element: <Setting /> },
-        { path: "backup", element: <BackUp /> },
+        { path: "backup", element: <BackupRestore /> },
         { path: "help", element: <Help /> },
         { path: "analytics", element: <Analytics /> },
       ],
@@ -129,6 +132,61 @@ function App() {
       path: "/edit-page",
       element: <ProfilePage />,
     },
+    {
+      path: "/",
+      element: <HomePage />,
+      errorElement: <ErrorPage />,
+      children: [],
+    },
+    {
+      path: "/shopping-cart",
+      element: <ShoppingCart />,
+    },
+    {
+      path: "/edit-page",
+      element: <ProfilePage />,
+    },
+    {
+      path: "/productlist",
+      element: <ProductList />,
+    },
+    {
+      path: "/product/:id",
+      element: <ProductDetails />,
+    },
+    {
+      path: "/productwishlist",
+      element: <ProductWishlist />, // Define route for ProductWishlist
+    },
+    {
+      path: "/contactpage",
+      element: <ContactPage />,
+    },
+    {
+      path: "/aboutpage",
+      element: <AboutPage />,
+    },
+    {
+      path: "/billingpage",
+      element: <BillingPage />,
+    },
+    {
+      path: "/order-page",
+      element: <OrderPage />,
+    },
+
+    {
+      path: "/delivery-page",
+      element: <DeliveryPage />,
+    },
+    {
+      path: "/order-page",
+      element: <OrderPage />,
+    },
+    {
+      path: "/payment-page",
+      // element: < />,
+    },
     // {
     //   path: "/productlist",
     //   element: <ProductList />,
@@ -155,17 +213,52 @@ function App() {
     // },
   ]);
 
-  // const sellerRouter = createBrowserRouter([
+  // const customerRouter = createBrowserRouter([
   //   {
   //     path: "/",
-  //     element: <SellerUI />,
+  //     element: <HomePage />,
+  //     errorElement: <ErrorPage />,
+  //     children: [],
+  //   },
+  //   {
+  //     path: "/shopping-cart",
+  //     element: <ShoppingCart />,
+  //   },
+  //   {
+  //     path: "/edit-page",
+  //     element: <ProfilePage />,
+  //   },
+  //   {
+  //     path: "/productlist",
+  //     element: <ProductList />,
+  //   },
+  //   {
+  //     path: "/product/:id",
+  //     element: <ProductDetails />,
+  //   },
+  //   {
+  //     path: "/productwishlist",
+  //     element: <ProductWishlist />, // Define route for ProductWishlist
+  //   },
+  //   {
+  //     path: "/contactpage",
+  //     element: <ContactPage />,
+  //   },
+  //   {
+  //     path: "/aboutpage",
+  //     element: <AboutPage />,
+  //   },
+  //   {
+  //     path: "/billingpage",
+  //     element: <BillingPage />,
   //   },
   // ]);
+
   return (
     <>
       {user === "admin" && <RouterProvider router={adminRouter} />}
-      {/* {user === "seller" && <RouterProvider router={sellerRouter} />} */}
       {user === "customer" && <RouterProvider router={customerRouter} />}
+      <ToastContainer />
     </>
   );
 }

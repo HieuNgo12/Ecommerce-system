@@ -1,7 +1,7 @@
 .cart-card {
   border-style: dotted;
   border: 1.5px solid black;
-  margin-left: 120%;
+  margin-left: 60%;
   max-width: 470px;
   min-height: 324px;
   border-radius: 4px;
@@ -61,7 +61,10 @@ ul.breadcrumb li a:hover {
   color: #fafafa;
   border-radius: 4px;
 }
+.proceed:hover {
+  background-color: brown !important;
 
+}
 .coupon-code {
   font-size: 16px;
   line-height: 24px;
@@ -132,6 +135,9 @@ input:focus {
     border-radius: 4px;
     align-items: end;
 }
+.button-return-update:hover{
+  background-color: #db4444 !important;
+}
 
 .image {
     width: "54px";
@@ -162,4 +168,13 @@ th {
 .text-very-left {
   font-size: 20px !important;
   font-weight: 500;
+}
+
+.table-head {
+  font-size: 16px;
+  font-weight:400;
+  color: #000000;
+  border-radius: 4px;
+  max-width: 1170px !important;
+  max-height: 72px !important;
 }

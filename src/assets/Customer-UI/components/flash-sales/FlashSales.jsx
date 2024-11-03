@@ -18,8 +18,8 @@ function FlashSales({ products, ...props }) {
     //     img: product.image,
     //     price: product.price,
     //     orgPrice: product.price + 99,
-    //     rating: product.rating.rate,
-    //     review: product.rating.count,
+    //     rating: product.rating?.rate,
+    //     review: product.rating?.count,
     //   };
     // });
     // setItemList(productsList);
@@ -28,7 +28,7 @@ function FlashSales({ products, ...props }) {
   }, []);
   return (
     <>
-      <div>
+      <div className="container mx-auto px-28 my-12">
         <Banter title={"Today's"} />
 
         <div className="flex grid grid-cols-4 gap-4">

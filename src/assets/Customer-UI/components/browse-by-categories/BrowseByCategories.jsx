@@ -6,14 +6,14 @@ function BrowseByCategories() {
     const itemsList = [
         {
             title: "Phones",
-            img: "./icons/phone.png",
+            img: "/icons/phone.png",
             price: 120,
             orgPrice: 160,
             rating: 5
         },
         {
             title: "Computers",
-            img: "./icons/computer.png",
+            img: "/icons/computer.png",
             price: 120,
             orgPrice: 160,
             rating: 4
@@ -21,7 +21,7 @@ function BrowseByCategories() {
         },
         {
             title: "Smartwatch",
-            img: "./icons/smartwatch.png",
+            img: "/icons/smartwatch.png",
             price: 370,
             orgPrice: 400,
             rating: 5
@@ -29,7 +29,7 @@ function BrowseByCategories() {
         },
         {
             title: "Camera",
-            img: "./icons/camera.png",
+            img: "/icons/computer.png",
             price: 375,
             orgPrice: 400,
             rating: 4.5
@@ -38,7 +38,7 @@ function BrowseByCategories() {
         
         {
             title: "Headphones",
-            img: "./icons/headphone.png",
+            img: "/icons/headphone.png",
             price: 375,
             orgPrice: 400,
             rating: 4.5
@@ -47,7 +47,7 @@ function BrowseByCategories() {
         
         {
             title: "Gaming",
-            img: "./icons/gamepad.png",
+            img: "/icons/gamepad.png",
             price: 375,
             orgPrice: 400,
             rating: 4.5
@@ -55,12 +55,12 @@ function BrowseByCategories() {
         },
     ]
   return (
-    <div>
+    <div className='container mx-auto px-28 my-12'>
         <Banter title={"Categories"}/>
         <div>
 
         </div>
-        <div className='grid grid-cols-6 gap-8 ' style={{cursor: "pointer"}} 
+        <div className='md:grid md:grid-cols-6 md:gap-8 sm:container ' style={{cursor: "pointer"}} 
         >
         {
             itemsList.map((item, index) => {

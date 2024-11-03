@@ -12,33 +12,31 @@ function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-
-      <div className="container mx-auto px-6 py-12">
-        <div className="text-sm breadcrumbs mb-8">
-          <ul className="flex flex-wrap items-center">
-            <li>
-              <Link to="/" className="text-gray-500  hover:text-blue-700">
-                Home
-              </Link>
-            </li>
-            <li>
-              <span>/</span>
-            </li>
-            <li>
-              <NavLink
-                to="/aboutpage"
-                className={({ isActive }) =>
-                  isActive
-                    ? " font-semibold text-black"
-                    : "text-black"
-                }
-              >
-                About
-              </NavLink>
-            </li>
-          </ul>
-        </div>
-
+      <div className="container mx-auto px-6 py-1">    
+        <div className="text-sm breadcrumbs mt-8">
+            <ul className="flex flex-wrap items-center">
+              <li>
+                <Link to="/" className="text-gray-500  hover:text-blue-700">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <span>/</span>
+              </li>
+              <li>
+                <NavLink
+                  to="/aboutpage"
+                  className={({ isActive }) =>
+                    isActive
+                      ? " font-semibold text-black"
+                      : "text-black"
+                  }
+                >
+                  About
+                </NavLink>
+              </li>
+            </ul>
+          </div>   
         {/* Section 1 */}
         <div className="container mx-auto px-6 py-12 flex-grow">
           <div className="grid md:grid-cols-2 gap-12 mb-20 items-center">

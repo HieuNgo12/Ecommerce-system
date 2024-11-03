@@ -10,6 +10,11 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import TestImg from "../../Admin-UI/components/img/464112140_122128355468442990_2366169051644275698_n.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import { jwtDecode } from "jwt-decode";
+import GroupedSelect from "./utils/DropdownSelect";
+import NavbarDarkExample from "./utils/DropdownSelect";
+import BasicMenu from "./utils/DropdownSelect";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Navbar = () => {
   const { getWishlistCount } = useContext(WishlistContext);
@@ -18,6 +23,7 @@ const Navbar = () => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState("");
   const [dropDown, setDropDown] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -71,15 +77,22 @@ const Navbar = () => {
     }
   }, [token]);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <nav className="w-full relative top-0 left-0">
       {/* Top Bar */}
       <div className="bg-black text-white text-center py-2 text-sm">
-        Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
+        <span className="hidden sm:inline">
+          Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
+        </span>
+        <span className="sm:hidden">Summer Sale - 50% OFF!</span>
         <a href="#" className="font-bold ml-1">
           ShopNow
         </a>
-        <div className="absolute right-4 top-2">
+        <div className="absolute right-4 top-2 hidden sm:block">
           <select className="bg-black text-white">
             <option>English</option>
             <option>Español</option>
@@ -96,7 +109,7 @@ const Navbar = () => {
             <span className="text-2xl font-semibold">Exclusive</span>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links - Desktop */}
           <div className="hidden md:flex items-center space-x-8">
             <NavLink
               to="/"
@@ -143,13 +156,16 @@ const Navbar = () => {
 
           {/* Icons and Search */}
           <div className="flex items-center space-x-4">
-            <form onSubmit={handleSearchSubmit} className="relative">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="relative hidden sm:block"
+            >
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="border rounded-full py-2 px-4 text-gray-500 w-60"
-                placeholder="What are you looking for?"
+                className="border rounded-full py-2 px-4 text-gray-500 w-40 md:w-60"
+                placeholder="Search..."
               />
               <button
                 type="submit"
@@ -160,12 +176,12 @@ const Navbar = () => {
             </form>
             <NavLink to="/shopping-cart">
               <div className="relative">
-                <ShoppingCartOutlinedIcon className="h-6 w-6 text-gray-600" />
+                <ShoppingCartOutlinedIcon className=" image h-6 w-6 text-gray-600" />
               </div>
             </NavLink>
-            <NavLink to="/productwishlist">
+            <NavLink to="/productwishlist" className="text-gray-600">
               <div className="relative">
-                <FavoriteBorderOutlinedIcon className="h-6 w-6 text-gray-600" />
+                <FavoriteBorderOutlinedIcon className="h-6 w-6" />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                     {wishlistCount}
@@ -221,8 +237,47 @@ const Navbar = () => {
                 <AccountCircleOutlinedIcon className="h-6 w-6 text-gray-600" />
               </NavLink>
             )}
+            <BasicMenu className="text-gray-600" />
+            {/* Mobile menu button */}
+            <button className="md:hidden text-gray-600" onClick={toggleMenu}>
+              {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200">
+            <NavLink
+              to="/"
+              className="block py-2 px-4 text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/productlist"
+              className="block py-2 px-4 text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              Products
+            </NavLink>
+            <NavLink
+              to="/contactpage"
+              className="block py-2 px-4 text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              Contact
+            </NavLink>
+            <NavLink
+              to="/aboutpage"
+              className="block py-2 px-4 text-gray-900 hover:bg-gray-100"
+              onClick={toggleMenu}
+            >
+              About
+            </NavLink>
+          </div>
+        )}
       </div>
       {/* <ToastContainer /> */}
     </nav>
