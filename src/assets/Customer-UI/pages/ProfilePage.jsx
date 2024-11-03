@@ -8,6 +8,8 @@ import Sidebar from "../components/edit-page/SildeBarProfile";
 import Authorization from "../components/edit-page/Authorization";
 import { ToastContainer, toast } from "react-toastify";
 import ChangePassword from "../components/edit-page/ChangePassword";
+import MyOrder from "../components/edit-page/MyOrder";
+import MyPayment from "../components/edit-page/PaymentMethod";
 
 function ProfilePage() {
   const [token, setToken] = useState("");
@@ -87,8 +89,9 @@ function ProfilePage() {
       });
       if (req1.status === 403) {
         const newToken = await refreshToken(token);
-        setToken(newToken);
         if (newToken) {
+          setToken(newToken);
+          setCookie("token", newToken, 7);
           const req3 = await fetch(
             "http://localhost:8080/api/v1/users/profile",
             {
@@ -105,7 +108,7 @@ function ProfilePage() {
           }
         }
       }
-      if(req1.status === 200){
+      if (req1.status === 200) {
         const res1 = await req1.json();
         setUser(res1);
       }
@@ -114,7 +117,6 @@ function ProfilePage() {
     }
   };
 
-  console.log(user)
   return (
     <div>
       <Navbar />
@@ -182,6 +184,26 @@ function ProfilePage() {
             path="my-password"
             element={
               <ChangePassword
+                userData={user}
+                refreshToken={refreshToken}
+                callApi={callApi}
+              />
+            }
+          />
+          <Route
+            path="my-order"
+            element={
+              <MyOrder
+                userData={user}
+                refreshToken={refreshToken}
+                callApi={callApi}
+              />
+            }
+          />
+          <Route
+            path="my-payment"
+            element={
+              <MyPayment
                 userData={user}
                 refreshToken={refreshToken}
                 callApi={callApi}

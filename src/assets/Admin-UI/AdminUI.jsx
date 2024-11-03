@@ -90,7 +90,6 @@ const AdminUI = () => {
         if (!req2) throw new Error("Please log in again!");
         const res2 = await req2.json();
         const newToken = res2.accessToken;
-        console.log(newToken);
         setToken(newToken);
         setCookie("token", newToken, 7);
         const req3 = await fetch(

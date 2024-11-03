@@ -4,18 +4,7 @@ import { Modal, Table, Select } from "antd";
 const { Option } = Select;
 
 const ModalOrder = ({ setModal, selected }) => {
-  const {
-    products = [],
-    id,
-    username,
-    totalBill,
-    status,
-    phone,
-    userId,
-    date,
-  } = selected;
-
-  console.log(selected);
+  // console.log(selected);
   const [newStatus, setNewStatus] = useState(status);
 
   const handleCancel = () => {
@@ -59,42 +48,42 @@ const ModalOrder = ({ setModal, selected }) => {
   ];
 
   const orderColumns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-      render: () => <div>{id}</div>,
-    },
-    {
-      title: "user ID",
-      dataIndex: "userId",
-      key: "userId",
-      render: () => <div>{userId}</div>,
-    },
-    {
-      title: "Username",
-      dataIndex: "username",
-      key: "username",
-      render: () => <div>{username}</div>,
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-      render: () => <div>{phone}</div>,
-    },
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-      render: () => <div>{date.slice(0, 10)}</div>,
-    },
-    {
-      title: "Total Bill",
-      dataIndex: "totalBill",
-      key: "totalBill",
-      render: () => <div>{totalBill}</div>,
-    },
+    // {
+    //   title: "ID",
+    //   dataIndex: "id",
+    //   key: "id",
+    //   render: () => <div>{id}</div>,
+    // },
+    // {
+    //   title: "user ID",
+    //   dataIndex: "userId",
+    //   key: "userId",
+    //   render: () => <div>{userId}</div>,
+    // },
+    // {
+    //   title: "Username",
+    //   dataIndex: "username",
+    //   key: "username",
+    //   render: () => <div>{username}</div>,
+    // },
+    // {
+    //   title: "Phone",
+    //   dataIndex: "phone",
+    //   key: "phone",
+    //   render: () => <div>{phone}</div>,
+    // },
+    // {
+    //   title: "Date",
+    //   dataIndex: "date",
+    //   key: "date",
+    //   render: () => <div>{date.slice(0, 10)}</div>,
+    // },
+    // {
+    //   title: "Total Bill",
+    //   dataIndex: "totalBill",
+    //   key: "totalBill",
+    //   render: () => <div>{totalBill}</div>,
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -140,7 +129,7 @@ const ModalOrder = ({ setModal, selected }) => {
         <h3>Products</h3>
         <Table
           columns={productColumns}
-          dataSource={products}
+          // dataSource={products}
           pagination={false}
           rowKey="productId"
         />

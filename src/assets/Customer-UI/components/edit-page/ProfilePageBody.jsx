@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Select, DatePicker, Upload, Avatar } from "antd";
+import { Form, Input, Button, Select, DatePicker, Upload, Avatar, Typography } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import "./ProfilePageBody.css";
@@ -217,16 +217,12 @@ function ProfilePageBody({ userData, refreshToken, callApi }) {
     >
       {userData ? (
         <div>
-          <h2
-            style={{
-              color: "#007BFF",
-              textAlign: "center",
-              marginBottom: "30px",
-              fontWeight: "bold",
-            }}
-          >
-            Edit Your Profile
-          </h2>
+      <Typography.Title
+        level={2}
+        style={{ color: "#007BFF", textAlign: "center", marginBottom: "30px" }}
+      >
+        My Profile
+      </Typography.Title>
 
           <Form
             form={form}

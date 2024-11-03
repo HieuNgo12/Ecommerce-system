@@ -16,6 +16,7 @@ function Header() {
   // const [token, setToken] = useState("");
   const [search, setSearch] = useState("");
   const [user, setUser] = useState("");
+  const [token, setToken] = useState("");
 
   const getCookieValue = (name) => {
     const value = `; ${document.cookie}`;
@@ -38,11 +39,17 @@ function Header() {
     const getToken = getCookieValue("token");
     if (getToken) {
       // setToken(getToken);
-      setUser(jwtDecode(getToken));
+      setToken(getToken);
     } else {
       navigate("/login");
     }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      setUser(jwtDecode(token));
+    }
+  }, [token]);
 
   const searchInput = (e) => {
     setSearch(e.target.value);
@@ -109,7 +116,7 @@ function Header() {
         )}
 
         <div className="flex items-center space-x-4">
-          <span className="font-bold italic">{user.username}</span>
+          <span className="font-bold italic">{user?.username || ""} / {user?.role || ""}</span>
           <img src={icon} alt="" className="cursor-pointer" onClick={logOut} />
         </div>
       </div>
@@ -158,6 +165,18 @@ function Header() {
               ADD CUSTOMERS
             </button>
           )}
+          <button
+            className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
+            // onClick={addCustomers}
+          >
+            Refresh
+          </button>
+          <button
+            className="bg-gray-800 p-2 rounded-md text-white hover:bg-gray-700"
+            onClick={()=>navigate("/")}
+          >
+            Home
+          </button>
           <input
             type="text"
             className="rounded-md p-2 hidden sm:block"

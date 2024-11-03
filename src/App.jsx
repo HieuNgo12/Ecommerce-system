@@ -33,6 +33,8 @@ import VerificationEmail from "./assets/Admin-UI/components/verificationEmail/ve
 import ProfilePageBody from "./assets/Customer-UI/components/edit-page/ProfilePageBody";
 import Authorization from "./assets/Customer-UI/components/edit-page/Authorization";
 import ChangePassword from "./assets/Customer-UI/components/edit-page/ChangePassword";
+import MyOrder from "./assets/Customer-UI/components/edit-page/MyOrder";
+import MyPayment from "./assets/Customer-UI/components/edit-page/PaymentMethod";
 import Admin from "./assets/Admin-UI/components/admin/admin";
 
 function App() {
@@ -98,8 +100,8 @@ function App() {
         { path: "my-profile", element: <ProfilePageBody /> },
         { path: "my-authorization", element: <Authorization /> },
         { path: "my-password", element: <ChangePassword /> },
-        { path: "change-password", element: <Dashboard /> },
-        { path: "change-password", element: <Dashboard /> },
+        { path: "my-order", element: <MyOrder /> },
+        { path: "my-payment", element: <MyPayment /> },
       ],
     },
     {

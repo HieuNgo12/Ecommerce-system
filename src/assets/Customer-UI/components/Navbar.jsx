@@ -9,17 +9,18 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import TestImg from "../../Admin-UI/components/img/464112140_122128355468442990_2366169051644275698_n.jpg";
 import { ToastContainer, toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 const Navbar = () => {
   const { getWishlistCount } = useContext(WishlistContext);
   const wishlistCount = getWishlistCount();
   const [searchQuery, setSearchQuery] = useState("");
   const [token, setToken] = useState("");
+  const [user, setUser] = useState("");
   const [dropDown, setDropDown] = useState(false);
 
   const navigate = useNavigate();
 
-  // Handle changes to the search input field
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -54,23 +55,21 @@ const Navbar = () => {
 
   const logOut = () => {
     deleteCookie("token");
-    toast.warn("Log out successful", {
-      position: "top-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-      onClose: () => navigate("/login"),
-    });
+    navigate("/login");
   };
 
   useEffect(() => {
     const getToken = getCookieValue("token");
-    setToken(getToken);
+    if (getToken) {
+      setToken(getToken);
+    }
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      setUser(jwtDecode(token));
+    }
+  }, [token]);
 
   return (
     <nav className="w-full relative top-0 left-0">
@@ -194,6 +193,14 @@ const Navbar = () => {
                     <div className="h-[30px] w-full absolute top-0 left-0 -translate-y-[70%] bg-transparent"></div>
 
                     {/* Các liên kết trong dropdown */}
+                    {(user?.role === "admin" || user?.role === "super") && (
+                      <NavLink
+                        to="/admin"
+                        className="block px-4 py-2 text-left transform -translate-x-[7%] hover:bg-blue-500 text-sm"
+                      >
+                        Admin
+                      </NavLink>
+                    )}
                     <NavLink
                       to="/profile"
                       className="block px-4 py-2 text-left transform -translate-x-[7%] hover:bg-blue-500 text-sm"
