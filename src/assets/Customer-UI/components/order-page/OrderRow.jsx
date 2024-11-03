@@ -5,7 +5,7 @@ import PaymentStatusModal from "./PaymentStatusModal";
 import CancelOrderModal from "./CancelOrderModal";
 import axios from "axios";
 import { toast } from "react-toastify";
-function OrderRow({ order, setOpen, setLoading, ...props }) {
+function OrderRow({ getOrder, order, setOpen, setLoading, ...props }) {
   const [deliveryStatusModal, setDeliveryStatusModal] = useState(false);
   const [paymentStatusModal, setPaymentStatusModal] = useState(false);
   const [cancelOrderModal, setCancelOrderModal] = useState(false);
@@ -81,17 +81,23 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
         </div>{" "}
       </td> */}
       <td class="px-6 py-4 flex">
-        <div className="flex mt-10">
+      {order.deliveryId.deliveryStatus !== "Cancelled" ?   <div className="flex mt-10">
           <input
             className="coupon-input "
             placeholder="Coupon Code"
             id="couponCode"
             name="couponCode"
+            disabled={
+              order.deliveryId.deliveryStatus === "Cancelled" ? true : false
+            }
             type="couponCode"
             onChange={(e) => setCouponCodeName(e.target.value)}
           />
-          <button
+         {
+         
+         <button
             className="button-style apply"
+          
             onClick={async () => {
               try {
                 const data = await axios.get(
@@ -108,7 +114,8 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
                     progress: undefined,
                     theme: "light",
                   });
-                  window.location.reload();
+                  // window.location.reload();
+                  getOrder();
                 } else {
                   toast.error("Coupon already been used", {
                     position: "top-center",
@@ -137,8 +144,9 @@ function OrderRow({ order, setOpen, setLoading, ...props }) {
             }}
           >
             Apply Coupon
-          </button>
-        </div>
+          </button>}
+        </div>: null}
+      
       </td>
       {order?.deliveryId?.deliveryStatus !== "Cancelled" ? (
         <td class="px-6 py-4">

@@ -16,7 +16,7 @@ import Loading from "../utils/Loading";
 function OrderModal() {
   const [open, setOpen] = useState(false);
   const [pageCount, setPageCount] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [orderList, setOrderList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,32 +50,33 @@ function OrderModal() {
     paymentMethod: Yup.string(),
     // .required("Payment Method is Required"),
   });
-  useEffect(() => {
-    async function getOrder() {
-      try {
-        const itemsPerPage = 10;
-        const original = await axios.get(
-          `http://localhost:8080/api/v1/order?user=${
-            JSON.parse(localStorage.getItem("user")).email
-          }`
-        );
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}&user=${
-            JSON.parse(localStorage.getItem("user")).email
-          }`,
-          {}
-        );
-        console.log(original);
-        const data = original.data.content;
-        const itemInPage = response.data.content;
-        setPageCount(Math.ceil(data.length / itemsPerPage));
-        console.log(itemInPage);
-        setOrderList(itemInPage);
-      } catch (error) {
-        console.error(error);
-      } finally {
-      }
+  async function getOrder() {
+    try {
+      const itemsPerPage = 3;
+      const original = await axios.get(
+        `http://localhost:8080/api/v1/order?user=${
+          JSON.parse(localStorage.getItem("user"))?.email
+        }`
+      );
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}&user=${
+          JSON.parse(localStorage.getItem("user"))?.email
+        }`,
+        {}
+      );
+      console.log(original);
+      const data = original.data.content;
+      const itemInPage = response.data.content;
+      setPageCount(Math.ceil(data.length / itemsPerPage));
+      console.log(itemInPage);
+      setOrderList(itemInPage);
+    } catch (error) {
+      console.error(error);
+    } finally {
     }
+  }
+  useEffect(() => {
+
     getOrder();
   }, [currentPage]);
   //   useEffect(() => {
@@ -125,6 +126,7 @@ function OrderModal() {
     },
   });
   const handlePageClick = ({ selected }) => {
+    console.log(selected)
     // setLoading(true);
     setCurrentPage(selected);
   };
@@ -307,6 +309,7 @@ function OrderModal() {
                   console.log(order);
                   return (
                     <OrderRow
+                    getOrder={getOrder}
                       setLoading={setLoading}
                       order={order}
                       setOpen={setOpen}
