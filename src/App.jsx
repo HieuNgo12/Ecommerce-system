@@ -40,6 +40,10 @@ import BackupRestore from "./assets/Admin-UI/components/backUp/backUp";
 import DeliveryPage from "./assets/Customer-UI/pages/DeliveryPage";
 import OrderPage from "./assets/Customer-UI/pages/OrderPage";
 import axios from "axios";
+import Admin from "./assets/Admin-UI/components/admin/admin";
+import MyOrder from "./assets/Customer-UI/components/edit-page/MyOrder";
+// import MyPayment from "../components/edit-page/PaymentMethod";
+
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [user, setUser] = useState("customer");
@@ -104,7 +108,7 @@ function App() {
         { path: "my-authorization", element: <Authorization /> },
         { path: "my-password", element: <ChangePassword /> },
         { path: "my-order", element: <MyOrder /> },
-        { path: "my-payment", element: <MyPayment /> },
+        // { path: "my-payment", element: <MyPayment /> },
       ],
     },
     {

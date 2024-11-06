@@ -16,7 +16,7 @@ import Loading from "../utils/Loading";
 function OrderModal() {
   const [open, setOpen] = useState(false);
   const [pageCount, setPageCount] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [orderList, setOrderList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -128,7 +128,7 @@ function OrderModal() {
   const handlePageClick = ({ selected }) => {
     console.log(selected)
     // setLoading(true);
-    setCurrentPage(selected);
+    setCurrentPage(selected + 1);
   };
   return loading ? (
     <Loading />

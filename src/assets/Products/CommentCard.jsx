@@ -11,19 +11,17 @@ function CommentCard() {
   const [originalReviewList, setOriginalReviewList] = React.useState([]);
 
   const { id } = useParams();
-
+  const getReviews = async () => {
+    console.log(localStorage.getItem("user"));
+    const data = await axios.post("http://localhost:8080/api/v1/getReviews", {
+      userEmail: JSON.parse(localStorage.getItem("user"))?.email,
+      productId: id,
+    });
+    const reviews = data.data.data;
+    setReviews(reviews);
+    setOriginalReviewList(reviews);
+  };
   useEffect(() => {
-    const getReviews = async () => {
-      console.log(localStorage.getItem("user"));
-      const data = await axios.post("http://localhost:8080/api/v1/getReviews", {
-        userEmail: JSON.parse(localStorage.getItem("user"))?.email,
-        productId: id,
-      });
-      const reviews = data.data.data;
-      setReviews(reviews);
-      setOriginalReviewList(reviews);
-    };
-
     getReviews();
     return () => {};
   }, []);
