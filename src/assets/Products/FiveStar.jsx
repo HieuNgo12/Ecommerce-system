@@ -51,7 +51,7 @@ function FiveStar() {
     onSubmit: async (values) => {
       console.log(values);
       const uploadFile = () => {
-        const url = "http://localhost:8080/api/v1/reviews/uploadFile";
+        const url = "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/reviews/uploadFile";
         const formData = new FormData();
         formData.append("file", file);
 
@@ -71,7 +71,7 @@ function FiveStar() {
           };
           console.log(body);
           const res = await axios.post(
-            "http://localhost:8080/api/v1/reviews",
+            "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/reviews",
             body
           );
         });

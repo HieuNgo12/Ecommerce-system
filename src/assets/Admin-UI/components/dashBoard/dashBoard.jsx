@@ -32,7 +32,7 @@ function Dashboard() {
   const callRefreshToken = async (xxx) => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/refresh-token",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
         {
           method: "POST",
           headers: {
@@ -79,7 +79,7 @@ function Dashboard() {
 
   const callApiUsers = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/admin/get-users", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/get-users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,7 +92,7 @@ function Dashboard() {
         setCookie("token", newToken, 7);
         setToken(newToken);
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/admin/get-users",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/get-users",
           {
             method: "POST",
             headers: {
@@ -117,7 +117,7 @@ function Dashboard() {
 
   const callApiOrders = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ function Dashboard() {
         if (!newToken) throw new Error("Please log in again!");
         setCookie("token", newToken, 7);
         setToken(newToken);
-        const req2 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+        const req2 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -153,7 +153,7 @@ function Dashboard() {
   const callApiPromotions = async () => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/promotion/get-promotion",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/get-promotion",
         {
           method: "GET",
           headers: {
@@ -168,7 +168,7 @@ function Dashboard() {
         setCookie("token", newToken, 7);
         setToken(newToken);
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/promotion/get-promotion",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/get-promotion",
           {
             method: "GET",
             headers: {
@@ -193,7 +193,7 @@ function Dashboard() {
 
   const callApiProducts = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/products", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

@@ -35,7 +35,7 @@ function LogIn() {
 
   const loginGG = async (xxx) => {
     console.log(xxx);
-    const req1 = await fetch("http://localhost:8080/api/v1/auth/login-by-gg", {
+    const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/login-by-gg", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +97,7 @@ function LogIn() {
   const logIn = async (e) => {
     e.preventDefault();
     try {
-      const req = await fetch("http://localhost:8080/api/v1/auth/login", {
+      const req = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -25,7 +25,7 @@ const ProductList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch("http://localhost:8080/api/v1/products")
+    fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products")
       // fetch("https://66b0ab0f6a693a95b539b080.mockapi.io/products")
       .then((response) => response.json())
       .then((productData) => {

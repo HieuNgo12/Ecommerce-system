@@ -60,7 +60,7 @@ const Promotion = () => {
   const callApi = async () => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/promotion/get-promotion",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/get-promotion",
         {
           method: "GET",
           headers: {
@@ -72,7 +72,7 @@ const Promotion = () => {
       if (req1.status === 403) {
         console.log("first");
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/auth/refresh-token",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
           {
             method: "POST",
             headers: {
@@ -87,7 +87,7 @@ const Promotion = () => {
         setToken(newToken);
         setCookie("token", newToken, 7);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/promotion/get-promotion",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/get-promotion",
           {
             method: "GET",
             headers: {

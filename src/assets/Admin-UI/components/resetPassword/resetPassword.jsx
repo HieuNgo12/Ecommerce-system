@@ -31,7 +31,7 @@ function ResetPassword() {
     try {
       console.log(values)
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/reset-password",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/reset-password",
         {
           method: "POST",
           headers: {

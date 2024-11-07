@@ -13,7 +13,7 @@ function CommentCard() {
   const { id } = useParams();
   const getReviews = async () => {
     console.log(localStorage.getItem("user"));
-    const data = await axios.post("http://localhost:8080/api/v1/getReviews", {
+    const data = await axios.post("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/getReviews", {
       userEmail: JSON.parse(localStorage.getItem("user"))?.email,
       productId: id,
     });

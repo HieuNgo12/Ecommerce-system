@@ -30,7 +30,7 @@ const ProductDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/v1/products/${id}`)
+    fetch(`https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products/${id}`)
       .then((response) => response.json())
       .then((responseData) => {
         let productData = responseData.data;
@@ -56,7 +56,7 @@ const ProductDetails = () => {
         setProduct(data);
         setCurrentImage(data.image);
         return fetch(
-          `http://localhost:8080/api/v1/products?category=${data.category}`
+          `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products?category=${data.category}`
         );
       })
       .then((response) => response.json())

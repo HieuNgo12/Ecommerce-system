@@ -61,7 +61,7 @@ const EditProduct = ({
       formData.append("slug", values.slug);
       formData.append("sku", values.sku);
       const req2 = await fetch(
-        `http://localhost:8080/api/v1/products/update-product/${selectedProduct._id}`,
+        `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products/update-product/${selectedProduct._id}`,
         {
           method: "PATCH",
           headers: {
@@ -78,7 +78,7 @@ const EditProduct = ({
         setToken(getToken);
         setCookie("token", getToken, 7);
         const req3 = await fetch(
-          `http://localhost:8080/api/v1/products/update-product/${selectedProduct._id}`,
+          `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products/update-product/${selectedProduct._id}`,
           {
             method: "PATCH",
             headers: {

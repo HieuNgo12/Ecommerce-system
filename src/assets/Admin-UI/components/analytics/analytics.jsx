@@ -29,7 +29,7 @@ const Analytics = () => {
   const callRefreshToken = async (xxx) => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/refresh-token",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
         {
           method: "POST",
           headers: {
@@ -88,7 +88,7 @@ const Analytics = () => {
 
   const callApi = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,7 @@ const Analytics = () => {
         if (!req2) throw new Error("Please log in again!");
         setToken(req2);
         setCookie("token", req2, 7);
-        const req3 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+        const req3 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

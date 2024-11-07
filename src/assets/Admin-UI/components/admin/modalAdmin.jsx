@@ -56,7 +56,7 @@ const ModalAdmin = ({
       formData.append("dateOfBirth", dateOfBirth);
 
       const req1 = await fetch(
-        `http://localhost:8080/api/v1/admin/update-admin/${selected._id}`,
+        `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/update-admin/${selected._id}`,
         {
           method: "PATCH",
           headers: {
@@ -71,7 +71,7 @@ const ModalAdmin = ({
         setCookie("token", req2, 7);
         if (!req2) throw new Error("Please Log in first!");
         const req3 = await fetch(
-          `http://localhost:8080/api/v1/admin/update-admin/${selected._id}`,
+          `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/update-admin/${selected._id}`,
           {
             method: "PATCH",
             authorization: `Bearer ${req2}`,

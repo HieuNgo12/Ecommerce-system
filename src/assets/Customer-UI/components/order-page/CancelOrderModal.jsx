@@ -52,7 +52,7 @@ function DeliveryStatusModal({ order, open, setOpen, ...props }) {
             type="submit"
             onClick={() => {
               setOpen(false);
-              axios.post(`http://localhost:8080/api/v1/order/cancelOrder`, {
+              axios.post(`https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/order/cancelOrder`, {
                 orderId: order._id,
               });
               // window.location.reload();

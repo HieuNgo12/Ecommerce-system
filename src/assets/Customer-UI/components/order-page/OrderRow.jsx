@@ -101,7 +101,7 @@ function OrderRow({ getOrder, order, setOpen, setLoading, ...props }) {
             onClick={async () => {
               try {
                 const data = await axios.get(
-                  `http://localhost:8080/api/v1/coupon?couponCodeName=${couponCodeName}&order=${order._id}`
+                  `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/coupon?couponCodeName=${couponCodeName}&order=${order._id}`
                 );
                 if (data.data.data.status !== "Used") {
                   toast.success("Apply Coupon Successfully", {

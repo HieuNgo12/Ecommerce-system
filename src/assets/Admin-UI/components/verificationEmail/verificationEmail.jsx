@@ -49,7 +49,7 @@ function VerificationEmail() {
   const callApi = async () => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/users/send-verification-email",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-verification-email",
         {
           method: "POST",
           headers: {
@@ -63,7 +63,7 @@ function VerificationEmail() {
         setToken(getNewToken);
         try {
           const req2 = await fetch(
-            "http://localhost:8080/api/v1/users/send-verification-email",
+            "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-verification-email",
             {
               method: "POST",
               headers: {
@@ -84,7 +84,7 @@ function VerificationEmail() {
   const refreshToken = async (xxx) => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/refresh-token",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
         {
           method: "POST",
           headers: {
@@ -107,7 +107,7 @@ function VerificationEmail() {
     console.log("check");
     try {
       let req1 = await fetch(
-        "http://localhost:8080/api/v1/users/verify-email",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/verify-email",
         {
           method: "POST",
           headers: {
@@ -126,7 +126,7 @@ function VerificationEmail() {
         if (checkrefreshToken) {
           setToken(checkrefreshToken);
           const req2 = await fetch(
-            "http://localhost:8080/api/v1/users/verify-email",
+            "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/verify-email",
             {
               method: "POST",
               headers: {

@@ -53,7 +53,7 @@ function MyOrder({ userData, refreshToken, callApi }) {
     const callApi = async () => {
       try {
         const req = await fetch(
-          `http://localhost:8080/api/v1/get-order/${userData._id}`,
+          `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-order/${userData._id}`,
           {
             method: "GET",
             headers: {
@@ -68,7 +68,7 @@ function MyOrder({ userData, refreshToken, callApi }) {
           setToken(newToken);
           setCookie(newToken);
           const req1 = await fetch(
-            `http://localhost:8080/api/v1/get-order/${userData.id}`,
+            `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-order/${userData.id}`,
             {
               method: "GET",
               headers: {

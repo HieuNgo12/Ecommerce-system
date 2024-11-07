@@ -56,7 +56,7 @@ function ChangePassword({ userData, refreshToken, callApi }) {
   const onFinish = async (values) => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/users/change-password",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/change-password",
         {
           method: "PATCH",
           headers: {
@@ -74,7 +74,7 @@ function ChangePassword({ userData, refreshToken, callApi }) {
         setCookie("token", req2, 7);
         setToken(req2);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/users/change-password",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/change-password",
           {
             method: "PATCH",
             headers: {
@@ -155,7 +155,7 @@ function ChangePassword({ userData, refreshToken, callApi }) {
     } else {
       try {
         const req1 = await fetch(
-          "http://localhost:8080/api/v1/users/send-otp-change-password",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-otp-change-password",
           {
             method: "POST",
             headers: {
@@ -184,7 +184,7 @@ function ChangePassword({ userData, refreshToken, callApi }) {
           setCookie(req2);
           setToken(req2);
           const req3 = await fetch(
-            "http://localhost:8080/api/v1/users/send-otp-change-password",
+            "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-otp-change-password",
             {
               method: "POST",
               headers: {

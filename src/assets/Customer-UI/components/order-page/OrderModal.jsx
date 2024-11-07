@@ -54,12 +54,12 @@ function OrderModal() {
     try {
       const itemsPerPage = 3;
       const original = await axios.get(
-        `http://localhost:8080/api/v1/order?user=${
+        `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/order?user=${
           JSON.parse(localStorage.getItem("user"))?.email
         }`
       );
       const response = await axios.get(
-        `http://localhost:8080/api/v1/order?limit=${itemsPerPage}&page=${currentPage}&user=${
+        `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/order?limit=${itemsPerPage}&page=${currentPage}&user=${
           JSON.parse(localStorage.getItem("user"))?.email
         }`,
         {}
@@ -116,7 +116,7 @@ function OrderModal() {
     onSubmit: async (values) => {
       console.log(values);
       setOpen(false);
-      await axios.patch("http://localhost:8080/api/v1/order", {
+      await axios.patch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/order", {
         body: {
           id: "123",
           ...values,
@@ -244,7 +244,7 @@ function OrderModal() {
                 onClick={async () => {
                   try {
                     const data = await axios.get(
-                      "http://localhost:8080/api/v1/coupon",
+                      "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/coupon",
                       { couponCodeName: "mindX" }
                     );
                   } catch (e) {

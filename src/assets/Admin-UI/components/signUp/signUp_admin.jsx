@@ -37,7 +37,7 @@ function SignUp() {
     try {
       e.preventDefault();
 
-      const req = await fetch("http://localhost:8080/api/v1/auth/signup", {
+      const req = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function SignUp() {
   const SignUpByGG = async (credentialResponse) => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/signup-by-gg",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/signup-by-gg",
         {
           method: "POST",
           headers: {

@@ -69,7 +69,7 @@ const AddPromotion = () => {
 
   const callApi = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/products/", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +110,7 @@ const AddPromotion = () => {
       formData.append("status", values.status || "active");
 
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/promotion/add-promotion",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/add-promotion",
         {
           method: "POST",
           headers: { authorization: `Bearer ${token}` },
@@ -119,7 +119,7 @@ const AddPromotion = () => {
       );
       if (req1.status === 403) {
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/auth/refresh-token",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
           {
             method: "POST",
             headers: {
@@ -134,7 +134,7 @@ const AddPromotion = () => {
         setToken(newToken);
         setCookie("token", newToken, 7);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/promotion/add-promotion",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/add-promotion",
           {
             method: "POST",
             headers: { authorization: `Bearer ${newToken}` },

@@ -61,7 +61,7 @@ function Authorization({ userData, refreshToken, callApi }) {
   const sentOtpToPhone = async () => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/users/send-verification-phone",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-verification-phone",
         {
           method: "POST",
           headers: {
@@ -80,7 +80,7 @@ function Authorization({ userData, refreshToken, callApi }) {
         setToken(req2);
         setCookie("token", req2, 7);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/users/send-verification-phone",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/send-verification-phone",
           {
             method: "POST",
             headers: {
@@ -138,7 +138,7 @@ function Authorization({ userData, refreshToken, callApi }) {
   const verifyPhone = async () => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/users/verify-phone",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/verify-phone",
         {
           method: "POST",
           headers: {
@@ -156,7 +156,7 @@ function Authorization({ userData, refreshToken, callApi }) {
         setToken(req2);
         setCookie("token", req2, 7);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/users/verify-phone",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/verify-phone",
           {
             method: "POST",
             headers: {

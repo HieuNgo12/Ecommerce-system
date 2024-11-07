@@ -19,7 +19,7 @@ function HomePage() {
     async function getUser() {
       const token = localStorage.getItem("token");
       const user = await axios.post(
-        "http://localhost:8080/api/v1/auth/getUserByToken",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/getUserByToken",
         {
           token: token,
         }
@@ -31,7 +31,7 @@ function HomePage() {
   }, []);
   useEffect(() => {
     const getData = async () => {
-      const res = await fetch(`http://localhost:8080/api/v1/products`);
+      const res = await fetch(`https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products`);
       const responseJson = await res.json();
       const data = responseJson.data.map((productData) => {
         console.log(productData);

@@ -31,7 +31,7 @@ const Orders = () => {
   const callRefreshToken = async (xxx) => {
     try {
       const req = await fetch(
-        "http://localhost:8080/api/v1/auth/refresh-token",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
         {
           method: "POST",
           headers: {
@@ -75,7 +75,7 @@ const Orders = () => {
 
   const callApi = async () => {
     try {
-      const req1 = await fetch("http://localhost:8080/api/v1/get-all-order", {
+      const req1 = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const Orders = () => {
           setToken(newToken);
           setCookie("token", newToken, 7);
           const req2 = await fetch(
-            "http://localhost:8080/api/v1/get-all-order",
+            "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/get-all-order",
             {
               method: "GET",
               headers: {

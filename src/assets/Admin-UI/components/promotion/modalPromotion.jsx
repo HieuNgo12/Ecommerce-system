@@ -58,7 +58,7 @@ const ModalPromotion = ({
 
   const callApiProducts = async () => {
     try {
-      const req = await fetch("http://localhost:8080/api/v1/products", {
+      const req = await fetch("https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/products", {
         method: "GET",
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
@@ -121,7 +121,7 @@ const ModalPromotion = ({
         values.endDate ? moment(selected.endDate) : null
       );
       const req1 = await fetch(
-        `http://localhost:8080/api/v1/promotion/update-promotion/${selected._id}`,
+        `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/promotion/update-promotion/${selected._id}`,
         {
           method: "PATCH",
           headers: {
@@ -138,7 +138,7 @@ const ModalPromotion = ({
         setCookie("token", req2, 7);
         if (!req2) throw new Error("Please Log in first!");
         const req3 = await fetch(
-          `http://localhost:8080/api/v1/admin/update-profile/${selected._id}`,
+          `https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/update-profile/${selected._id}`,
           {
             method: "PATCH",
             authorization: `Bearer ${req2}`,

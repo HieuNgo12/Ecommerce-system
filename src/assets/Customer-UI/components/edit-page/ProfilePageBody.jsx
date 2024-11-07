@@ -89,7 +89,7 @@ function ProfilePageBody({ userData, refreshToken, callApi }) {
   const onFinish = async (values) => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/users/update-profile",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/update-profile",
         {
           method: "PATCH",
           headers: {
@@ -104,7 +104,7 @@ function ProfilePageBody({ userData, refreshToken, callApi }) {
         if (!newToken) throw new Error("Please log in first!");
         setToken(newToken);
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/users/update-profile",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/users/update-profile",
           {
             method: "PATCH",
             headers: {

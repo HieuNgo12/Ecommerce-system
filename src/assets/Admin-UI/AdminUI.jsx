@@ -66,7 +66,7 @@ const AdminUI = () => {
   const callApi = async () => {
     try {
       const req1 = await fetch(
-        "http://localhost:8080/api/v1/admin/check-admin",
+        "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/check-admin",
         {
           method: "POST",
           headers: {
@@ -78,7 +78,7 @@ const AdminUI = () => {
       const res1 = await req1.json();
       if (req1.status === 403 && res1.message === "Invalid or expired token") {
         const req2 = await fetch(
-          "http://localhost:8080/api/v1/auth/refresh-token",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/auth/refresh-token",
           {
             method: "POST",
             headers: {
@@ -93,7 +93,7 @@ const AdminUI = () => {
         setToken(newToken);
         setCookie("token", newToken, 7);
         const req3 = await fetch(
-          "http://localhost:8080/api/v1/admin/check-admin",
+          "https://04cb76fe-96cf-4ebe-a0c6-7a2435772034.eu-central-1.cloud.genez.io/api/v1/admin/check-admin",
           {
             method: "POST",
             headers: {
